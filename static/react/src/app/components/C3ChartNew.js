@@ -42,21 +42,25 @@ export class C3ChartNew extends React.Component{
   
   componentDidMount() {
     $(".chart" + this.props.classId).empty();
-    this.updateChart();
-    if (this.props.classId == '_side' || this.props.classId == '_profile') {
-      $(".chart-data-icon").empty();
-    };
-    if($(".visualizeLoader")[0] != undefined)
-      $(".visualizeLoader")[0].style.display = "none"
+    this.generateChart();
   }
 
   componentDidUpdate(){
+    this.generateChart();
+  }
+
+  generateChart(){
     this.updateChart();
     if (this.props.classId == '_side' || this.props.classId == '_profile') {
       $(".chart-data-icon").empty();
     };
     if($(".visualizeLoader")[0] != undefined)
       $(".visualizeLoader")[0].style.display = "none"
+    if(this.props.data.subchart!=null && this.props.data.subchart.show){
+      let subChart = document.getElementsByClassName("chart"+this.props.classId+"2")[0].getElementsByTagName("svg")[0]
+      subChart.childNodes[1].remove();
+      subChart.getElementsByClassName("c3-title")[0].remove()
+    }
   }
 
   // componentWillUnmount(){
@@ -93,6 +97,9 @@ export class C3ChartNew extends React.Component{
       return $("."+this.props.classId, this.element);
     }
     return $(".chart" + this.props.classId, this.element);
+  }
+  getSubChartElement() {
+    return $(".chart"+this.props.classId +"2");
   }
 
   updateChart() {
@@ -563,6 +570,13 @@ export class C3ChartNew extends React.Component{
           d3.select(this.config.bindto).selectAll(".c3-legend-item").attr("transform", "translate(32,-20)");
         }
       }
+      //For subchart positioning
+      if(this.config.bindto.getAttribute("class").includes("chart"+that.props.classId+"2")){
+        let curChart = d3.select(this.config.bindto).select("svg")[0][0];
+          curChart.setAttribute("height",70);
+          let box  = curChart.getBBox();
+          curChart.childNodes[1].setAttribute("transform","translate("+box.x+","+0+")");
+      }
     }
 
     if (this.props.xdata) {
@@ -599,15 +613,24 @@ export class C3ChartNew extends React.Component{
       myData.axis.x.tick.width=60
     }
     myData.size.height = (window.location.pathname.includes("/modelManagement/") && myData.axis!=undefined && myData.axis.y.label.text === "% Count") ? 360:myData.size.height
-    myData['bindto'] = this.getChartElement().get(0);
-    let chart = c3.generate(myData);
-    if(myData.subchart !=undefined && myData.subchart.show=== true){
-      chart.zoom([0,(this.props.xdata.length-1)/2])
-      chart.element.getElementsByClassName("extent")[0].innerHTML = "<title id="+"c3BrushTip"+">Move grey section to zoom and view different part of the chart<title/>"
+    let myData1 = myData
+    let myData2 = myData
+    let chart = {}, chart2 = {};
+
+    if(myData2.subchart != null && myData2.subchart.show){
+      myData2.subchart.onbrush=function(d){ chart.zoom(d) }
+      myData2['bindto'] = this.getSubChartElement().get(0);
+      chart2 = c3.generate(myData2)
+      chart2.zoom([0,(this.props.xdata.length-1)])
+      chart2.element.getElementsByClassName("extent")[0].innerHTML = "<title id="+"c3BrushTip"+">Move grey section to zoom and view different part of the chart<title/>"  
+      myData1.subchart.show = false
+      myData1.size.height = 350
     }
+    myData1['bindto'] = this.getChartElement().get(0);
+      chart = c3.generate(myData1);
 
     //Modify Chart Data for Download
-    var chartDownloadData = jQuery.extend(true, {}, myData);
+    var chartDownloadData = jQuery.extend(true, {}, myData1);
     if(chartDownloadData.subchart != null){
         chartDownloadData.subchart.show=false;
     }
@@ -635,6 +658,7 @@ export class C3ChartNew extends React.Component{
       return (
         <div className="chart-area">
           <div className={this.classId} style={{margin:"10px 10px 0px 0px"}}></div>
+          <div className={this.classId+"2"} style={{margin:"10px 10px 20px 0px"}}></div>
          <div className={chartDownloadCls} style={{display:"none"}}></div>
           {(!window.location.pathname.includes("/data/") && this.props.classId != "_side") &&
           <div className="chart-data-icon">

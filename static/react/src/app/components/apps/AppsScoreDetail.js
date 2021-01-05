@@ -10,9 +10,8 @@ import {Link} from "react-router-dom";
 
 
 @connect((store) => {
-	return {login_response: store.login.login_response,
-		scoreList:store.apps.scoreList,scoreSummary:store.apps.scoreSummary,
-		scoreSlug:store.apps.scoreSlug,
+	return {
+		scoreSummary:store.apps.scoreSummary,
 		currentAppDetails:store.apps.currentAppDetails,
 		};
 })
@@ -22,11 +21,10 @@ export class AppsScoreDetail extends React.Component {
     super(props);
   }
   componentWillMount() {
-		//It will trigger when refresh happens on url
 		this.props.dispatch(getAppDetails(this.props.match.params.AppId));
 		if(isEmpty(this.props.scoreSummary)){
-				this.props.dispatch(getAppsScoreSummary(this.props.match.params.slug));
-				this.props.dispatch(updateScoreSlug(this.props.match.params.slug))
+			this.props.dispatch(getAppsScoreSummary(this.props.match.params.slug));
+			this.props.dispatch(updateScoreSlug(this.props.match.params.slug))
 		}
   }
   componentDidMount() {
@@ -55,10 +53,9 @@ export class AppsScoreDetail extends React.Component {
 				var componentsWidth = 0;
 				var skipIndex=[]
 				var cardDataList = listOfCardList.map((data, i) => {
-
 					if(skipIndex.includes(i)){ 
 						return null;
-				}
+					}
 					var clearfixClass = "col-md-"+data.cardWidth*0.12+" clearfix";
 					var nonClearfixClass = "col-md-"+data.cardWidth*0.12;
 					if(data.centerAlign){

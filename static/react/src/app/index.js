@@ -415,7 +415,7 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/autoML/scores/:slug/dataPreview" render={score}/>
             <Route exact path="/apps/:AppId/analyst/models/data/:slug/createModel/algorithmSelection" component={AlgorithmSelection}/>
             <Route exact path="/apps/:AppId/analyst/models/data/:slug/createModel/parameterTuning" component={ModelAlgorithmSelection}/>
-            <Route exact path="/apps/:AppId/modeSelection" component={ModelBuildingModeSelection}/>
+            <Route exact path="/apps/:AppId/" component={ModelBuildingModeSelection}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/dataCleansing" component={DataCleansing}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/featureEngineering" component={FeatureEngineering}/>
             <Route exact path="/apps/:AppId/analyst/models/data/:slug/createModel/dataCleansing" component={DataCleansing}/>

@@ -51,7 +51,16 @@ export class AppsPanel extends React.Component {
   }
   componentWillMount() {
     var pageNo = 1;
-    if (this.props.history.location.search.indexOf("page") != -1) {
+    if(this.props.history.location.search!=""){
+      let urlParams = new URLSearchParams(this.props.history.location.search);
+      pageNo = (urlParams.get("page")!="")?urlParams.get("page"):pageNo
+      let searchELem = (urlParams.get('search')!=null)?urlParams.get('search'):"";
+      let sortELem = (urlParams.get('sort')!=null)?urlParams.get('sort'):"";
+      let sortType = (urlParams.get('type')!=null)?urlParams.get('type'):"";
+      this.props.dispatch(appsStoreSearchEle(searchELem));
+      this.props.dispatch(appsStoreSortElements(sortELem,sortType));
+      this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken,pageNo));
+    }else if (this.props.history.location.search.indexOf("page") != -1) {
       pageNo = this.props.history.location.search.split("page=")[1];
       this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, pageNo));
     } else
@@ -64,15 +73,23 @@ export class AppsPanel extends React.Component {
   onChangeAppsSearchBox(e) {
     if (e.target.value == "" || e.target.value == null) {
       this.props.dispatch(appsStoreSearchEle(""));
-      this.props.history.push('/apps');
+      if(this.props.storeAppsSortByElement!="" && this.props.storeAppsSortByElement!=null){
+        this.props.history.push('/apps?sort=' + this.props.storeAppsSortByElement + '&type=' + this.props.storeAppsSortType);
+      }else{
+        this.props.history.push('/apps');
+      }
       this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, 1));
 
     } else if (e.target.value.length > SEARCHCHARLIMIT) {
-      this.props.history.push('/apps?search=' + e.target.value + '')
+      if(this.props.storeAppsSortByElement!="" && this.props.storeAppsSortByElement!=null){
+        this.props.history.push('/apps?search='+ e.target.value +'&sort=' + this.props.storeAppsSortByElement + '&type=' + this.props.storeAppsSortType);
+      }else{
+        this.props.history.push('/apps?search=' + e.target.value + '')
+      }
       this.props.dispatch(appsStoreSearchEle(e.target.value));
       this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, 1));
     }
-      if(this.props.app_filtered_keywords!=null)
+    if(this.props.app_filtered_keywords!=null)
       this.props.dispatch(updateAppsFilterList([]));
  }
   _handleKeyPress = (e) => {
@@ -84,6 +101,8 @@ export class AppsPanel extends React.Component {
     }
   }
   handleCheckboxChange(e) {
+    this.props.dispatch(appsStoreSearchEle(""));
+    this.props.dispatch(appsStoreSortElements("",""))
     e.preventDefault();
     var array = this.props.app_filtered_keywords;
     var index = array.indexOf(e.target.name)
@@ -148,11 +167,20 @@ export class AppsPanel extends React.Component {
   }
   handleSearchReset() {
     this.props.dispatch(appsStoreSearchEle(""));
-    this.props.history.push('/apps');
+    if(this.props.storeAppsSortByElement!="" && this.props.storeAppsSortByElement!=null){
+      this.props.history.push('/apps?sort=' + this.props.storeAppsSortByElement + '&type=' + this.props.storeAppsSortType);
+    }else{
+      this.props.history.push('/apps');
+    }
     this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, 1));
   }
   handleSorting(sortBy, sortType) {
-    this.props.history.push('/apps?sort=' + sortBy + '&type=' + sortType);
+    this.props.dispatch(updateAppsFilterList([]))
+    if(store.getState().apps.storeAppsSearchElement!=""){
+      this.props.history.push('/apps?search='+ store.getState().apps.storeAppsSearchElement +'&sort=' + this.props.storeAppsSortByElement + '&type=' + this.props.storeAppsSortType);
+    }else{
+      this.props.history.push('/apps?sort=' + sortBy + '&type=' + sortType);
+    }
     this.props.dispatch(appsStoreSortElements(sortBy, sortType));
     this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, 1));
   }
@@ -210,7 +238,7 @@ export class AppsPanel extends React.Component {
              <div className="app-block">
                <Link className="app-link" id={data.name} onClick={this.gotoAppsList.bind(this, data.app_id, data.name,data)} to= 
                {(data.app_id == 2 || data.app_id == 13) ? 
-               data.app_url.replace("/models","") + "/modeSelection" : 
+                data.app_url.replace("/models","") : 
                (data.displayName== "ITE" && (getUserDetailsOrRestart.get().userRole == "Admin" || getUserDetailsOrRestart.get().userRole ==  "Superuser"))?
                data.app_url.concat("project"):
                ((data.displayName== "ITE" && (getUserDetailsOrRestart.get().userRole == "ReviewerL1" || getUserDetailsOrRestart.get().userRole ==  "ReviewerL2"))?         
@@ -306,7 +334,7 @@ export class AppsPanel extends React.Component {
                 <div class="input-group">
                   <div className="search-wrapper">
                     <form>
-                      <input type="text" name="search_apps" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeAppsSearchBox.bind(this)} title="Search Apps..." id="search_apps" className="form-control search-box" placeholder="Search Apps..." required/>
+                      <input defaultValue={store.getState().apps.storeAppsSearchElement} type="text" name="search_apps" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeAppsSearchBox.bind(this)} title="Search Apps..." id="search_apps" className="form-control search-box" placeholder="Search Apps..." required/>
                       <span className="zmdi zmdi-search form-control-feedback"></span>
                       <button className="close-icon" type="reset" onClick={this.handleSearchReset.bind(this)}></button>
                     </form>

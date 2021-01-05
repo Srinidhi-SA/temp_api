@@ -8,11 +8,13 @@ import {STATIC_URL} from "../../helpers/env";
 import {DetailOverlay} from "../common/DetailOverlay";
 var dateFormat = require('dateformat');
 import Dialog from 'react-bootstrap-dialog';
-import {openCsLoaderModal} from "../../actions/createSignalActions"
+import {openCsLoaderModal} from "../../actions/createSignalActions";
+import store from "../../store";
 
 @connect((store) => {
     return {
         signalList: store.signals.signalList.data,
+        paginationFlag: store.datasets.paginationFlag
       };
 })
 
@@ -143,6 +145,7 @@ export class SignalCard extends React.Component {
            </div>);
     }
   componentWillUnmount(){
-    this.props.dispatch(clearSignalList());
+    if(!store.getState().datasets.paginationFlag)
+      this.props.dispatch(clearSignalList());
   }
 }

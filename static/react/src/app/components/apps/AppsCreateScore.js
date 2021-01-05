@@ -1,26 +1,18 @@
 import React from "react";
 import {connect} from "react-redux";
-import {Link, Redirect} from "react-router-dom";
-import {push} from "react-router-redux";
-import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
+import {Redirect} from "react-router-dom";
+import {Modal,Button} from "react-bootstrap";
 import store from "../../store";
 import {showCreateScorePopup,hideCreateScorePopup,updateSelectedAlg,updateModelSummaryFlag,checkCreateScoreToProceed,updateSelectedAlgObj} from "../../actions/appActions";
 import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from "../../actions/dataActions";
 
 
 @connect((store) => {
-	return {login_response: store.login.login_response,
-		appsModelShowModal: store.apps.appsModelShowModal,
-		allDataList: store.datasets.allDataSets,
+	return {
 		dataPreview: store.datasets.dataPreview,
 		appsScoreShowModal:store.apps.appsScoreShowModal,
-		selectedDataset:store.datasets.selectedDataSet,
 		dataPreviewFlag:store.datasets.dataPreviewFlag,
-		currentAppId:store.apps.currentAppId,
-		modelSlug:store.apps.modelSlug,
-		algorithmsList:store.apps.algorithmsList,
-		currentAppDetails:store.apps.currentAppDetails,
-		};
+	};
 })
 
 export class AppsCreateScore extends React.Component {
@@ -35,32 +27,35 @@ export class AppsCreateScore extends React.Component {
 		this.props.dispatch(updateModelSummaryFlag(false));
 	}
 	openScorePopup(){
-    	this.props.dispatch(showCreateScorePopup())
-    }
-		findMaxEvaluationMetricValue(algorithms){
-			let max=0
-			for( let i=0;i<algorithms.length;i++){
-				if(algorithms[i].evaluationMetricValue>max)
+		this.props.dispatch(showCreateScorePopup())
+	}
+	
+	findMaxEvaluationMetricValue(algorithms){
+		let max=0
+		for( let i=0;i<algorithms.length;i++){
+			if(algorithms[i].evaluationMetricValue>max)
 				max=algorithms[i].evaluationMetricValue
-			}
-			return max
 		}
-    closeScorePopup(){
-    	this.props.dispatch(hideCreateScorePopup())
-    }
-    getDataSetPreview(e){
-    	this.selectedData = $("#score_Dataset").val();
-    	this.props.dispatch(checkCreateScoreToProceed(this.selectedData));
-    	this.props.dispatch(updateSelectedAlg($("#algorithms").val()));
+		return max
+	}
+	
+	closeScorePopup(){
+		this.props.dispatch(hideCreateScorePopup())
+	}
+	
+	getDataSetPreview(e){
+		this.selectedData = $("#score_Dataset").val();
+		this.props.dispatch(checkCreateScoreToProceed(this.selectedData));
+		this.props.dispatch(updateSelectedAlg($("#algorithms").val()));
 		this.props.dispatch(updateSelectedAlgObj($("#algorithms").find(":selected").data("value")));
-    	this.props.dispatch(getDataSetPreview(this.selectedData));
-    	this.props.dispatch(hideCreateScorePopup());
+		this.props.dispatch(getDataSetPreview(this.selectedData));
+		this.props.dispatch(hideCreateScorePopup());
+	}
+	 
+	updateDataset(e){
+		this.props.dispatch(updateDatasetName(e.target.value));
+	}
 
-
-    }
-    updateDataset(e){
-    	this.props.dispatch(updateDatasetName(e.target.value));
-    }
 	render() {
 		if(store.getState().datasets.dataPreviewFlag){
 			var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
@@ -81,44 +76,39 @@ export class AppsCreateScore extends React.Component {
 			renderSelectBox = "No Datasets"
 		}
 		if(algorithms){
-			let max_evaluationMetricValue=this.findMaxEvaluationMetricValue(algorithms)
-			
+			let max_evaluationMetricValue=this.findMaxEvaluationMetricValue(algorithms)	
 			var selectedValue=algorithms.filter(algorithm =>(algorithm.evaluationMetricValue==max_evaluationMetricValue))[0].slug
 			algorithmNames = <select id="algorithms" defaultValue={selectedValue} name="selectbasic" class="form-control">
-			{algorithms.map(algorithm =>
-			<option key={algorithm.slug+algorithm['Model Id']} data-value={JSON.stringify(algorithm)} value={algorithm.slug}>{algorithm.name}-{algorithm['Model Id']}-{algorithm.evaluationMetricValue}({algorithm.evaluationMetricName})</option>
-		)}
+				{algorithms.map(algorithm => <option key={algorithm.slug+algorithm['Model Id']} data-value={JSON.stringify(algorithm)} value={algorithm.slug}>{algorithm.name}-{algorithm['Model Id']}-{algorithm.evaluationMetricValue}({algorithm.evaluationMetricName})</option>)
+			}
 			</select>
 		}else{
 			algorithmNames = "No Algorithms"
 		}
 		return (
-				<span className="xs-pl-10" onClick={this.openScorePopup.bind(this)}>
+			<span className="xs-pl-10" onClick={this.openScorePopup.bind(this)}>
 				<Button bsStyle="primary">Create Score</Button>
 				<div id="newScore"  role="dialog" className="modal fade modal-colored-header">
-				<Modal show={store.getState().apps.appsScoreShowModal} onHide={this.closeScorePopup.bind(this)} dialogClassName="modal-colored-header">
-				<Modal.Header closeButton>
-				<h3 className="modal-title">Create Score</h3>
-				</Modal.Header>
-				<Modal.Body>
-				  <div class="form-group">
-				  <label className="pb-2">Select an existing dataset</label>
-	              {renderSelectBox}
-	              <br/>
-	              <label>Select a Model</label>
-	              {algorithmNames}
-				</div>
-				</Modal.Body>
-				<Modal.Footer>
-				<Button className="btn btn-primary md-close" onClick={this.closeScorePopup.bind(this)}>Close</Button>
-				<Button bsStyle="primary"  onClick={this.getDataSetPreview.bind(this)} >Create</Button>
-				</Modal.Footer>
+				<Modal show={this.props.appsScoreShowModal} onHide={this.closeScorePopup.bind(this)} dialogClassName="modal-colored-header">
+					<Modal.Header closeButton>
+						<h3 className="modal-title">Create Score</h3>
+					</Modal.Header>
+					<Modal.Body>
+				  	<div class="form-group">
+				  		<label className="pb-2">Select an existing dataset</label>
+							{renderSelectBox}
+							<br/>
+							<label>Select a Model</label>
+							{algorithmNames}
+						</div>
+					</Modal.Body>
+					<Modal.Footer>
+						<Button className="btn btn-primary md-close" onClick={this.closeScorePopup.bind(this)}>Close</Button>
+						<Button bsStyle="primary"  onClick={this.getDataSetPreview.bind(this)} >Create</Button>
+					</Modal.Footer>
 				</Modal>
-				</div>
-				</span>
-
-
+			</div>
+		</span>
 		)
 	}
-
 }

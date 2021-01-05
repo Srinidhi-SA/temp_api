@@ -1026,7 +1026,13 @@ export default function reducer(state = {
         }
     }
     break;
-
+    case "CLEAR_APPS_LIST":{
+        return{
+            ...state,
+            appsList:[],
+            current_page:1,
+        }
+    }
     case "APPS_LIST_ERROR":
     {
         throw new Error("Unable to fetch apps list data!!");

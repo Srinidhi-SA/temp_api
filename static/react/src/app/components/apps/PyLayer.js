@@ -2,14 +2,10 @@ import React from "react";
 import {connect} from "react-redux";
 import {Redirect} from "react-router";
 import store from "../../store";
-import {statusMessages} from  "../../helpers/helper"
-import {Button} from "react-bootstrap";
 import { setPyTorchLayer, updateAlgorithmData, pytorchValidateFlag, deletePyTorchLayer } from "../../actions/appActions";
 
 @connect((store)=>{
     return{
-        algorithmData:store.apps.regression_algorithm_data,
-        manualAlgorithmData:store.apps.regression_algorithm_data_manual,
         pyTorchLayer:store.apps.pyTorchLayer,
         idLayer:store.apps.idLayer,
     }
@@ -106,7 +102,6 @@ export class PyLayer extends React.Component {
     }
 
     changeTextBoxValue(parameterData,e){
-        let name = parameterData.name;
         let val = e.target.value;
         if(!Number.isInteger(parseFloat(val)) ){
             this.props.dispatch(pytorchValidateFlag(false));
@@ -141,12 +136,12 @@ export class PyLayer extends React.Component {
     }
     setChangeLayerSubParams(subparameterData,defaultParamName,e){
         this.props.dispatch(pytorchValidateFlag(true));
-            e.target.parentElement.lastElementChild.innerText = ""
-            e.target.classList.remove('regParamFocus')   
-            let layerArry = this.props.idNum
-            let newsubLyrVal = this.props.pyTorchLayer[layerArry];
-            newsubLyrVal[defaultParamName][subparameterData.name] = e.target.value;
-            this.props.dispatch(setPyTorchLayer(parseInt(layerArry),newsubLyrVal));
+        e.target.parentElement.lastElementChild.innerText = ""
+        e.target.classList.remove('regParamFocus')   
+        let layerArry = this.props.idNum
+        let newsubLyrVal = this.props.pyTorchLayer[layerArry];
+        newsubLyrVal[defaultParamName][subparameterData.name] = e.target.value;
+        this.props.dispatch(setPyTorchLayer(parseInt(layerArry),newsubLyrVal));
     }
     setLayerSubParams(subparameterData,defaultParamName,e){
         let name = subparameterData.name;
@@ -442,11 +437,11 @@ export class PyLayer extends React.Component {
         var cls =`layerPanel ${this.props.idNum}`
         var clsId = `layer${this.props.idNum}`
         let renderPyTorchLayer = this.props.parameterData.parameters.filter(i=>i.displayName === "Layer")[0].defaultValue[0].parameters.map((layerData,index)=>{
-                if(layerData.display){
-                    const lyr = this.renderPyTorchData(layerData);
-                    return lyr;
-                }
-            });
+            if(layerData.display){
+                const lyr = this.renderPyTorchData(layerData);
+                return lyr;
+            }
+        });
         return (
             <div class={cls} id={clsId}>
                 <div class="layerHeader" id={this.props.idNum}>
