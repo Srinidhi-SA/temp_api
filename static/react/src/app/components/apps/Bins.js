@@ -1,15 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Scrollbars } from 'react-custom-scrollbars';
-import { Button, Dropdown, Menu, MenuItem, Modal, Nav, NavItem, Tab, Row, Col } from "react-bootstrap";
-import {
-  binningOptionsOnChangeAction,
-  saveBinValuesAction,
-} from "../../actions/featureEngineeringActions";
-
+import { Tab, Row, Col } from "react-bootstrap";
+import { binningOptionsOnChangeAction } from "../../actions/featureEngineeringActions";
 @connect((store) => {
   return {
-    login_response: store.login.login_response,
     selectedItem: store.datasets.selectedItem,
     dataPreview: store.datasets.dataPreview,
     isNoOfBinsEnabled: store.datasets.isNoOfBinsEnabled,
@@ -25,7 +19,6 @@ export class Bins extends React.Component {
     super(props);
     this.pickValue = this.pickValue.bind(this);
   }
-
 
   componentWillMount() {
     if(this.props.editmodelFlag){
@@ -60,14 +53,10 @@ export class Bins extends React.Component {
       document.getElementById('specifyintervals').value = "";
       document.getElementById('numberofbins').value = "";
       this.props.dispatch(binningOptionsOnChangeAction(true, true));
-
-    }
-
-    //var binData = this.getBindata();
-    else if (selectedValue == "create_equal_sized_bins") {
+    }else if (selectedValue == "create_equal_sized_bins") {
       document.getElementById('specifyintervals').value = "";
       this.props.dispatch(binningOptionsOnChangeAction(false, true));
-    } else if (selectedValue == "create_custom_bins") {
+    }else if (selectedValue == "create_custom_bins") {
       document.getElementById('numberofbins').value = "";
       this.props.dispatch(binningOptionsOnChangeAction(true, false));
     }
@@ -84,58 +73,30 @@ export class Bins extends React.Component {
   }
 
   render() {
-    var bins = "";
     var binData = this.getBindata();
-
-    bins =
-      (
-        <Tab.Pane>
-          <form id="binsForm">
-            <div className="row form-group">
-              <label for="sel_tobg" className="col-sm-4 control-label">{"Column name"}</label>
-              <div className="col-sm-8">
-                <input id="colName" type="text" title="Column name " placeholder="Column name" name="name" value={this.props.selectedItem.name} disabled className="form-control" />
-              </div>
-            </div>
-            <div className="row form-group">
-              <label for="sel_tobg" className="col-sm-4 control-label">Type of binning<span className="text-danger">*</span></label>
-              <div className="col-sm-8">
-                {this.getbinningOptions()}
-              </div>
-            </div>
-            <div className="row form-group">
-              <label for="sel_tobg" className="col-sm-4 control-label">{"Number of bins"} <span className="text-danger">*</span></label>
-              <div className="col-sm-8">
-                <input id="binNo" type="number" min="0" title="Number of bins " placeholder="Number of bins" id="numberofbins" name="numberofbins" defaultValue={binData.numberofbins} disabled={this.props.isNoOfBinsEnabled} onInput={this.pickValue} onChange={this.onchangeInput.bind(this)} className="form-control" />
-              </div>
-            </div>
-            <div className="row form-group">
-              <label for="sel_to bg" className="col-sm-4 control-label">{"Specify intervals"} <span className="text-danger">*</span></label>
-              <div className="col-sm-8">
-                <input id="SpecifyInt" type="text" title="Specify intervals" placeholder="Specify intervals" id="specifyintervals" name="specifyintervals" defaultValue={binData.specifyintervals} disabled={this.props.isSpecifyIntervalsEnabled} onChange={this.onchangeInput.bind(this)} className="form-control" onInput={this.pickValue} />
-              </div>
-            </div>
-            <div className="row form-group">
-              <label for="sel_tobg" className="col-sm-4 control-label">{"New column name"} <span className="text-danger">*</span></label>
-              <div className="col-sm-8">
-                <input id="newColName" type="text" title="New column name " placeholder="New column name" name="newcolumnname" defaultValue={binData.newcolumnname} onChange={this.onchangeInput.bind(this)} className="form-control" onInput={this.pickValue} />
-              </div>
-            </div>
-            <div className="row form-group">
-              <div className="col-sm-12 text-center">
-                <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
-              </div>
-            </div>
-          </form>
-        </Tab.Pane>)
-
     return (
       <div>
         <Tab.Container id="left-tabs-example">
           <Row className="clearfix">
             <Col sm={15}>
               <Tab.Content animation>
-                {bins}
+                <Tab.Pane>
+                  <form id="binsForm" className="featureEnggFormLabel">
+                      <label for="sel_tobg" >{"Column name"}</label>
+                      <input id="colName" type="text" title="Column name " placeholder="Column name" name="name" value={this.props.selectedItem.name} disabled className="form-control" />
+                      <label for="sel_tobg" >Type of binning<span className="text-danger">*</span></label>
+                      {this.getbinningOptions()}
+                      <label for="sel_tobg" >{"Number of bins"} <span className="text-danger">*</span></label>
+                      <input id="binNo" type="number" min="0" title="Number of bins " placeholder="Number of bins" id="numberofbins" name="numberofbins" defaultValue={binData.numberofbins} disabled={this.props.isNoOfBinsEnabled} onInput={this.pickValue} onChange={this.onchangeInput.bind(this)} className="form-control" />
+                      <label for="sel_to bg" >{"Specify intervals"} <span className="text-danger">*</span></label>
+                      <input id="SpecifyInt" type="text" title="Specify intervals" placeholder="Specify intervals" id="specifyintervals" name="specifyintervals" defaultValue={binData.specifyintervals} disabled={this.props.isSpecifyIntervalsEnabled} onChange={this.onchangeInput.bind(this)} className="form-control" onInput={this.pickValue} />
+                      <label for="sel_tobg" >{"New column name"} <span className="text-danger">*</span></label>
+                      <input id="newColName" type="text" title="New column name " placeholder="New column name" name="newcolumnname" defaultValue={binData.newcolumnname} onChange={this.onchangeInput.bind(this)} className="form-control" onInput={this.pickValue} />
+                      <div className="col-sm-12 text-center">
+                        <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
+                      </div>
+                    </form>
+                </Tab.Pane>
               </Tab.Content>
             </Col>
           </Row>

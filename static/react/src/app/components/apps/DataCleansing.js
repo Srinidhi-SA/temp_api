@@ -1,12 +1,9 @@
 import React from "react";
 import { Scrollbars } from 'react-custom-scrollbars';
-import tinysort from 'tinysort';
 import { connect } from "react-redux";
 import store from "../../store"
 import { InputSwitch } from 'primereact/inputswitch';
-import {
-  getDataSetPreview,
-} from "../../actions/dataActions";
+import { getDataSetPreview, getValueOfFromParam } from "../../actions/dataActions";
 import { Button } from "react-bootstrap";
 import { handelSort } from "../../actions/dataActions";
 import { getRemovedVariableNames } from "../../helpers/helper.js"
@@ -17,40 +14,29 @@ import {
   variableSelectedAction,
   checkedAllAction,
   dataCleansingCheckUpdate,
-  removeDuplicateAttributesAction,
   removeDuplicateObservationsAction,
-  dataCleansingDataTypeChange
+  dataCleansingDataTypeChange,
+  searchTable,
+  sortTable
 } from "../../actions/dataCleansingActions";
 
 @connect((store) => {
   return {
-    login_response: store.login.login_response,
     dataPreview: store.datasets.dataPreview,
-    signalMeta: store.datasets.signalMeta,
-    curUrl: store.datasets.curUrl,
-    dataPreviewFlag: store.datasets.dataPreviewFlag,
     currentAppId: store.apps.currentAppId,
-    roboDatasetSlug: store.apps.roboDatasetSlug,
-    modelSlug: store.apps.modelSlug,
-    signal: store.signals.signalAnalysis,
-    subsettingDone: store.datasets.subsettingDone,
-    subsettedSlug: store.datasets.subsettedSlug,
-    dataTransformSettings: store.datasets.dataTransformSettings,
-    scoreToProceed: store.apps.scoreToProceed,
     apps_regression_modelName: store.apps.apps_regression_modelName,
     currentAppDetails: store.apps.currentAppDetails,
     datasets: store.datasets,
     checkedAll: store.datasets.checkedAll,
     editmodelFlag:store.datasets.editmodelFlag,
     modelEditconfig:store.datasets.modelEditconfig,
-
+    selectedVariables:store.datasets.selectedVariables
   };
 })
 
 export class DataCleansing extends React.Component {
   constructor(props) {
     super(props);
-
     this.buttons = {};
     this.state = {
       value1: false,
@@ -60,191 +46,98 @@ export class DataCleansing extends React.Component {
   }
 
   componentWillMount() {
-    const from = this.getValueOfFromParam();
+    const from = getValueOfFromParam();
     if (from === 'feature_Engineering') {
       if (this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null) {
         let mod =  window.location.pathname.includes("analyst")?"analyst":"autoML"
         this.props.history.replace("/apps/"+this.props.match.params.AppId+"/"+mod+"/models/data/"+this.props.match.params.slug)
       }
-    }
-    else if (this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null) {
+    }else if (this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null) {
       let mod =  window.location.pathname.includes("analyst")?"analyst":"autoML"
       this.props.history.replace("/apps/"+this.props.match.params.AppId+"/"+mod+"/models/data/"+this.props.match.params.slug)
-    }
-    else {
-    if (this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null) {
-      window.history.go(-1);
-    }
-    if (this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
-      this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+    }else{
+      if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null) {
+        window.history.go(-1);
+      }
+      if(this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
+        this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+      }else{
 
-    } else {
-    }
-
-    var proccedUrl = this.props.match.url.replace('dataCleansing', 'featureEngineering');
-    if (this.props.match.path.includes("slug")) {
-      this.buttons['proceed'] = {
-        url: proccedUrl,
-        text: "Proceed"
-      };
-    }
-
-    var removedVariables = getRemovedVariableNames(this.props.datasets);
-    var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true) && (i.ignoreSuggestionPreviewFlag === true))).map(j => j.name);
-
-    this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
-      if (removedVariables.indexOf(item.name) != -1 || considerItems.indexOf(item.name) != -1)
-        return "";
-      this.props.dispatch(variableSelectedAction(item.name, item.slug, true));
-    });
-    if(this.props.editmodelFlag){
-     this.setOutliersOnEdit()
-     this.setMissingValuesOnEdit()
+      }
+      var proccedUrl = this.props.match.url.replace('dataCleansing', 'featureEngineering');
+      if (this.props.match.path.includes("slug")) {
+        this.buttons['proceed'] = {
+          url: proccedUrl,
+          text: "Proceed"
+        };
+      }
+      var removedVariables = getRemovedVariableNames(this.props.datasets);
+      var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true) && (i.ignoreSuggestionPreviewFlag === true))).map(j => j.name);
+        this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
+        if(removedVariables.indexOf(item.name) != -1 || considerItems.indexOf(item.name) != -1)
+          return "";
+        this.props.dispatch(variableSelectedAction(item.name, item.slug, true));
+        });
+      if(this.props.editmodelFlag){
+        this.setOutliersOnEdit()
+        this.setMissingValuesOnEdit()
+      }
     }
   }
-  }
 
-  getValueOfFromParam() {
-    if(this.props.location === undefined){
-    }
-   else{
-    const params = new URLSearchParams(this.props.location.search);
-    return params.get('from');
-   }
-  }
   setOutliersOnEdit(){
     var outliers=Object.values(this.props.modelEditconfig.outlier_config)
-    for(var i=0;i<outliers.length;i++){//colName,colType,colSlug, treatment
-    this.props.dispatch(outlierRemovalSelectedAction(outliers[i].name,outliers[i].type,this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(j=>j.name==outliers[i].name)[0].slug
-    ,outliers[i].treatment))
-   }
-}
+    for(var i=0;i<outliers.length;i++){
+      this.props.dispatch(outlierRemovalSelectedAction(outliers[i].name,outliers[i].type,this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(j=>j.name==outliers[i].name)[0].slug,outliers[i].treatment))
+    }
+  }
+
   setMissingValuesOnEdit(){
     var missingValues =Object.values(this.props.modelEditconfig.missing_value_config)
-    for(var i=0;i<missingValues.length;i++){//colName,colType,colSlug, treatment
-    this.props.dispatch(missingValueTreatmentSelectedAction(missingValues[i].name,missingValues[i].type,this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(j=>j.name==missingValues[i].name)[0].slug
-    ,missingValues[i].treatment))
-  }
+    for(var i=0;i<missingValues.length;i++){
+      this.props.dispatch(missingValueTreatmentSelectedAction(missingValues[i].name,missingValues[i].type,this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(j=>j.name==missingValues[i].name)[0].slug,missingValues[i].treatment)
+      )
+    }
   }
 
-setMissingValuesOnEdit(){
-  var missingValues =Object.values(this.props.modelEditconfig.missing_value_config)
-  for(var i=0;i<missingValues.length;i++){//colName,colType,colSlug, treatment
-  this.props.dispatch(missingValueTreatmentSelectedAction(missingValues[i].name,missingValues[i].type,this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(j=>j.name==missingValues[i].name)[0].slug
-  ,missingValues[i].treatment))
- }
-}
-
-componentDidUpdate(){
-  var selectElements = document.getElementsByTagName("select");
-  var i,j;
-  for (i = 1; i < selectElements.length; i++) {
-    for(j=0;j<selectElements[i].options.length;j++){
-      if(selectElements[i].options.length>=4){ 
-      if( selectElements[i].selectedOptions[0].value==selectElements[i].options[j].value)
-       selectElements[i].options[j].style.display = 'none';
-       else
-       selectElements[i].options[j].style.display = 'inline';
+  componentDidUpdate(){
+    var selectElements = document.getElementsByTagName("select");
+    var i,j;
+    for (i = 1; i < selectElements.length; i++) {
+      for(j=0;j<selectElements[i].options.length;j++){
+        if(selectElements[i].options.length>=4){
+          if( selectElements[i].selectedOptions[0].value==selectElements[i].options[j].value)
+            selectElements[i].options[j].style.display = 'none';
+          else
+            selectElements[i].options[j].style.display = 'inline';
+        }
       }
+    }
   }
-  }
-}
 
   componentDidMount() {
-
-
-var selectElements = document.getElementsByTagName("select");
-  var i,j;
-  for (i = 0; i < selectElements.length; i++) {
-    for(j=0;j<selectElements[i].options.length;j++){
-      if(selectElements[i].options[j].selected)
-       selectElements[i].options[j].style.display = 'none';
-      else
-       selectElements[i].options[j].style.display = 'inline';
-  }
-  }
-    var table = document.getElementById('dctable'),
-    tableHead = table.querySelector('thead'),
-    tableHeaders = tableHead.querySelectorAll('th'),
-    tableBody = table.querySelector('tbody');
-
-
-tableHead.addEventListener('click', function (e) {
-    var tableHeader = e.target,
-        textContent = tableHeader.textContent,
-        tableHeaderIndex, isAscending, order;
-    while (tableHeader.nodeName !== 'TH') {
-        tableHeader = tableHeader.parentNode;
+    var selectElements = document.getElementsByTagName("select");
+    var i,j;
+    for (i = 0; i < selectElements.length; i++) {
+      for(j=0;j<selectElements[i].options.length;j++){
+        if(selectElements[i].options[j].selected)
+          selectElements[i].options[j].style.display = 'none';
+        else
+          selectElements[i].options[j].style.display = 'inline';
+      }
     }
-    tableHeaderIndex = Array.prototype.indexOf.call(tableHeaders, tableHeader);
-    isAscending = tableHeader.getAttribute('data-order') === 'asc';
-    order = isAscending ? 'desc' : 'asc';
-
-    //reset other columns
-    $('#backpackGrid').find('th').removeClass('asc desc').attr('data-order','none').attr('aria-sort','none');
-
-
-    //set order on clicked header
-    tableHeader.setAttribute('data-order', order);
-
-    /* accessibility */
-    //set aria sort attr
-    tableHeader.setAttribute('aria-sort', order);
-    tableHeader.setAttribute("class", order);
-    // build aria-live message
-    var sortOrder;
-    if (isAscending) {
-        sortOrder = "Ascending order";
-    } else {
-        sortOrder = "Descending order";
-    }
-
-    /* end accessibility */
-
-    // call tinysort
-    tinysort(
-    tableBody.querySelectorAll('tr'), {
-        selector: 'td:nth-child(' + (tableHeaderIndex + 1) + ')',
-        order: order
-    });
-});
-
-    $("#sdataType").change(function () {
-      $("#dctable tbody tr").hide();
-      $("#dctable tbody tr." + $(this).val()).show('fast');
-    });
-
-    //     $('.checkall').on('click', function (e) {
-    //     e.stopPropagation();
-    //     $(this).closest('fieldset').find(':checkbox').prop('checked', this.checked);
-    // });
-
-    $('#search').on('keyup', function () {
-      var value = $(this).val();
-      var patt = new RegExp(value, "i");
-      $('#dctable').find('tr').each(function () {
-        if (!($(this).find('td').text().search(patt) >= 0)) {
-          $(this).not('.myHead').hide();
-        }
-        if (($(this).find('td').text().search(patt) >= 0)) {
-          $(this).show();
-        }
-      });
-    });
-
-    $("#dctable").addSortWidget();
-
-
-
-  }
-  componentWillUpdate() {
   }
 
+  sortTable(n) {
+    sortTable(n,"dctable");
+  }
+
+  searchTable() {
+    searchTable("dctable",1,8);
+  }
+  
   shouldComponentUpdate(nextProps) {
     return true;
-  }
-
-  onchangeMissingValueTreatment(event, variable_name) {
   }
 
   missingValueTreatmentOnChange(colSlug,event) {
@@ -257,23 +150,21 @@ tableHead.addEventListener('click', function (e) {
     this.handleDropdownOptions(colSlug, event,'outlier')
   }
 
-
-  variableCheckboxOnChange(event, item) {
+  variableCheckboxOnChange(event) {
     const checkBoxIndex = event.target.dataset["index"];
     this.props.dispatch(dataCleansingCheckUpdate(checkBoxIndex, event.target.checked));
     this.props.dispatch(variableSelectedAction(event.target.dataset["colname"], event.target.dataset["colslug"], event.target.checked));
     if (Object.values(this.props.datasets.selectedVariables).includes(false)) {
       this.props.dispatch(checkedAllAction(false));
-    }
-    else
+    }else{
       this.props.dispatch(checkedAllAction(true));
+    }
   }
 
   checkedAllOnChange(event) {
     this.props.dispatch(checkedAllAction(event.target.checked));
     var removedVariables = getRemovedVariableNames(this.props.datasets);
     var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true) && (i.ignoreSuggestionPreviewFlag === true))).map(j => j.name);
-
 
     if (!event.target.checked) {
       this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
@@ -290,11 +181,6 @@ tableHead.addEventListener('click', function (e) {
     }
   }
 
-  handleDuplicateAttributesOnChange(event) {
-    this.setState({ value1: event.target.value })
-    this.props.dispatch(removeDuplicateAttributesAction(event.target.name, event.target.value)); 
-  }
-
   handleDuplicateObservationsOnChange(event) {
     this.setState({ value2: event.target.value })
     this.props.dispatch(removeDuplicateObservationsAction(event.target.name, event.target.value));
@@ -302,13 +188,21 @@ tableHead.addEventListener('click', function (e) {
 
   handlefilterOptions(e){
     var select = document.getElementById('sdataType');
-    var selectedOption = e.target.value
-     
-     for(var i=0;i<select.options.length;i++){
-      if(select.options[i].value==selectedOption)
+    for(var i=0;i<select.options.length;i++){
+      if(select.options[i].value==e.target.value)
         select.options[i].style.display='none'
-        else
+      else
         select.options[i].style.display='inline'
+    }
+    var tds = document.getElementsByTagName("tr");
+    let count = 0;
+    for(var i = 1; i<tds.length; i++) {
+      if(tds[i].className.includes(e.target.value)) {
+        tds[i].style.display = ""
+      }else{
+        tds[i].style.display = "none"
+        count++
+      }
     }
   }
 
@@ -322,7 +216,6 @@ tableHead.addEventListener('click', function (e) {
      select = document.getElementById(`${colSlug}outlier`);
 
     var selectedOption = event.target.value
-
     for(var i=0;i<select.options.length;i++){
       if(select.options[i].value==selectedOption)
         select.options[i].style.display='none'
@@ -337,24 +230,20 @@ tableHead.addEventListener('click', function (e) {
   }
 
   getUpdatedDataType(colSlug) {
-    let actualColType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].actualColumnType
     if(!this.props.editmodelFlag)
-    var colType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].columnType
+      var colType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].columnType
     else
-    colType = this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.filter(item=>item.slug == colSlug)[0].columnType
+      colType = this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.filter(item=>item.slug == colSlug)[0].columnType
     var arr = ["Measure", "Dimension", "Datetime"]
     var selectedOption = arr.filter((i)=>i.toLowerCase() == colType.toLowerCase())[0]
     var optionsHtml = arr.map((item ,index)=> {
-        return <option key={index} value={item.toLowerCase()} > {item}</option>
+      return <option key={index} value={item.toLowerCase()} > {item}</option>
     })
     return <select className="form-control" defaultValue={selectedOption.toLowerCase()} id={colSlug+'dataType'} onChange={this.handleDataTypeChange.bind(this, colSlug)} >{colType}{optionsHtml}</select>
   }
 
   getOutlierRemovalOptions(dataType, colName, colSlug,outnum,missingnum) {
-    let disble = false;
-    if((outnum)==0){
-      disble = true;
-    }
+    let disble = (outnum===0)?true:false;
     var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
     if (dataType in data_cleansing && "outlier_removal" in data_cleansing[dataType] && !disble) {
       var dcHTML = (data_cleansing[dataType].outlier_removal.operations.map((item,index)=><option key={index} value={item.name} >{item.displayName}</option>))
@@ -367,15 +256,17 @@ tableHead.addEventListener('click', function (e) {
       );
     }
     else return ""
-    }
+  }
 
   proceedFeatureEngineering() {
     var proccedUrl = this.props.match.url.replace('dataCleansing', 'featureEngineering');
     this.props.history.push(proccedUrl);
   }
+
   handelSort(variableType, sortOrder) {
     this.props.dispatch(handelSort(variableType, sortOrder))
   }
+
   handleBack=()=>{
     const appId = this.props.match.params.AppId;
     const slug = this.props.match.params.slug;
@@ -383,10 +274,7 @@ tableHead.addEventListener('click', function (e) {
   }
 
   getMissingValueTreatmentOptions(dataType, colName, colSlug,outnum,missingnum) {
-    let disble = false;
-    if((missingnum)==0){
-      disble = true;
-    }
+    let disble = (missingnum===0)?true:false
     var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
     if (dataType in data_cleansing && "missing_value_treatment" in data_cleansing[dataType] && !disble) {
       var dcHTML = (data_cleansing[dataType].missing_value_treatment.operations.map((item,index) => <option key={index} value={item.name} >{item.displayName}</option>))
@@ -401,42 +289,14 @@ tableHead.addEventListener('click', function (e) {
     else { return ""; }
   }
 
-  dcTableSorter() {
-    $(function () {
-      $('#myCheckAll').click(function () {
-        var isChecked = $(this).prop("checked");
-        $('#dctable tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
-      });
-
-      $('#dctable tr:has(td)').find('input[type="checkbox"]').click(function () {
-        var isChecked = $(this).prop("checked");
-        var isHeaderChecked = $("#myCheckAll").prop("checked");
-        if (isChecked == false && isHeaderChecked)
-          $("#myCheckAll").prop('checked', isChecked);
-        else {
-          $('#dctable tr:has(td)').find('input[type="checkbox"]').each(function () {
-            if ($(this).prop("checked") == false)
-              isChecked = false;
-          });
-          $("#myCheckAll").prop('checked', isChecked);
-        }
-      });
-    });
-  }
-
-
-
   render() {
-    this.dcTableSorter();
     var cleansingHtml = <span>"Loading..."</span>;
-
     if (this.props.dataPreview != null) {
-    var removedVariables = getRemovedVariableNames(this.props.datasets);
-    var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true) && (i.ignoreSuggestionPreviewFlag === true))).map(j => j.name);
-    // var ignoreSuggestionFlag = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => i.ignoreSuggestionFlag===true).map(j=>j.name);
-      var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
+      var removedVariables = getRemovedVariableNames(this.props.datasets);
+      var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true) && (i.ignoreSuggestionPreviewFlag === true))).map(j => j.name);
       var removedVariables = getRemovedVariableNames(this.props.datasets);
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item, index) => {
+        let varSel = this.props.selectedVariables
         let outnum = 1;
         let missingnum = 1;
         if (removedVariables.indexOf(item.name) != -1 || considerItems.indexOf(item.name) != -1)
@@ -446,7 +306,7 @@ tableHead.addEventListener('click', function (e) {
             <tr className={('all ' + item.columnType)} key={index} id="mssg">
               <td class="filter-false sorter-false">
                 <div class="ma-checkbox inline">
-                  <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={item.checked} data-index={index} data-colname={item.name} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
+                  <input key={Math.random()} id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item.name} defaultChecked={varSel[item.slug]?true:false} data-index={index} data-colname={item.name} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
                   <label for={item.slug}></label>
                 </div>
               </td>
@@ -487,14 +347,10 @@ tableHead.addEventListener('click', function (e) {
     }
 
     return (
-      // <!-- Main Content starts with side-body -->
       <div className="side-body">
-        {/* <!-- Page Title and Breadcrumbs -->*/}
         <div className="page-head">
           <h3 className="xs-mt-0 xs-mb-0 text-capitalize"> Data Cleansing</h3>
         </div>
-        {/*<!-- /.Page Title and Breadcrumbs -->*/}
-        {/*<!-- Page Content Area -->*/}
         <div className="main-content">
           <div class="row">
             <div class="col-md-12">
@@ -526,23 +382,17 @@ tableHead.addEventListener('click', function (e) {
                           </select>
                         </div>
                       </div>
-
                     </div>
                     <div class="col-md-6">
                       <div class="form-inline" >
                         <div class="form-group pull-right">
-                          <input type="text" id="search" className="form-control" placeholder="Search variables..."></input>
+                          <input type="text" id="search" className="form-control" placeholder="Search variables..." onKeyUp={this.searchTable.bind(this)}></input>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div className="table-responsive noSwipe xs-pb-10">
-                    <Scrollbars style={{
-                      height: 500
-                    }}>
-
-
-
+                    <Scrollbars style={{ height: 500 }}>
                       <table id="dctable" className="tablesorter table table-condensed table-hover table-bordered">
                         <thead>
                           <tr className="myHead">
@@ -552,11 +402,11 @@ tableHead.addEventListener('click', function (e) {
                                 <label for="myCheckAll"></label>
                               </div>
                             </th>
-                            <th><b>Variable name</b></th>
-                            <th><b>Data type</b></th>
-                            <th><b>No of unique values</b></th>
-                            <th ><b>No of missing values</b></th>
-                            <th ><b>No of outliers</b></th>
+                            <th onClick={this.sortTable.bind(this,1)}><b>Variable name</b></th>
+                            <th onClick={this.sortTable.bind(this,2)}><b>Data type</b></th>
+                            <th onClick={this.sortTable.bind(this,3)}><b>No of unique values</b></th>
+                            <th onClick={this.sortTable.bind(this,4)}><b>No of missing values</b></th>
+                            <th onClick={this.sortTable.bind(this,5)}><b>No of outliers</b></th>
                             <th className="hideSortImg"><b>Missing value treatment</b></th>
                             <th className="hideSortImg"><b>Outlier removal</b></th>
                           </tr>
@@ -570,8 +420,8 @@ tableHead.addEventListener('click', function (e) {
                 </div>
                 <div className="panel-body box-shadow">
                 <div class="buttonRow">
-                    <Button id="dataCleanBack" onClick={this.handleBack} bsStyle="primary"><i class="fa fa-angle-double-left"></i> Back</Button>
-                    <Button id="dataCleanProceed" onClick={this.proceedFeatureEngineering.bind(this)} bsStyle="primary" style={{float:"right"}}>Proceed <i class="fa fa-angle-double-right"></i></Button>
+                  <Button id="dataCleanBack" onClick={this.handleBack} bsStyle="primary"><i class="fa fa-angle-double-left"></i> Back</Button>
+                  <Button id="dataCleanProceed" onClick={this.proceedFeatureEngineering.bind(this)} bsStyle="primary" style={{float:"right"}}>Proceed <i class="fa fa-angle-double-right"></i></Button>
                 </div>
                   <div class="xs-p-10"></div>
                 </div>
@@ -579,9 +429,7 @@ tableHead.addEventListener('click', function (e) {
             </div>
           </div>
         </div>
-        {/*<!--End of Page Content Area -->*/}
       </div>
-      // <!-- /. Main Content ends with side-body -->
     );
   }
 }

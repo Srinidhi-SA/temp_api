@@ -11,33 +11,30 @@ import {
   saveTopLevelValuesAction,
 } from "../../actions/featureEngineeringActions";
 import { getRemovedVariableNames } from "../../helpers/helper.js"
-import { getDataSetPreview, checkAllAnalysisSelected } from "../../actions/dataActions";
+import { getDataSetPreview, getValueOfFromParam } from "../../actions/dataActions";
 import { Bins } from "./Bins";
 import { Levels } from "./Levels";
 import { Scrollbars } from 'react-custom-scrollbars';
 import { Transform } from "./Transform";
 import { statusMessages } from "../../helpers/helper";
+import { searchTable, sortTable } from "../../actions/dataCleansingActions";
 
 @connect((store) => {
   return {
-    login_response: store.login.login_response,
     dataPreview: store.datasets.dataPreview,
     datasets: store.datasets,
     binsOrLevelsShowModal: store.datasets.binsOrLevelsShowModal,
     transferColumnShowModal: store.datasets.transferColumnShowModal,
-    selectedBinsOrLevelsTab: store.datasets.selectedBinsOrLevelsTab,
     selectedItem: store.datasets.selectedItem,
     apps_regression_modelName: store.apps.apps_regression_modelName,
     currentAppDetails: store.apps.currentAppDetails,
     featureEngineering: store.datasets.featureEngineering,
-    selectedVariables: store.datasets.selectedVariables,
     convertUsingBin: store.datasets.convertUsingBin,
     numberOfBins: store.datasets.topLevelData.numberOfBins,
     editmodelFlag:store.datasets.editmodelFlag,
     modelEditconfig: store.datasets.modelEditconfig,
   };
 })
-
 
 export class FeatureEngineering extends React.Component {
   constructor(props) {
@@ -47,7 +44,6 @@ export class FeatureEngineering extends React.Component {
       filterElement:""
     };
     this.state.topLevelRadioButton = "false";
-    this.prevState = this.state;
     this.pickValue = this.pickValue.bind(this);
     this.clearBinsAndIntervals = this.clearBinsAndIntervals.bind(this);
     this.updateLevelsData = this.updateLevelsData.bind(this);
@@ -69,16 +65,16 @@ export class FeatureEngineering extends React.Component {
     };
     if(this.props.editmodelFlag){
       if(this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.overall_settings[0].selected){
-          let binningData = this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.overall_settings[0];
-          this.state.topLevelRadioButton = "true";
-          this.props.dispatch(saveTopLevelValuesAction(this.state.topLevelRadioButton, binningData.number_of_bins));
-        }
-        this.setBinsOnEdit();
-        this.setLevelOnEdit();
-        this.setTransformOnEdit();
+        let binningData = this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.overall_settings[0];
+        this.state.topLevelRadioButton = "true";
+        this.props.dispatch(saveTopLevelValuesAction(this.state.topLevelRadioButton, binningData.number_of_bins));
+      }
+      this.setBinsOnEdit();
+      this.setLevelOnEdit();
+      this.setTransformOnEdit();
     }
-    
   }
+
   setBinsOnEdit(){
     let colList = this.props.dataPreview.meta_data.uiMetaData.headersUI;
     let binsList= this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.column_wise_settings.level_creation_settings.operations;
@@ -103,6 +99,7 @@ export class FeatureEngineering extends React.Component {
       }
     }
   }
+
   setLevelOnEdit(){
     let colList = this.props.dataPreview.meta_data.uiMetaData.headersUI;
     let levelsList= this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.column_wise_settings.level_creation_settings.operations;
@@ -144,160 +141,150 @@ export class FeatureEngineering extends React.Component {
   setTransformOnEdit(){
     let colList = this.props.dataPreview.meta_data.uiMetaData.headersUI;
     let transList= this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.column_wise_settings.transformation_settings.operations;
-  //for measure
-      let dataToSave = [];
-      let mTransData1 ={replace_values_with:false,replace_values_with_input:"",replace_values_with_selected:""};
-      let mTransData2 ={feature_scaling:false,perform_standardization_select:""};
-      let mTransData3 ={variable_transformation:false,variable_transformation_select:""};
-      let transSlug = "";
+    //for measure
+    let dataToSave = [];
+    let mTransData1 ={replace_values_with:false,replace_values_with_input:"",replace_values_with_selected:""};
+    let mTransData2 ={feature_scaling:false,perform_standardization_select:""};
+    let mTransData3 ={variable_transformation:false,variable_transformation_select:""};
+    let transSlug = "";
 
-      if(transList.filter(i=>i.name === "replace_values_with" && i.selected).length != 0){
-        let transData = transList.filter(i=>i.name === "replace_values_with" && i.selected)[0].columns;
-        for(var i=0; i<transData.length; i++){
-          let list = colList.filter(j=>j.name===transData[i].name)
-          mTransData1 = transList.filter(i=>i.name === "replace_values_with" && i.selected)[0].columns[0];
-          mTransData1.replace_values_with=true;
-          transSlug = list[0].slug;
-        }
+    if(transList.filter(i=>i.name === "replace_values_with" && i.selected).length != 0){
+      let transData = transList.filter(i=>i.name === "replace_values_with" && i.selected)[0].columns;
+      for(var i=0; i<transData.length; i++){
+        let list = colList.filter(j=>j.name===transData[i].name)
+        mTransData1 = transList.filter(i=>i.name === "replace_values_with" && i.selected)[0].columns[0];
+        mTransData1.replace_values_with=true;
+        transSlug = list[0].slug;
       }
-      if(transList.filter(i=>i.name === "perform_standardization" && i.selected).length != 0) {
-        let transData = transList.filter(i=>i.name === "perform_standardization" && i.selected)[0].columns;
-        for(var i=0; i<transData.length; i++){
-          let list = colList.filter(j=>j.name===transData[i].name)
-          mTransData2 = transList.filter(i=>i.name === "perform_standardization" && i.selected)[0].columns[0];
-          mTransData2.feature_scaling=true;
-          transSlug = list[0].slug;
-        } 
-      }
-      if(transList.filter(i=>i.name === "variable_transformation" && i.selected).length != 0) {
-        let transData = transList.filter(i=>i.name === "variable_transformation" && i.selected)[0].columns;
-        for(var i=0; i<transData.length; i++){
-          let list = colList.filter(j=>j.name===transData[i].name)
-          mTransData3 = transList.filter(i=>i.name === "variable_transformation" && i.selected)[0].columns[0];
-          mTransData3.variable_transformation=true;
-          transSlug = list[0].slug;
-        } 
-      }
-      dataToSave.push({replace_values_with:mTransData1.replace_values_with,replace_values_with_input:mTransData1.replace_value,replace_values_with_selected:mTransData1.replace_by,
-          feature_scaling:mTransData2.feature_scaling,perform_standardization_select:mTransData2.standardization_type,
-          variable_transformation:mTransData3.variable_transformation,variable_transformation_select:mTransData3.transformation_type})
-      
-      if(transSlug != "") 
-        this.props.dispatch(saveBinLevelTransformationValuesAction(transSlug,"transformationData",dataToSave[0]));
+    }
+    if(transList.filter(i=>i.name === "perform_standardization" && i.selected).length != 0) {
+      let transData = transList.filter(i=>i.name === "perform_standardization" && i.selected)[0].columns;
+      for(var i=0; i<transData.length; i++){
+        let list = colList.filter(j=>j.name===transData[i].name)
+        mTransData2 = transList.filter(i=>i.name === "perform_standardization" && i.selected)[0].columns[0];
+        mTransData2.feature_scaling=true;
+        transSlug = list[0].slug;
+      } 
+    }
+    if(transList.filter(i=>i.name === "variable_transformation" && i.selected).length != 0) {
+      let transData = transList.filter(i=>i.name === "variable_transformation" && i.selected)[0].columns;
+      for(var i=0; i<transData.length; i++){
+        let list = colList.filter(j=>j.name===transData[i].name)
+        mTransData3 = transList.filter(i=>i.name === "variable_transformation" && i.selected)[0].columns[0];
+        mTransData3.variable_transformation=true;
+        transSlug = list[0].slug;
+      } 
+    }
+    dataToSave.push({replace_values_with:mTransData1.replace_values_with,replace_values_with_input:mTransData1.replace_value,replace_values_with_selected:mTransData1.replace_by,
+        feature_scaling:mTransData2.feature_scaling,perform_standardization_select:mTransData2.standardization_type,
+        variable_transformation:mTransData3.variable_transformation,variable_transformation_select:mTransData3.transformation_type})
     
-      //for dimension
-      let dataToSave1 = [];
-      let dimData1 ={encoding_dimensions:false,encoding_type:""};
-        let dimData2 ={return_character_count:false};
-        let dimData3 ={is_custom_string_in:false,is_custom_string_in_input:""};
-      let transSlug1 = "";
+    if(transSlug != "") 
+      this.props.dispatch(saveBinLevelTransformationValuesAction(transSlug,"transformationData",dataToSave[0]));
+  
+    //for dimension
+    let dataToSave1 = [];
+    let dimData1 ={encoding_dimensions:false,encoding_type:""};
+    let dimData2 ={return_character_count:false};
+    let dimData3 ={is_custom_string_in:false,is_custom_string_in_input:""};
+    let transSlug1 = "";
 
-      if(transList.filter(i=>i.name === "encoding_dimensions" && i.selected).length != 0) {
-        let transData = transList.filter(i=>i.name === "encoding_dimensions" && i.selected)[0].columns;
-        for(var i=0; i<transData.length; i++){
-          let list = colList.filter(j=>j.name===transData[i].name)
-          dimData1 = transList.filter(i=>i.name === "encoding_dimensions" && i.selected)[0].columns[0];
-          dimData1.encoding_dimensions=true;
-          transSlug1 = list[0].slug;
-        }
+    if(transList.filter(i=>i.name === "encoding_dimensions" && i.selected).length != 0) {
+      let transData = transList.filter(i=>i.name === "encoding_dimensions" && i.selected)[0].columns;
+      for(var i=0; i<transData.length; i++){
+        let list = colList.filter(j=>j.name===transData[i].name)
+        dimData1 = transList.filter(i=>i.name === "encoding_dimensions" && i.selected)[0].columns[0];
+        dimData1.encoding_dimensions=true;
+        transSlug1 = list[0].slug;
       }
-      if(transList.filter(i=>i.name === "return_character_count" && i.selected).length != 0) {
-        let transData = transList.filter(i=>i.name === "return_character_count" && i.selected)[0].columns;
-        for(var i=0; i<transData.length; i++){
-          let list = colList.filter(j=>j.name===transData[i].name)
-          dimData2 = transList.filter(i=>i.name === "return_character_count" && i.selected)[0].columns[0];
-          dimData2.return_character_count=true;
-          transSlug1 = list[0].slug;
-        } 
-      }
-      if(transList.filter(i=>i.name === "is_custom_string_in" && i.selected).length != 0) {
-        let transData = transList.filter(i=>i.name === "is_custom_string_in" && i.selected)[0].columns;
-        for(var i=0; i<transData.length; i++){
-          let list = colList.filter(j=>j.name===transData[i].name)
-          dimData3 = transList.filter(i=>i.name === "is_custom_string_in" && i.selected)[0].columns[0];
-          dimData3.is_custom_string_in=true;
-          transSlug1 = list[0].slug;
-        } 
-      }
-      dataToSave1.push({encoding_dimensions:dimData1.encoding_dimensions,encoding_type:dimData1.encoding_type,
-        return_character_count:dimData2.return_character_count,
-        is_custom_string_in:dimData3.is_custom_string_in,is_custom_string_in_input:dimData3.user_given_string})
-        
-      if(transSlug1 != "")
-        this.props.dispatch(saveBinLevelTransformationValuesAction(transSlug1,"transformationData",dataToSave1[0]));
-    
-      //For datetime
-      let dataToSave2 = [];
-        let dtData1 ={is_date_weekend:false};
-        let dtData2 ={extract_time_feature:false,extract_time_feature_select:""};
-        let dtData3 ={time_since:false,time_since_input:""};
-        let transSlug2 = "";
-
-      if(transList.filter(i=>i.name === "is_date_weekend" && i.selected).length != 0) {
-        let transData = transList.filter(i=>i.name === "is_date_weekend" && i.selected)[0].columns;
-        for(var i=0; i<transData.length; i++){
-          let list = colList.filter(j=>j.name===transData[i].name)
-          dtData1 = transList.filter(i=>i.name === "is_date_weekend" && i.selected)[0].columns[0];
-          dtData1.is_date_weekend=true;
-          transSlug2 = list[0].slug;
-        }
-      }
-      if(transList.filter(i=>i.name === "extract_time_feature" && i.selected).length != 0) {
-        let transData = transList.filter(i=>i.name === "extract_time_feature" && i.selected)[0].columns;
-        for(var i=0; i<transData.length; i++){
-          let list = colList.filter(j=>j.name===transData[i].name)
-          dtData2 = transList.filter(i=>i.name === "extract_time_feature" && i.selected)[0].columns[0];
-          dtData2.extract_time_feature=true;
-          transSlug2 = list[0].slug;
-        } 
-      }
-      if(transList.filter(i=>i.name === "time_since" && i.selected).length != 0) {
-        let transData = transList.filter(i=>i.name === "time_since" && i.selected)[0].columns;
-        for(var i=0; i<transData.length; i++){
-          let list = colList.filter(j=>j.name===transData[i].name)
-          dtData3 = transList.filter(i=>i.name === "time_since" && i.selected)[0].columns[0];
-          dtData3.time_since_is_true=true;
-          transSlug2 = list[0].slug;
-          dtData3.time_since_input = transData[0].time_since.split("/").reverse().join("-")
-        } 
-      }
-      dataToSave2.push({is_date_weekend:dtData1.is_date_weekend,
-        extract_time_feature:dtData2.extract_time_feature, extract_time_feature_select:dtData2.time_feature_to_extract,
-        time_since:dtData3.time_since_is_true, time_since_input:dtData3.time_since_input})
+    }
+    if(transList.filter(i=>i.name === "return_character_count" && i.selected).length != 0) {
+      let transData = transList.filter(i=>i.name === "return_character_count" && i.selected)[0].columns;
+      for(var i=0; i<transData.length; i++){
+        let list = colList.filter(j=>j.name===transData[i].name)
+        dimData2 = transList.filter(i=>i.name === "return_character_count" && i.selected)[0].columns[0];
+        dimData2.return_character_count=true;
+        transSlug1 = list[0].slug;
+      } 
+    }
+    if(transList.filter(i=>i.name === "is_custom_string_in" && i.selected).length != 0) {
+      let transData = transList.filter(i=>i.name === "is_custom_string_in" && i.selected)[0].columns;
+      for(var i=0; i<transData.length; i++){
+        let list = colList.filter(j=>j.name===transData[i].name)
+        dimData3 = transList.filter(i=>i.name === "is_custom_string_in" && i.selected)[0].columns[0];
+        dimData3.is_custom_string_in=true;
+        transSlug1 = list[0].slug;
+      } 
+    }
+    dataToSave1.push({encoding_dimensions:dimData1.encoding_dimensions,encoding_type:dimData1.encoding_type,
+      return_character_count:dimData2.return_character_count,
+      is_custom_string_in:dimData3.is_custom_string_in,is_custom_string_in_input:dimData3.user_given_string})
       
-      if(transSlug2 != "")
-        this.props.dispatch(saveBinLevelTransformationValuesAction(transSlug2,"transformationData",dataToSave2[0]));
+    if(transSlug1 != "")
+      this.props.dispatch(saveBinLevelTransformationValuesAction(transSlug1,"transformationData",dataToSave1[0]));
+  
+    //For datetime
+    let dataToSave2 = [];
+      let dtData1 ={is_date_weekend:false};
+      let dtData2 ={extract_time_feature:false,extract_time_feature_select:""};
+      let dtData3 ={time_since:false,time_since_input:""};
+      let transSlug2 = "";
+
+    if(transList.filter(i=>i.name === "is_date_weekend" && i.selected).length != 0) {
+      let transData = transList.filter(i=>i.name === "is_date_weekend" && i.selected)[0].columns;
+      for(var i=0; i<transData.length; i++){
+        let list = colList.filter(j=>j.name===transData[i].name)
+        dtData1 = transList.filter(i=>i.name === "is_date_weekend" && i.selected)[0].columns[0];
+        dtData1.is_date_weekend=true;
+        transSlug2 = list[0].slug;
+      }
+    }
+    if(transList.filter(i=>i.name === "extract_time_feature" && i.selected).length != 0) {
+      let transData = transList.filter(i=>i.name === "extract_time_feature" && i.selected)[0].columns;
+      for(var i=0; i<transData.length; i++){
+        let list = colList.filter(j=>j.name===transData[i].name)
+        dtData2 = transList.filter(i=>i.name === "extract_time_feature" && i.selected)[0].columns[0];
+        dtData2.extract_time_feature=true;
+        transSlug2 = list[0].slug;
+      } 
+    }
+    if(transList.filter(i=>i.name === "time_since" && i.selected).length != 0) {
+      let transData = transList.filter(i=>i.name === "time_since" && i.selected)[0].columns;
+      for(var i=0; i<transData.length; i++){
+        let list = colList.filter(j=>j.name===transData[i].name)
+        dtData3 = transList.filter(i=>i.name === "time_since" && i.selected)[0].columns[0];
+        dtData3.time_since_is_true=true;
+        transSlug2 = list[0].slug;
+        dtData3.time_since_input = transData[0].time_since.split("/").reverse().join("-")
+      } 
+    }
+    dataToSave2.push({is_date_weekend:dtData1.is_date_weekend,
+      extract_time_feature:dtData2.extract_time_feature, extract_time_feature_select:dtData2.time_feature_to_extract,
+      time_since:dtData3.time_since_is_true, time_since_input:dtData3.time_since_input})
+    
+    if(transSlug2 != "")
+      this.props.dispatch(saveBinLevelTransformationValuesAction(transSlug2,"transformationData",dataToSave2[0]));
   }
 
   componentDidMount() {
-
     var selectElements = document.getElementsByTagName("select");
     var i,j;
-  for (i = 0; i < selectElements.length; i++) {
-    for(j=0;j<selectElements[i].options.length;j++){
-      if(selectElements[i].options[j].selected)
-       selectElements[i].options[j].style.display = 'none';
-      else
-       selectElements[i].options[j].style.display = 'inline';
+    for (i = 0; i < selectElements.length; i++) {
+      for(j=0;j<selectElements[i].options.length;j++){
+        if(selectElements[i].options[j].selected)
+         selectElements[i].options[j].style.display = 'none';
+        else
+          selectElements[i].options[j].style.display = 'inline';
+      }
     }
-  }
-    const from = this.getValueOfFromParam();
+    const from = getValueOfFromParam();
     if (from === 'algorithm_selection') {
+    }else if(!this.props.editmodelFlag){
+      this.props.dispatch(saveTopLevelValuesAction(this.props.convertUsingBin,0));
     }
-    else if(!this.props.editmodelFlag){
-    this.props.dispatch(saveTopLevelValuesAction(this.props.convertUsingBin,0));
   }
-}
 
-  getValueOfFromParam() {
-    if(this.props.location === undefined){
-    }
-   else{
-    const params = new URLSearchParams(this.props.location.search);
-    return params.get('from');
-}}
-
-  clearBinsAndIntervals(event) {
+  clearBinsAndIntervals() {
     if (this.state[this.props.selectedItem.slug] != undefined && this.state[this.props.selectedItem.slug]["binData"] != undefined) {
       this.state[this.props.selectedItem.slug]["binData"]["numberofbins"] = ""
       this.state[this.props.selectedItem.slug]["binData"]["specifyintervals"] = ""
@@ -645,7 +632,6 @@ export class FeatureEngineering extends React.Component {
     return ((this.state.topLevelRadioButton == "true" && item.columnType == "measure") || (item.columnType != item.actualColumnType))
   }
 
-
   handleBack=()=>{
     const appId = this.props.match.params.AppId;
     const slug = this.props.match.params.slug;
@@ -673,122 +659,18 @@ export class FeatureEngineering extends React.Component {
        select.options[i].style.display='inline'
     }
   }
-
-  addRow() {
-  var htmlContent = '<tr class="noData"><td class="searchErr" colspan="4">"No data found for your selection"</td></tr>'
-  var tableRef = document.getElementById('fetable').getElementsByTagName('tbody')[0];
-  var newRow = tableRef.insertRow(tableRef.rows.length);
-  newRow.innerHTML = htmlContent;
+  searchTable() {
+    searchTable("fetable",0,4);
   }
-
- searchTable() {
-  var  filter, table, tr, td, i, txtValue, matchFound=false, hasError=false;
-  filter = document.getElementById("search").value.toUpperCase();
-  table = document.getElementById("fetable");
-  tr = table.getElementsByTagName("tr");
-
-  if(filter!=""){   // if value is not empty calling for loop and handle table rows using style.display
-  for (i = 1; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[0];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        if(!tr[i].firstChild.innerText.includes("No data found")){
-        tr[i].style.display = "none";
-        }
-      }
-    }
-  }
-  }else{ //value is empty show all the rows by making dispaly="" for all the rows
-    for (i = 0; i < tr.length; i++) {
-      tr[i].style.display = "";
-  } 
-  }
-
-  for(i=1;i<=tr.length-1;i++){  //check weather the search result found and has an error row
-    if(tr[i].style.display=="" && !tr[i].firstChild.innerText.includes("No data found")){
-    matchFound=true
-    }
-    if(tr[i].firstChild.innerText.includes("No data found")){
-    hasError=true
-    }
-  }
-
-if(!matchFound &&!hasError){ //using above flags, add and delete the error message row from the table 
-this.addRow()
-}
-else if(hasError && matchFound){
-  if(tr[tr.length-1].firstChild.innerText.includes("No data found"))
-document.getElementById("fetable").deleteRow(tr.length-1)
-  
-}
-else{
-  if(matchFound && tr[tr.length-1].firstChild.innerText.includes("No data found") && !hasError)
-  document.getElementById("fetable").deleteRow(tr.length-1)
-}
-}
 
   sortTable(n) {
-    var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-    table = document.getElementById("fetable");
-    switching = true;
-    dir = "asc"; 
-    while (switching) {
-      switching = false;
-      rows = table.rows;
-      for (i = 1; i < (rows.length - 1); i++) {
-        shouldSwitch = false;
-        x = rows[i].getElementsByTagName("TD")[n];
-        y = rows[i + 1].getElementsByTagName("TD")[n];
-
-        if (dir == "asc") {
-          if (x.innerText.toLowerCase() > y.innerText.toLowerCase()) {
-            shouldSwitch = true;
-            break;
-          }
-        } else if (dir == "desc") {
-          if (x.innerText.toLowerCase() < y.innerText.toLowerCase()) {
-            shouldSwitch = true;
-            break;
-          }
-        }
-      }
-      if (shouldSwitch) {
-        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-        switching = true;
-        switchcount ++; 
-      } else {
-        if (switchcount == 0 && dir == "asc") {
-          dir = "desc";
-          switching = true;
-        }
-      }
-    }
-    if(dir=="asc"){
-      rows[0].childNodes[n].classList.add("asc")
-      rows[0].childNodes[n].classList.remove("desc")
-    }else{
-      rows[0].childNodes[n].classList.add("desc")
-      rows[0].childNodes[n].classList.remove("asc")
-    }
-
+    sortTable(n,"fetable")
   }
 
   render() {
-    var feHtml = "";
-    var SV = "";
-    var binsOrLevelsPopup = "";
-    var transformColumnPopup = "";
-    let typeofBinningSelectBox = null;
-    var binOrLevels = "";
-    var binOrLevelData = "";
-    var values = "";
+    var feHtml = "", binsOrLevelsPopup = "", transformColumnPopup = "", binOrLevels = "", binOrLevelData = "";
     var removedVariables = getRemovedVariableNames(this.props.datasets);
-    var numberOfSelectedMeasures = 0;
-    var numberOfSelectedDimensions = 0;
-    var data = this.props.datasets.selectedVariables;
+    var numberOfSelectedMeasures = 0, numberOfSelectedDimensions = 0;
 
     if(this.props.dataPreview != null)
       var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true) && (i.ignoreSuggestionPreviewFlag === true))).map(j => j.name);
@@ -798,25 +680,13 @@ else{
       if (!this.props.datasets.selectedVariables[key])
         unselectedvar.push(key);
     }
-    // var result = {};
-
-    // for(var key in data)
-    // {
-    //     if(data.hasOwnProperty(key))
-    //     {
-    //         result.add({
-    //             key: key,
-    //             value: data[key]
-    //         });
-    //     }
-    // }
     if (this.props.dataPreview != null) {
       feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item, key) => {
         if (removedVariables.indexOf(item.name) != -1 || unselectedvar.indexOf(item.slug) != -1 || considerItems.indexOf(item.name) != -1){
-        return null
+          return null
         }else{
           if (item.columnType == "measure")
-          numberOfSelectedMeasures += 1;
+            numberOfSelectedMeasures += 1;
         else
           numberOfSelectedDimensions += 1;
         }
@@ -835,10 +705,10 @@ else{
     if (this.props.selectedItem.columnType == "measure") {
       binOrLevels = <Bins parentPickValue={this.pickValue} clearBinsAndIntervals={this.clearBinsAndIntervals} />
       binOrLevelData = "binData";
-    } else if (this.props.selectedItem.columnType == "dimension") {
+    }else if (this.props.selectedItem.columnType == "dimension") {
       binOrLevels = <Levels parentPickValue={this.pickValue} parentUpdateLevelsData={this.updateLevelsData} levelsData={this.getLevelsData()} />
       binOrLevelData = "levelData";
-    } else {
+    }else {
       binOrLevels = <Levels parentPickValue={this.pickValue} parentUpdateLevelsData={this.updateLevelsData} levelsData={this.getLevelsData()} />
       binOrLevelData = "levelData";
     }
@@ -883,15 +753,10 @@ else{
     )
 
     return (
-      // <!-- Main Content starts with side-body -->
-      <div>
         <div className="side-body">
-          {/* <!-- Page Title and Breadcrumbs --> */}
           <div class="page-head">
             <h3 class="xs-mt-0 xs-mb-0 text-capitalize">Feature Engineering</h3>
           </div>
-          {/*<!-- Page Content Area -->*/}
-          {/*<!-- /.Page Title and Breadcrumbs -->*/}
           {binsOrLevelsPopup}
           {transformColumnPopup}
           <div className="main-content">
@@ -948,10 +813,8 @@ else{
                         </div>
                       </div>
                     </div>
-  <div className="table-responsive noSwipe xs-pb-5">
-                      <Scrollbars style={{
-                        height: 500
-                      }}>
+                    <div className="table-responsive noSwipe xs-pb-5">
+                      <Scrollbars style={{height: 500}}>
                         <table id="fetable" className="table table-striped table-bordered break-if-longText">
                           <thead>
                             <tr key="trKey" className="myHead">
@@ -961,7 +824,7 @@ else{
                               <th></th>
                             </tr>
                           </thead>                    
-                    <tbody className="no-border-x">{feHtml.filter(i=>i!=null).length>1 ? feHtml: (<tr><td className='text-center' colSpan={4}>"No data found for your selection"</td></tr>)}</tbody>
+                          <tbody className="no-border-x">{(feHtml!="" && feHtml.filter(i=>i!=null).length>=1) ? feHtml: (<tr><td className='text-center' colSpan={4}>"No data found for your selection"</td></tr>)}</tbody>
                         </table>
                       </Scrollbars>
                     </div>
@@ -975,15 +838,9 @@ else{
                   </div>
                 </div>
               </div>
-              {/* <!--End of Page Content Area --> */}
             </div>
           </div>
-          {/* <!-- Main Content ends with side-body --> */}
         </div>
-
-
-      </div>
-
     );
   }
 

@@ -2,15 +2,11 @@ import React from "react";
 import {connect} from "react-redux";
 import {Redirect} from "react-router";
 import store from "../../store";
-import {Button} from "react-bootstrap";
 import {PyLayer} from "./PyLayer";
-import { updateAlgorithmData, setPyTorchSubParams, setPyTorchLayer, pytorchValidateFlag, clearPyTorchValues, setIdLayer } from "../../actions/appActions";
+import { updateAlgorithmData, setPyTorchSubParams, setPyTorchLayer, pytorchValidateFlag, setIdLayer } from "../../actions/appActions";
 import {statusMessages,FocusSelectErrorFields,FocusInputErrorFields} from  "../../helpers/helper"
 @connect((store)=>{
     return{
-        algorithmData:store.apps.regression_algorithm_data,
-        manualAlgorithmData:store.apps.regression_algorithm_data_manual,
-        dataPreview:store.datasets.dataPreview,
         datasetRow: store.datasets.dataPreview.meta_data.uiMetaData.metaDataUI[0].value,
         pyTorchSubParams:store.apps.pyTorchSubParams,
         pyTorchLayer:store.apps.pyTorchLayer,
@@ -252,6 +248,7 @@ export class PyTorch extends React.Component {
         let name = data.name;
         let val = e.target.value;
         let subParamArry = this.props.pyTorchSubParams;
+        let rangeNames = ["eps", "rho", "lr", "lr_decay", "lambd", "alpha", "t0", "tolerance_grad", "tolerance_change", "momentum", "dampening"] 
         if(name === "blank"){
             if(val < 1 || val > 100){
                 this.props.dispatch(pytorchValidateFlag(false));
@@ -289,26 +286,7 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Please enter only two values"
             e.target.classList.add('regParamFocus')
-
-        }
-        else if(name === "ignore_index" && (val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
-            e.target.classList.add('regParamFocus')
-        }
-        else if(name === "eps" && (val>1 || val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
-            e.target.classList.add('regParamFocus')
-
-        }
-        else if(name === "rho" && (val>1 || val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
-            e.target.classList.add('regParamFocus')
-
-        }
-        else if(name === "lr" && (val>1 || val<0 || val === "")){
+        }else if( rangeNames.includes(name) && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
             e.target.classList.add('regParamFocus')
@@ -320,69 +298,9 @@ export class PyTorch extends React.Component {
             e.target.classList.add('regParamFocus')
 
         }
-        else if(name === "lr_decay" && (val>1 || val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
-            e.target.classList.add('regParamFocus')
-
-        }
-        else if(name === "lambd" && (val>1 || val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
-            e.target.classList.add('regParamFocus')
-
-        }
-        else if(name === "alpha" && (val>1 || val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
-            e.target.classList.add('regParamFocus')
-
-        }
-        else if(name === "t0" && (val>1 || val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
-            e.target.classList.add('regParamFocus')
-
-        }
-        else if(name === "max_iter" && (val<0 || val === "")){
+        else if((name === "ignore_index" || name === "max_iter" || name === "max_eval" || name === "history_size") && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
-            e.target.classList.add('regParamFocus')
-
-        }
-        else if(name === "max_eval" && (val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
-            e.target.classList.add('regParamFocus')
-
-        }
-        else if(name === "tolerance_grad" && (val>1 || val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
-            e.target.classList.add('regParamFocus')
-
-        }
-        else if(name === "tolerance_change" && (val>1 || val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
-            e.target.classList.add('regParamFocus')
-
-        }
-        else if(name === "history_size" && (val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
-            e.target.classList.add('regParamFocus')
-
-        }
-        else if(name === "momentum" && (val>1 || val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
-            e.target.classList.add('regParamFocus')
-
-        }
-        else if(name === "dampening" && (val>1 || val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
             e.target.classList.add('regParamFocus')
 
         }
@@ -390,7 +308,6 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Decimals not allowed"
             e.target.classList.add('regParamFocus')
-            
         }
         else if(data.name === "nesterov" && val === "True" && ($(".dampening_pt")[0].value != 0) && ($(".momentum_pt")[0].value <= 0)){
             document.getElementsByClassName("momentum_pt")[0].nextSibling.innerText = "Value should be greater than zero"
@@ -426,17 +343,10 @@ export class PyTorch extends React.Component {
             document.getElementsByClassName("dampening_pt")[0].classList.add('regParamFocus')
         
         }
-        else if(name === "l1_decay" && (val>1 || val<0 || val === "")){
+        else if((name === "l1_decay" || name === "l2_decay") && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
             e.target.classList.add('regParamFocus')
-
-        }
-        else if(name === "l2_decay" && (val>1 || val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
-            e.target.classList.add('regParamFocus')
-
         }
         else if(name === "betas"){
             let selectedPar = subParamArry["optimizer"];

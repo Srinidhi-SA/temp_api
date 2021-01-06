@@ -50,20 +50,17 @@ export function getDataList(pageNo) {
 }
 
 function fetchDataList(pageNo,token) {
-
 	let search_element = store.getState().datasets.data_search_element;
 	let data_sorton =  store.getState().datasets.data_sorton;
-	let data_sorttype = store.getState().datasets.data_sorttype;
+    let data_sorttype = store.getState().datasets.data_sorttype;
 	if(data_sorttype=='asc')
 		data_sorttype = ""
-			else if(data_sorttype=='desc')
-				data_sorttype="-"
-							return fetch(API+'/api/datasets/?name='+search_element+'&sorted_by='+data_sorton+'&ordering='+data_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
-								method: 'get',
-								headers: getHeader(token)
-							}).then( response => Promise.all([response, response.json()]));
-                       
-
+    else if(data_sorttype=='desc')
+        data_sorttype="-"
+    return fetch(API+'/api/datasets/?name='+search_element+'&sorted_by='+data_sorton+'&ordering='+data_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+        method: 'get',
+        headers: getHeader(token)
+    }).then( response => Promise.all([response, response.json()]));
 }
 
 function fetchDataError(json) {
@@ -140,7 +137,7 @@ export function getDataSetPreview(slug,interval) {
                     setTimeout(function() {
                     window.location.pathname="/signals";
                     },2000);
-                }else if(Object.keys(json.meta_data.scriptMetaData).length === 0 || json.meta_data.uiMetaData === null || json.meta_data.uiMetaData.columnDataUI===undefined){
+                }else if(json.status==="SUCCESS" && (Object.keys(json.meta_data.scriptMetaData).length === 0 || json.meta_data.uiMetaData === null || json.meta_data.uiMetaData.columnDataUI===undefined)){
                     bootbox.dialog({
                         message:"Sorry, Unable to fetch data preview",
                         buttons: {
@@ -1037,7 +1034,7 @@ function renameDatasetAPI(slug,newName){
     }).then( response => Promise.all([response, response.json()]));
 }
 
-export function storeSearchElement(search_element){
+export function storeDataSearchElement(search_element){
     return {
         type: "SEARCH_DATA",
         search_element
@@ -1045,7 +1042,7 @@ export function storeSearchElement(search_element){
 }
 
 
-export function storeSortElements(sorton,sorttype){
+export function storeDataSortElements(sorton,sorttype){
     return {
         type: "SORT_DATA",
         sorton,
@@ -1954,5 +1951,13 @@ export function selectAllDimValues(flag){
 export function selectDimValues(val,flag){
     return{
         type:"SELECT_DIM_VAL",val,flag
+    }
+}
+export function  getValueOfFromParam() {
+    if(window.location === undefined){
+
+    }else{
+      const params = new URLSearchParams(window.location.search);
+      return params.get('from');
     }
 }

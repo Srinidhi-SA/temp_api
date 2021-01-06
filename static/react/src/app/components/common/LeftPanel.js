@@ -1,9 +1,9 @@
 import React from "react";
 import {NavLink, withRouter} from "react-router-dom";
 import {connect} from "react-redux";
-import {updateAnalystModeSelectedFlag} from "../../actions/appActions"
-import {hideDataPreview, getDataList} from "../../actions/dataActions";
-import {getList,storeSearchElement,emptySignalAnalysis} from "../../actions/signalActions";
+import {appsStoreSearchEle, appsStoreSortElements, clearAppsList, getAppsList, updateAnalystModeSelectedFlag, updateAppsFilterList} from "../../actions/appActions"
+import {hideDataPreview, getDataList,storeDataSearchElement,storeDataSortElements, clearDataList} from "../../actions/dataActions";
+import {getList,storeSearchElement,emptySignalAnalysis, clearSignalList, storeSortElements} from "../../actions/signalActions";
 import {getUserDetailsOrRestart} from "../../helpers/helper";
 import {APPS_ALLOWED,ENABLE_KYLO_UI} from "../../helpers/env.js";
 import ReactNotifications from 'react-browser-notifications';
@@ -23,18 +23,36 @@ class LeftPanel extends React.Component {
     if(this.props.location.pathname.indexOf("/apps-") >= 0)
     $('.navbar-nav')[0].childNodes[1].childNodes[0].className = " sdb sdb_app active";
   }
- 
-  hideDataPrev(e) {
+  changeToSignalTab(){
+    this.hideDataPrev()
+    this.props.dispatch(storeSearchElement(""))
+    this.props.dispatch(storeSortElements(null,null));
+    this.props.dispatch(clearSignalList())
+    this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
+  }
+  changeToDataTab(){
+    this.hideDataPrev()
+    this.props.dispatch(storeDataSearchElement(""));
+    this.props.dispatch(storeDataSortElements("",""));
+    this.props.dispatch(clearDataList());
+    this.props.dispatch(getDataList(1));
+  }
+  changeToAppsTab(){
+    this.hideDataPrev()
+    this.props.dispatch(appsStoreSearchEle(""));
+    this.props.dispatch(appsStoreSortElements("",""));
+    this.props.dispatch(updateAppsFilterList([]));
+    this.props.dispatch(clearAppsList());
+    this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken,1))
+  }
+  hideDataPrev(){
     this.props.dispatch(updateAnalystModeSelectedFlag(false));
     this.props.dispatch(hideDataPreview());
     this.props.dispatch(emptySignalAnalysis());
-    this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
-    this.props.dispatch(getDataList(1));
   }
   showNotifications= () => {
     if(this.n.supported()) this.n.show();
   }
-
   handleClick =(event)=> {
     window.focus()
     this.n.close(event.target.tag);
@@ -43,73 +61,49 @@ class LeftPanel extends React.Component {
     let notifyBody= this.props.apps_regression_modelName + " model created successfully."
     let view_data_permission=getUserDetailsOrRestart.get().view_data_permission
     let view_signal_permission = getUserDetailsOrRestart.get().view_signal_permission
-    let view_trainer_permission = getUserDetailsOrRestart.get().view_trainer_permission
-    let view_score_permission = getUserDetailsOrRestart.get().view_score_permission
-    let enable_kylo = ENABLE_KYLO_UI
+    let enable_kylo = ENABLE_KYLO_UI;
+    let apps_allowed = APPS_ALLOWED;
     return (
       <div>
-        <div>
-        <ReactNotifications
-              onRef={ref => (this.n = ref)}
-			        title="mAdvisor"
-			        body= {notifyBody}
-			        icon= "devices-logo.png"
-			        tag="abcdef"
-			        onClick={event => this.handleClick(event)}
-		        />
-		        <button className="notifyBtn noDisplay" onClick={this.showNotifications}>Notify Me!</button>
-         
+        <ReactNotifications onRef={ref => (this.n = ref)} title="mAdvisor" body= {notifyBody} icon= "devices-logo.png" tag="abcdef" onClick={event => this.handleClick(event)} />
+        <button className="notifyBtn noDisplay" onClick={this.showNotifications}>Notify Me!</button>
           <div className="side-menu collapse navbar-collapse" id="side-menu">
             <div className="side-menu-container">
               <ul className="nav navbar-nav">
-              {(view_signal_permission=="true")?
-                <li>
-                  <NavLink id="signalTab" onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]signal/.test(location.pathname)} className="sdb" to="/signals">
-                    <i className="fa fa-podcast fa-2x" aria-hidden="true"></i><br />
-                    Signal</NavLink>
-                </li>:<li className="notAllowed" title="Access Denied">
-                  <NavLink id="signalTab" className="sdb sdb_signal deactivate" to="/signals">
-                    <span></span>
-                    Signal</NavLink>
-                </li>}
-                {(APPS_ALLOWED==true)?
-                <li>
-                  <NavLink id="appsTab" onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]apps/.test(location.pathname)} className=" sdb" to="/apps">
-                     <i className="fa fa-cubes fa-2x" aria-hidden="true"></i><br />
-                    Apps</NavLink>
-                </li>:""}
-                {(view_data_permission=="true")?
-                <li>
-                  <NavLink id="dataTab" onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb" to="/data">
-                    <i className="fa fa-database fa-2x" aria-hidden="true"></i><br />
-                    Data</NavLink>
-                </li>:<li className="notAllowed" title="Access Denied">
-                  <NavLink id="dataTab" className="sdb sdb_data deactivate" to="/data">
-                    <span></span>
-                    Data</NavLink>
-                </li>}
-              
-                  {(enable_kylo==true||enable_kylo=="True"||enable_kylo=="true")?<li>
-                    <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]datamgmt/.test(location.pathname)} className=" sdb" to="/datamgmt">
-                      <i className="fa fa-folder-open fa-2x" aria-hidden="true"></i><br />
-                      Data<br />manage</NavLink>
-                  </li>:<div/>}
-
-                
-                 <li>
-                  <NavLink onClick={this.hideDataPrev.bind(this)} target="_blank" activeClassName="active" className="sdb" to="/static/userManual/UserManual.html">
-                    <i className="fa fa-question-circle fa-2x" aria-hidden="true"></i><br />
-                    Help</NavLink>
+                <li className={(view_signal_permission=="true")?"":"notAllowed"} title={(view_signal_permission=="true")?"":"Access Denied"}>
+                  <NavLink id="signalTab" onClick={this.changeToSignalTab.bind(this)} to="/signals"
+                    isActive={(match,location) => /^[/]signal/.test(location.pathname)} className={(view_signal_permission=="true")?"sdb":"sdb sdb_signal deactivate"} >
+                    <i className="fa fa-podcast fa-2x" aria-hidden="true"></i><br />Signal
+                  </NavLink>
                 </li>
-
-
+                <li>
+                  <NavLink id="appsTab" onClick={this.changeToAppsTab.bind(this)} to="/apps"
+                    isActive={(match,location) => /^[/]apps/.test(location.pathname)} className={(apps_allowed==true)?" sdb":""} >
+                    <i className="fa fa-cubes fa-2x" aria-hidden="true"></i><br/>Apps
+                  </NavLink>
+                </li>
+                <li className={(view_data_permission=="true")?"":"notAllowed"}>
+                  <NavLink id="dataTab" onClick={this.changeToDataTab.bind(this)} to="/data"
+                    activeClassName={(view_data_permission=="true")?"active":false} className={(view_data_permission=="true")?"sdb":"sdb sdb_data deactivate"} >
+                    <i className="fa fa-database fa-2x" aria-hidden="true"></i><br />Data
+                  </NavLink>
+                </li>
+                {(enable_kylo==true||enable_kylo=="True"||enable_kylo=="true")?
+                  <li>
+                    <NavLink onClick={this.hideDataPrev.bind(this)} isActive={(match,location) => /^[/]datamgmt/.test(location.pathname)} className=" sdb" to="/datamgmt">
+                      <i className="fa fa-folder-open fa-2x" aria-hidden="true"></i><br />Data<br />manage
+                    </NavLink>
+                  </li>:<div/>
+                }                
+                <li>
+                  <NavLink onClick={this.hideDataPrev.bind(this)} target="_blank" activeClassName="active" className="sdb" to="/static/userManual/UserManual.html">
+                    <i className="fa fa-question-circle fa-2x" aria-hidden="true"></i><br />Help
+                  </NavLink>
+                </li>
               </ul>
             </div>
           </div>
-        </div>
-
       </div>
-
     );
   }
 }

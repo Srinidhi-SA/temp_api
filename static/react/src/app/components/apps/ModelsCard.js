@@ -188,7 +188,9 @@ import {getAppsModelList,updateModelSlug,
               
         }
         componentWillUnmount(){
-            this.props.dispatch(clearModelList());
-            this.props.dispatch(clearModelSummary());
+            if(!store.getState().datasets.paginationFlag){
+                this.props.dispatch(clearModelList());
+                this.props.dispatch(clearModelSummary());
+            }
         }
     }

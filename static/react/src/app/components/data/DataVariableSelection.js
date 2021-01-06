@@ -4,50 +4,48 @@ import { connect } from "react-redux";
 import { Popover, OverlayTrigger } from "react-bootstrap";
 import store from "../../store";
 import $ from "jquery";
-
-import {updateSelectedVariables, resetSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,updateVariableSelectionArray,getTotalVariablesSelected,disableAdvancedAnalysisElements, updateSelectAllAnlysis, selectAllAnalysisList, setDefaultTimeDimensionVariable,variableSlectionBack} from "../../actions/dataActions";
+import {
+  updateSelectedVariables, 
+  resetSelectedVariables,
+  updateDatasetVariables,
+  handleDVSearch,
+  handelSort,
+  handleSelectAll,
+  deselectAllVariablesDataPrev,
+  makeAllVariablesTrueOrFalse,
+  updateVariableSelectionArray,
+  getTotalVariablesSelected,
+  selectAllAnalysisList,
+  setDefaultTimeDimensionVariable,
+  getValueOfFromParam
+} from "../../actions/dataActions";
 import {resetSelectedTargetVariable} from "../../actions/signalActions";
-
-
 @connect(( store ) => {
-    return {
-        login_response: store.login.login_response, dataPreview: store.datasets.dataPreview,
-        selectedVariablesCount: store.datasets.selectedVariablesCount,
-        selectedMeasures: store.datasets.selectedMeasures,
-        selectedDimensions: store.datasets.selectedDimensions,
-        selectedTimeDimensions: store.datasets.selectedTimeDimensions,
-        dataSetMeasures:store.datasets.dataSetMeasures,
-        dataSetDimensions:store.datasets.dataSetDimensions,
-        dataSetTimeDimensions:store.datasets.dataSetTimeDimensions,
-        measureAllChecked:store.datasets.measureAllChecked,
-        measureChecked:store.datasets.measureChecked,
-        dimensionAllChecked:store.datasets.dimensionAllChecked,
-        dimensionChecked:store.datasets.dimensionChecked,
-        dateTimeChecked:store.datasets.dateTimeChecked,
-        dataSetAnalysisList:store.datasets.dataSetAnalysisList,
-        isUpdate:store.datasets.isUpdate,
-        modelSummary:store.apps.modelSummary,
-        createScoreShowVariables:store.datasets.createScoreShowVariables,
-        CopyTimeDimension: store.datasets.CopyTimeDimension,
-        modelEditconfig:store.datasets.modelEditconfig,
-        editmodelFlag:store.datasets.editmodelFlag,
-
-
-        fromVariableSelectionPage : store.signals.fromVariableSelectionPage
-    };
+  return {
+    dataSetMeasures:store.datasets.dataSetMeasures,
+    dataSetDimensions:store.datasets.dataSetDimensions,
+    dataSetTimeDimensions:store.datasets.dataSetTimeDimensions,
+    isUpdate:store.datasets.isUpdate,
+    modelSummary:store.apps.modelSummary,
+    createScoreShowVariables:store.datasets.createScoreShowVariables,
+    CopyTimeDimension: store.datasets.CopyTimeDimension,
+    editmodelFlag:store.datasets.editmodelFlag,
+    fromVariableSelectionPage : store.signals.fromVariableSelectionPage
+  };
 } )
 
 export class DataVariableSelection extends React.Component {
-    constructor( props ) {
-        super( props );
-        this.firstLoop = true;
-        this.handleCheckboxEvents = this.handleCheckboxEvents.bind( this );
-        this.measures = [];
-        this.dimensions = [];
-        this.datetime = [];
-        this.dimensionDateTime = [];
-        this.possibleAnalysisList = {};
-    }
+  constructor( props ) {
+    super( props );
+    this.firstLoop = true;
+    this.handleCheckboxEvents = this.handleCheckboxEvents.bind( this );
+    this.measures = [];
+    this.dimensions = [];
+    this.datetime = [];
+    this.dimensionDateTime = [];
+    this.possibleAnalysisList = {};
+  }
+  
     handleCheckboxEvents( e ) {
         this.props.dispatch( updateSelectedVariables( e ) )
         if(window.location.href.includes("/createSignal") && e.target.name ==  "date_type"){
@@ -62,7 +60,7 @@ export class DataVariableSelection extends React.Component {
         }
     }
     componentDidMount() {
-        const from = this.getValueOfFromParam();
+        const from = getValueOfFromParam();
         if (from === 'data_cleansing') {
             let dtList = store.getState().datasets.dataSetTimeDimensions
             if(dtList.length!=0 && dtList.filter(i=>(i.selected===true)).length === 0 && document.getElementById("unselect") != undefined){
@@ -89,34 +87,25 @@ export class DataVariableSelection extends React.Component {
             this.props.dispatch(resetSelectedTargetVariable());
         }
        if (from !== 'data_cleansing') {
-                this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,true));
-    }
-   
-
-}
-    getValueOfFromParam() {
-        if(this.props.location === undefined){
-         }
-        else{
-            const params = new URLSearchParams(this.props.location.search);
-            return params.get('from');
+           this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,true));
         }
-  }
-  componentWillMount(){
-       if( this.props.editmodelFlag)
-    this.props.dispatch(makeAllVariablesTrueOrFalse(false));
-  }
+    }
+    
+    componentWillMount(){
+        if( this.props.editmodelFlag)
+            this.props.dispatch(makeAllVariablesTrueOrFalse(false));
+    }
+  
     componentDidUpdate(){
-        if ( (this.props.isUpdate && this.props.createScoreShowVariables && this.props.match.path.includes("/createScore")) || (this.props.isUpdate && !this.props.match.path.includes("/createScore"))) {
+        if( (this.props.isUpdate && this.props.createScoreShowVariables && this.props.match.path.includes("/createScore")) || (this.props.isUpdate && !this.props.match.path.includes("/createScore"))) {
             if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
                 this.props.dispatch(resetSelectedVariables(true));
             }else if(this.props.editmodelFlag){ //In edit mode dispatch updateDatasetVariables directly, if not all variables are resetting and getting checked
-              ""; 
+                ""; 
             }else if(store.getState().datasets.varibleSelectionBackFlag){
-            }
-            else{  
-                    this.props.dispatch( resetSelectedVariables(true));
-                    deselectAllVariablesDataPrev(true);
+            }else{  
+                this.props.dispatch( resetSelectedVariables(true));
+                deselectAllVariablesDataPrev(true);
             }
             this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,false));
         }
@@ -136,14 +125,14 @@ export class DataVariableSelection extends React.Component {
     }
 
     handleDVSearch(evt){
-    evt.preventDefault();
-    if(evt.target.name == "measure" && evt.target.value == "")
-    $("#measureSearch").val("");
-    if(evt.target.name == "dimension" && evt.target.value == "")
-    $("#dimensionSearch").val("");
-    if(evt.target.name == "datetime" && evt.target.value == "")
-    $("#datetimeSearch").val("");
-    this.props.dispatch(handleDVSearch(evt));
+        evt.preventDefault();
+        if(evt.target.name == "measure" && evt.target.value == "")
+            $("#measureSearch").val("");
+        if(evt.target.name == "dimension" && evt.target.value == "")
+            $("#dimensionSearch").val("");
+        if(evt.target.name == "datetime" && evt.target.value == "")
+            $("#datetimeSearch").val("");
+        this.props.dispatch(handleDVSearch(evt));
     }
     handelSort(variableType,sortOrder){
     	this.props.dispatch(handelSort(variableType,sortOrder))
@@ -153,23 +142,25 @@ export class DataVariableSelection extends React.Component {
     }
     render() {
         var variableSelectionMsg = <label>Including the following variables:</label>;
-
         let dataPrev = store.getState().datasets.dataPreview;
         let modelSummary = this.props.modelSummary;
         var that = this;
         const popoverLeft = (
-        		  <Popover id="popover-trigger-hover-focus">
-        		<p>mAdvisor has identified this as date suggestion.This could be used for trend analysis. </p>
-        		  </Popover>
-        		);
+            <Popover id="popover-trigger-hover-focus">
+                <p>mAdvisor has identified this as date suggestion.This could be used for trend analysis. </p>
+            </Popover>
+        );
 
-        let timeSuggestionToolTip = (<div className="col-md-2"><OverlayTrigger trigger={['hover', 'focus']}  rootClose placement="top" overlay={popoverLeft}>
-        <a className="pover cursor">
-        <i className="pe-7s-info pe-2x"></i>
-      </a>
-    </OverlayTrigger></div>)
+        let timeSuggestionToolTip = (
+            <div className="col-md-2"><OverlayTrigger trigger={['hover', 'focus']}  rootClose placement="top" overlay={popoverLeft}>
+                <a className="pover cursor">
+                    <i className="pe-7s-info pe-2x"></i>
+                </a>
+                </OverlayTrigger>
+            </div>
+        )
 
-        if ( dataPrev ) {
+        if(dataPrev) {
             if(this.props.match.path.includes("/createScore") && !$.isEmptyObject(modelSummary))
             this.props.dispatch(updateVariableSelectionArray(modelSummary));
             this.possibleAnalysisList = store.getState().datasets.varibleSelectionBackFlag?store.getState().datasets.dataSetAnalysisList:dataPrev.meta_data.uiMetaData.advanced_settings
@@ -179,7 +170,6 @@ export class DataVariableSelection extends React.Component {
             this.datetime = [];
             this.dimensionDateTime =[];
             metaData.map(( metaItem, metaIndex ) => {
-
                 if ( (this.props.isUpdate && this.props.createScoreShowVariables && this.props.match.path.includes("/createScore")) || (this.props.isUpdate && !this.props.match.path.includes("/createScore"))) {
                     switch ( metaItem.columnType ) {
                         case "measure":
@@ -200,20 +190,15 @@ export class DataVariableSelection extends React.Component {
                             this.datetime.push( metaItem);
                             break;
                     }
-              }
-            } );
-
+                }
+            });
             this.datetime = this.datetime.concat(this.dimensionDateTime);
-
-
             var varCls = "";
-
             if ( store.getState().datasets.dataSetMeasures.length > 0 ) {
                 if(store.getState().datasets.dataSetMeasures.length == 1 && store.getState().datasets.dataSetMeasures[0].targetColumn){
                     $(".measureAll").prop("disabled",true);
                     var measureTemplate = <label id="noMeasures">No measure variable present</label>
-                }
-                else{
+                }else{
                     var measureTemplate = store.getState().datasets.dataSetMeasures.map(( mItem, mIndex ) => {
                     if(mItem.targetColumn || mItem.uidCol)varCls="hidden";
                     else varCls = "";
@@ -231,8 +216,7 @@ export class DataVariableSelection extends React.Component {
                 if(store.getState().datasets.dataSetDimensions.length == 1 && store.getState().datasets.dataSetDimensions[0].targetColumn){
                     $(".dimensionAll").prop("disabled",true);
                     var dimensionTemplate = <label id="noDimensions" >No dimension variable present</label>
-                }
-                else{
+                }else{
                     var dimensionTemplate = store.getState().datasets.dataSetDimensions.map(( dItem, dIndex ) => {
 
                         if(dItem.targetColumn ||  dItem.uidCol)varCls="hidden";
@@ -252,26 +236,27 @@ export class DataVariableSelection extends React.Component {
                 var datetimeTemplate = store.getState().datasets.dataSetTimeDimensions.map(( dtItem, dtIndex ) => {
                     if(dtItem.uidCol)varCls="hidden";
                     else varCls = "";
-
-                    	if(dtItem.columnType != "dimension"){
-                        	return (
-                        			<li className={varCls} key={dtItem.slug}><div className="ma-radio inline">
-                                    <input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label>
-
-                                    </div></li>
-                        	);
-                        }else{
-                        	return (
-
-                        			<li className={varCls} key={dtItem.slug}><div className="ma-radio inline col-md-10"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label></div>{timeSuggestionToolTip}</li>
-                        	);
-                        }
-
-
-
-                } );
+                    if(dtItem.columnType != "dimension"){
+                        return (
+                            <li className={varCls} key={dtItem.slug}>
+                                <div className="ma-radio inline">
+                                    <input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} />
+                                    <label htmlFor={dtItem.slug}>{dtItem.name}</label>
+                                </div>
+                            </li>
+                        );
+                    }else{
+                        return (
+                            <li className={varCls} key={dtItem.slug}>
+                                <div className="ma-radio inline col-md-10">
+                                    <input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} />
+                                    <label htmlFor={dtItem.slug}>{dtItem.name}</label>
+                                </div>{timeSuggestionToolTip}
+                            </li>
+                        );
+                    }
+                });
             } else {
-
                 var datetimeTemplate = <label>No date dimensions to display</label>
             }
             if(this.props.match.path.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
@@ -284,7 +269,7 @@ export class DataVariableSelection extends React.Component {
                }
             return (
                 <div>
-                        <div className="col-lg-12">
+                    <div className="col-lg-12">
                             {variableSelectionMsg}
                         </div>
                         <div className="col-md-4">
@@ -293,36 +278,29 @@ export class DataVariableSelection extends React.Component {
                                 <div className="panel-body">
                                     <div className="row">
                                         <div className="col-md-12 col-sm-12 xs-pr-0">
-
-											 <div class="btn-toolbar pull-right">
-
-											<div class="input-group">
-											<div className="search-wrapper">
-											<input type="text" name="measure" onChange={this.handleDVSearch.bind(this)} title="Search Measures" id="measureSearch" className="form-control search-box" placeholder="Search measures..."  />
-											<span className="zmdi zmdi-search form-control-feedback"></span>
-											<button className="close-icon" name="measure" onClick={this.handleDVSearch.bind(this)}  type="reset"></button>
-											</div>
-											</div>
-											<div class="btn-group">
-											<button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i></button>
-											<ul role="menu" className="dropdown-menu dropdown-menu-right">
-											<li onClick={this.handelSort.bind(this,"measure","ASC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-asc"></i> Ascending</a></li>
-											<li onClick={this.handelSort.bind(this,"measure","DESC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-desc"></i> Descending</a></li>
-											</ul>
-											</div>
-
+                                            <div class="btn-toolbar pull-right">
+    											<div class="input-group">
+	        										<div className="search-wrapper">
+			            								<input type="text" name="measure" onChange={this.handleDVSearch.bind(this)} title="Search Measures" id="measureSearch" className="form-control search-box" placeholder="Search measures..."  />
+                                                        <span className="zmdi zmdi-search form-control-feedback"></span>
+                                                        <button className="close-icon" name="measure" onClick={this.handleDVSearch.bind(this)}  type="reset"></button>
+                                                    </div>
+                                                </div>
+                                                <div class="btn-group">
+                                                    <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i></button>
+                                                    <ul role="menu" className="dropdown-menu dropdown-menu-right">
+                                                        <li onClick={this.handelSort.bind(this,"measure","ASC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-asc"></i> Ascending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"measure","DESC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-desc"></i> Descending</a></li>
+                                                    </ul>
+                                                </div>
                                             </div>
-
-											<div className="ma-checkbox inline">
+                                            <div className="ma-checkbox inline">
                                                 <input id="measure" type="checkbox" className="measureAll" onChange={this.handleSelectAll.bind(this)} checked={(store.getState().datasets.dataSetMeasures.length === 0 || (this.props.dataSetMeasures.length===1 && this.props.dataSetMeasures[0].targetColumn) )?false:store.getState().datasets.measureAllChecked}/>
                                                 <label htmlFor="measure">Select All</label>
                                             </div>
-
-
                                         </div>
-
                                     </div>
-									<div className="xs-pb-10"></div>
+                                    <div className="xs-pb-10"></div>
                                     <div className="row">
                                         <div className="col-md-12 cst-scroll-panel">
                                             <Scrollbars>
@@ -331,34 +309,25 @@ export class DataVariableSelection extends React.Component {
                                                 </ul>
                                             </Scrollbars>
                                         </div>
-                                    </div>
-                                   
+                                    </div>           
                                 </div>
                             </div>
-
                         </div>
                         <div className="col-md-4">
                             <div className="panel panel-primary-p2 cst-panel-shadow">
-
-
                                 <div className="panel-heading"><i className="mAd_icons ic_perf "></i> Dimensions</div>
-
                                 <div className="panel-body">
                                     <div className="row">
                                         <div className="col-md-12 col-sm-12 xs-pr-0">
-
 											<div class="btn-toolbar pull-right">
-                                               
 												<div class="input-group">
-												<div className="search-wrapper">
-
-												<input type="text" name="dimension" onChange={this.handleDVSearch.bind(this)} title="Search Dimension" id="dimensionSearch" className="form-control search-box" placeholder="Search dimension..."  />
-												<span className="zmdi zmdi-search form-control-feedback"></span>
-												<button className="close-icon"  name="dimension"  onClick={this.handleDVSearch.bind(this)}  type="reset"></button>
-
-												</div>
-												</div>
-												 <div class="btn-group">
+    												<div className="search-wrapper">
+        												<input type="text" name="dimension" onChange={this.handleDVSearch.bind(this)} title="Search Dimension" id="dimensionSearch" className="form-control search-box" placeholder="Search dimension..."  />
+                                                        <span className="zmdi zmdi-search form-control-feedback"></span>
+                                                        <button className="close-icon"  name="dimension"  onClick={this.handleDVSearch.bind(this)}  type="reset"></button>
+                                                    </div>
+                                                </div>
+                                                <div class="btn-group">
                                                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
                                                         <li onClick={this.handelSort.bind(this,"dimension","ASC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-asc"></i> Ascending</a></li>
@@ -366,15 +335,13 @@ export class DataVariableSelection extends React.Component {
                                                     </ul>
                                                 </div>
                                             </div>
-
-											<div className="ma-checkbox inline">
+                                            <div className="ma-checkbox inline">
                                                 <input id="dimension" type="checkbox" className="dimensionAll" onChange={this.handleSelectAll.bind(this)} checked={(store.getState().datasets.dataSetDimensions.length === 0 || (this.props.dataSetDimensions.length===1 && this.props.dataSetDimensions[0].targetColumn) )?false:store.getState().datasets.dimensionAllChecked}/>
                                                 <label htmlFor="dimension">Select All</label>
                                             </div>
                                         </div>
-
                                     </div>
-									<div className="xs-pb-10"></div>
+                                    <div className="xs-pb-10"></div>
                                     <div className="row">
                                         <div className="col-md-12 cst-scroll-panel">
                                             <Scrollbars>
@@ -384,74 +351,56 @@ export class DataVariableSelection extends React.Component {
                                             </Scrollbars>
                                         </div>
                                     </div>
-                                   
                                 </div>
                             </div>
-
-
                         </div>
                         <div className="col-md-4">
                             <div className="panel panel-primary-p3 cst-panel-shadow">
                                 <div className="panel-heading"><i className="pe-7s-date"></i> Dates</div>
                                 <div className="panel-body">
-
                                     <div className="row">
-
                                         <div className="col-md-12 col-sm-12 xs-pr-0">
                                          <div class="btn-toolbar pull-right">
-
-												<div class="input-group">
+                                            <div class="input-group">
 												<div className="search-wrapper">
-
-												<input type="text" name="datetime" onChange={this.handleDVSearch.bind(this)} title="Search Time Dimensions" id="datetimeSearch" className="form-control search-box" placeholder="Search time dimensions..."/>
-												<span className="zmdi zmdi-search form-control-feedback"></span>
-												<button className="close-icon" name="datetime" onClick={this.handleDVSearch.bind(this)} type="reset"></button>
-
+    												<input type="text" name="datetime" onChange={this.handleDVSearch.bind(this)} title="Search Time Dimensions" id="datetimeSearch" className="form-control search-box" placeholder="Search time dimensions..."/>
+	    											<span className="zmdi zmdi-search form-control-feedback"></span>
+		    										<button className="close-icon" name="datetime" onClick={this.handleDVSearch.bind(this)} type="reset"></button>
 												</div>
-												</div>
-
-
-												<div class="btn-group">
-                                                    <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i></button>
-                                                    <ul role="menu" className="dropdown-menu dropdown-menu-right">
-                                                        <li onClick={this.handelSort.bind(this,"datetime","ASC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-asc"></i> Ascending</a></li>
-                                                        <li onClick={this.handelSort.bind(this,"datetime","DESC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-desc"></i> Descending</a></li>
-
-                                                    </ul>
-                                                </div>
-
                                             </div>
-
+                                            <div class="btn-group">
+                                                <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i></button>
+                                                <ul role="menu" className="dropdown-menu dropdown-menu-right">
+                                                    <li onClick={this.handelSort.bind(this,"datetime","ASC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-asc"></i> Ascending</a></li>
+                                                    <li onClick={this.handelSort.bind(this,"datetime","DESC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-desc"></i> Descending</a></li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
-									<div className="xs-pb-10"></div>
-                                    <div className="row">
-                                        <div className="col-md-12 cst-scroll-panel">
-                                            <Scrollbars>
-                                                <ul className="list-unstyled">
-                                                 {datetimeTemplate}
-                                                 {store.getState().datasets.dataSetTimeDimensions.length > 0 && 
-                                        <div class="ma-radio inline">
-                                         <input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents} id="unselect" name="date_type"  />
-                                         <label htmlFor="unselect">None</label>
-                                        </div>
-                                        }
-                                                </ul>
-                                            </Scrollbars>
-                                        </div>
+                                </div>
+                                <div className="xs-pb-10"></div>
+                                <div className="row">
+                                    <div className="col-md-12 cst-scroll-panel">
+                                        <Scrollbars>
+                                            <ul className="list-unstyled">
+                                                {datetimeTemplate}
+                                                {store.getState().datasets.dataSetTimeDimensions.length > 0 && 
+                                                    <div class="ma-radio inline">
+                                                        <input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents} id="unselect" name="date_type"  />
+                                                        <label htmlFor="unselect">None</label>
+                                                    </div>
+                                                }
+                                            </ul>
+                                        </Scrollbars>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="col-md-4 col-md-offset-5">
-                            <h4>{store.getState().datasets.selectedVariablesCount} Variables selected </h4>
-                          
-                        </div>
-
+                    </div>
+                    <div className="col-md-4 col-md-offset-5">
+                        <h4>{store.getState().datasets.selectedVariablesCount} Variables selected </h4>
+                    </div>
                 </div>
-
-
-
             );
         } else {
             return (

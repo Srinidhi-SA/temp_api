@@ -9,6 +9,7 @@ import {STATIC_URL} from "../../helpers/env.js"
 import {getUserDetailsOrRestart,SUCCESS,INPROGRESS,HANA,MYSQL,MSSQL,HDFS, FAILED, statusMessages} from  "../../helpers/helper"
 import Dialog from 'react-bootstrap-dialog'
 import {clearDataPreview} from "../../actions/dataUploadActions";
+import store from "../../store"
 
 var dateFormat = require('dateformat');
 
@@ -189,6 +190,7 @@ export class DataCard extends React.Component {
     }
     
     componentWillUnmount(){
+        if(!store.getState().datasets.paginationFlag)
         this.props.dispatch(clearDataList())
     }
 }
