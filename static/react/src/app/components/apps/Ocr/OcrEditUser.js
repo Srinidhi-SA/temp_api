@@ -32,20 +32,21 @@ export class OcrEditUser extends React.Component{
 
     componentDidUpdate(){
         if(this.props.enableEditingFlag){
-            $("#first_name")[0].disabled = false;
-            $("#last_name")[0].disabled = false;
-            $("#username")[0].disabled = false;
-            $("#email")[0].disabled = false;
-            $("#role")[0].disabled = false;
-            $("#is_active")[0].disabled = false;
-            $("#appList").removeClass("applist-disabled")
 
-            $("#fname")[0].classList.add("mandate")
-            $("#lname")[0].classList.add("mandate")
-            $("#uname")[0].classList.add("mandate")
-            $("#mail")[0].classList.add("mandate")
-            $("#rtype")[0].classList.add("mandate")
-            $("#iactive")[0].classList.add("mandate")
+            document.getElementById("first_name").disabled=false
+            document.getElementById("last_name").disabled=false
+            document.getElementById("username").disabled=false
+            document.getElementById("email").disabled=false
+            document.getElementById("role").disabled=false
+            document.getElementById("is_active").disabled=false
+            document.getElementById("appList").classList.remove("applist-disabled")
+
+            document.getElementById("fname").classList.add("mandate")
+            document.getElementById("lname").classList.add("mandate")
+            document.getElementById("uname").classList.add("mandate")
+            document.getElementById("mail").classList.add("mandate")
+            document.getElementById("rtype").classList.add("mandate")
+            document.getElementById("iactive").classList.add("mandate")   
         }
     }
 
@@ -54,30 +55,30 @@ export class OcrEditUser extends React.Component{
         this.props.dispatch(enableEditingUserAction(false));
         this.props.dispatch(closeEditUserModalAction(false));
     }
-    enableEditingUser(e){
+    enableEditingUser(){
         this.props.dispatch(enableEditingUserAction(true));
     }
     saveuserEditedDetails(e){
         this.props.dispatch(SaveEditedUserDetailsAction(e.target.name,e.target.value));
     }
     saveAppList=()=>{
-        $("#resetMsg")[0].innerText = "";
+        document.getElementById("resetMsg").innerText = "";
         this.props.dispatch(editRolesFormAction(true));
         this.props.dispatch(SaveEditedUserDetailsAction("appList",this.state.appId));
     }
-    submitEditedForms(e){
+    submitEditedForms(){
         let mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-        if($("#first_name")[0].value === "" || $("#last_name")[0].value === "" || $("#username")[0].value === "" || $("#email")[0].value === "" ){
-            $("#resetMsg")[0].innerText = "Please enter mandatory fields"
+        if(document.getElementById("first_name").value === ""||document.getElementById("last_name").value === "" || document.getElementById("username").value === "" || document.getElementById("email").value === "" ){
+            document.getElementById("resetMsg").innerText = "Please enter mandatory fields"
         }
-        else if(!mailFormat.test($("#email")[0].value)){
-            $("#resetMsg")[0].innerText = "Invalid Email"
+        else if(!mailFormat.test(document.getElementById("email").value)){
+            document.getElementById("resetMsg").innerText = "Invalid Email"
         }
         else if(!this.props.roleFormSel && !this.props.detailsFormSel){
-            $("#resetMsg")[0].innerText = "No changes to save"
+            document.getElementById("resetMsg").innerText = "No changes to save"
         }
         else if(this.props.roleFormSel && this.props.detailsFormSel){
-            $("#resetMsg")[0].innerText = ""
+            document.getElementById("resetMsg").innerText = ""
             this.props.dispatch(setCreateUserLoaderFlag(true))
 
             let allowedVariables1 = ["email","first_name","last_name","username"];
@@ -94,7 +95,7 @@ export class OcrEditUser extends React.Component{
             this.props.dispatch(submitEditedUserRolesAction(filteredVariables2,this.props.ocrReviwersList,this.props.selUserSlug));
         }
         else if(this.props.detailsFormSel){
-            $("#resetMsg")[0].innerText = ""
+            document.getElementById("resetMsg").innerText = ""
             this.props.dispatch(setCreateUserLoaderFlag(true))
             let allowedVariables1 = ["email","first_name","last_name","username"];
             let filteredVariables1 = Object.keys(this.props.editedUserDetails).filter(key => allowedVariables1.includes(key)).reduce((obj, key) => {
@@ -104,10 +105,10 @@ export class OcrEditUser extends React.Component{
             this.props.dispatch(submitEditUserDetailsAction(filteredVariables1));
         }
         else if(this.props.roleFormSel){
-            if($("#role")[0].value === "none" || $("#is_active")[0].value === "none"  || this.props.editedUserDetails.appList.length === 0){
-                $("#resetMsg")[0].innerText = "Please enter mandatory fields"
+            if(document.getElementById("role").value === "none" || document.getElementById("is_active").value === "none"  || this.props.editedUserDetails.appList.length === 0){
+                document.getElementById("resetMsg").innerText = "Please enter mandatory fields"
             }else{
-                $("#resetMsg")[0].innerText = ""
+                document.getElementById("resetMsg").innerText = ""
                 this.props.dispatch(setCreateUserLoaderFlag(true))
                 let allowedVariables = ["role","is_active","appList"];
                 let filteredVariables = Object.keys(this.props.editedUserDetails).filter(key => allowedVariables.includes(key)).reduce((obj, key) => {
@@ -120,7 +121,7 @@ export class OcrEditUser extends React.Component{
     }
 
     updateFormSelected(e){
-        $("#resetMsg")[0].innerText = ""
+        document.getElementById("resetMsg").innerText = ""
         if(e.currentTarget.id === "userProfileDetails"){
             this.props.dispatch(editDetailsFormAction(true));
         }else{
@@ -135,13 +136,6 @@ export class OcrEditUser extends React.Component{
         }
 
     render(){
-        let optionsTemp = [];
-        optionsTemp.push(<option key={'none'} id="none" value="none">--select--</option>);
-        for(var i=0; i<this.props.ocrReviwersList.length; i++){
-            optionsTemp.push(<option key={this.props.ocrReviwersList[i].name} value={this.props.ocrReviwersList[i].name}>
-                        {this.props.ocrReviwersList[i].name}
-                    </option>);
-        }
         return(
             <Modal backdrop="static" className="editUser" show={this.props.editOcrUserFlag} onHide={this.closeEditUserModal.bind(this)}>
                 <Modal.Header>
@@ -150,52 +144,64 @@ export class OcrEditUser extends React.Component{
                 </Modal.Header>
                 <Modal.Body id="editUsers">
                         {!this.props.editUserSuccessFlag &&
-                            <div className="ocrUserFormLabel" style={{position:"absolute"}}>
+                            <div className="ocrUserFormLabel" >
                                 <form role="form" id="userProfileDetails" onChange={this.updateFormSelected.bind(this)}>
-                                    <label id="fname" for="first_name">First Name</label>
-                                    <label id="lname" for="last_name" style={{marginLeft:"100px"}}>Last Name</label>
-                                    <input type="text" id="first_name" name="first_name" placeholder="First Name" defaultValue={this.props.editedUserDetails.first_name} disabled onInput={this.saveuserEditedDetails.bind(this)} />
-                                    <input type="text" id="last_name" name="last_name" placeholder="Last Name" defaultValue={this.props.editedUserDetails.last_name} disabled onInput={this.saveuserEditedDetails.bind(this)} />
-                                    
-                                    <label id="uname" for="username">User Name</label>
-                                    <label id="mail" for="email" style={{marginLeft:"100px"}}>Email</label>
-                                    <input type="text" id="username" name="username" placeholder="User Name" defaultValue={this.props.editedUserDetails.username} disabled onInput={this.saveuserEditedDetails.bind(this)} />
-                                    <input type="email" id="email" name="email" placeholder="Email" defaultValue={this.props.editedUserDetails.email} disabled onInput={this.saveuserEditedDetails.bind(this)} />
+                                    <div className="row">
+                                        <div className="col-sm-6">
+                                            <label id="fname" for="first_name">First Name</label>
+                                            <input type="text" id="first_name" name="first_name" placeholder="First Name" defaultValue={this.props.editedUserDetails.first_name} disabled onInput={this.saveuserEditedDetails.bind(this)} />
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <label id="lname" for="last_name">Last Name</label>
+                                            <input type="text" id="last_name" name="last_name" placeholder="Last Name" defaultValue={this.props.editedUserDetails.last_name} disabled onInput={this.saveuserEditedDetails.bind(this)} />
+                                        </div>
+                                        <div className="col-sm-6">
+                                        <label id="uname" for="username">User Name</label>
+                                            <input type="text" id="username" name="username" placeholder="User Name" defaultValue={this.props.editedUserDetails.username} disabled onInput={this.saveuserEditedDetails.bind(this)} />
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <label id="mail" for="email">Email</label>
+                                            <input type="email" id="email" name="email" placeholder="Email" defaultValue={this.props.editedUserDetails.email} disabled onInput={this.saveuserEditedDetails.bind(this)} />
+                                        </div>
+                                    </div>
                                 </form>
                                 <form role="form" id="userProfileRoles" onChange={this.updateFormSelected.bind(this)}>
-                                    
-                                        <label className="mandate">Select required App</label>
-                                        <div className="col-sm-12 allApplist">
-                                        <MultiSelect id="appList" className="applist-disabled" 
-                                        value={this.state.appId} style={{width:"98.3%",marginBottom:15}} name="app_list"
+                                <div className="row">
+                                    <div className="col-sm-12 allApplist">
+                                        <label className="mandate" style={{marginBottom:5}} >Select required App</label>
+                                        <MultiSelect id="appList" className="applist-disabled"
+                                        value={this.state.appId} style={{width: "100%" }} name="app_list" 
                                         options={this.handleAllAppsOptions()} onChange={(e)=>this.setState({appId:e.value},this.saveAppList)}
                                         filter={true} placeholder="Choose Apps" />
-                                        </div>
-                                    <label id="rtype" for="role">Roles</label>
-                                    <label id="iactive" for="is_active" style={{marginLeft:"100px"}}>Status</label>
-                                    <select name="role" id="role" disabled onChange={this.saveuserEditedDetails.bind(this)} defaultValue={this.props.editedUserDetails.role != undefined?this.props.editedUserDetails.role:"none"}>
-                                        {optionsTemp}
-                                    </select>
-                                    <select name="is_active" id="is_active" disabled onChange={this.saveuserEditedDetails.bind(this)} defaultValue={this.props.editedUserDetails.is_active}>
-                                        <option value="none" id="none">--select--</option>
-                                        <option value="True" id="active">Active</option>
-                                        <option value="False" id="inactive">Inactive</option>
-                                    </select>
-
+                                    </div>
+                                    <div className="col-sm-6">
+                                        <label id="rtype" for="role">Roles</label>
+                                        <select name="role" id="role" disabled onChange={this.saveuserEditedDetails.bind(this)} defaultValue={this.props.editedUserDetails.role != undefined?this.props.editedUserDetails.role:"none"}>
+                                            <option key={'none'} id="none" value="none">--select--</option>
+                                            {this.props.ocrReviwersList.map(i=>{return <option key={i.id} value={i.name}>{i.name}</option>})}
+                                        </select>
+                                    </div>
+                                    <div className="col-sm-6">
+                                        <label id="iactive" for="is_active">Status</label>
+                                        <select name="is_active" id="is_active" disabled onChange={this.saveuserEditedDetails.bind(this)} defaultValue={this.props.editedUserDetails.is_active}>
+                                            <option value="none" id="none">--select--</option>
+                                            <option value="True" id="active">Active</option>
+                                            <option value="False" id="inactive">Inactive</option>
+                                        </select>
+                                    </div >
+                                </div>
                                 </form>
                             </div>
                         }
                         {this.props.loaderFlag && !this.props.editUserSuccessFlag &&
-                            <div style={{ height:"315px", background: 'rgba(0,0,0,0.1)', position: 'relative',margin:"-10px" }}>
+                            <div style={{ height:"100%",width:"100%", background: 'rgba(0,0,0,0.1)', position: 'absolute',top:0,left:0 }}>
                                 <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
                             </div>
                         }
                         {this.props.editUserSuccessFlag &&
-                            <div className="ocrSuccess">
-                                <img className="wow bounceIn" data-wow-delay=".75s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10" src={STATIC_URL + "assets/images/success_outline.png"} style={{width: 105 }} />
-                                <div className="wow bounceIn" data-wow-delay=".25s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10">
-                                    <span style={{ paddingTop: 10, color: 'rgb(50, 132, 121)', display: 'block' }}>Saved Successfully</span>
-                                </div>
+                             <div className="ocrSuccess wow bounceIn" data-wow-delay=".25s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10">
+                                <img src={STATIC_URL + "assets/images/success_outline.png"} style={{width: 105 }} />
+                                 <span style={{ paddingTop: 10, color: 'rgb(50, 132, 121)', display: 'block' }}>Saved Successfully</span>
                             </div>
                         }
                 </Modal.Body>

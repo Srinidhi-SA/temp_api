@@ -22633,7 +22633,7 @@ ul.ocrUploadTabs{
   display: inline-block;
 }
 #addUsers {
-  height: auto;
+  padding: 15px 30px;
 }
 .userActions{
   margin-right: -12px;
@@ -22661,8 +22661,8 @@ ul.ocrUploadTabs{
   padding: 20px 20px 20px 10px;
 }
 .ocrUserFormLabel label{
-  width: 31%;
-  padding-left: 15px;
+  width: 100%;
+  padding-left: 4px;
   float: left;
   margin-bottom: 5px;
 }
@@ -22673,8 +22673,7 @@ ul.ocrUploadTabs{
   font-size: 12px;
   border-radius: 2px;
   padding-left: 10px;
-  width:46%;
-  margin-left: 12px;
+  width:100%;
   margin-bottom: 15px;
 }
 .ocrUserFormLabel input[disabled],.ocrUserFormLabel select[disabled]{
@@ -22684,8 +22683,7 @@ ul.ocrUploadTabs{
   background-color: #efefef;
 }
 #editUsers {
-  padding: 10px;
-  height: 315px;
+  padding: 10px 25px;
 }
 .manageUserTable{
   background-color: white;

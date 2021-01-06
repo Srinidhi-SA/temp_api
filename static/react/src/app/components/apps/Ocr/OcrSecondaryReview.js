@@ -92,7 +92,7 @@ export class OcrSecondaryReview extends React.Component{
                         listForSRTable.length != 0?
                             listForSRTable.map((item) => {
                                     return (
-                                        <tr>
+                                        <tr key={item.name}>
                                             <td className="text-center">
                                                 <Checkbox name="selectedSR" id={item.name} value={item.name} onChange={this.saveSRConfig.bind(this)} checked={ (this.props.active==="all")?true:(this.props.selectedSRList !=undefined && this.props.selectedSRList.includes(item.name))} disabled={getDisabledVal}/>
                                             </td>

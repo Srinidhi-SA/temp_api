@@ -37,7 +37,7 @@ export class OcrUserTable extends React.Component{
         this.props.selectedTabId === "none"?this.props.dispatch(fetchAllOcrUsersAction()):this.props.dispatch(fetchOcrListByReviewerType(parseFloat(this.props.selectedTabId)));
     }
 
-    openAddUserPopup(e){
+    openAddUserPopup(){
         this.props.dispatch(openAddUserPopup());
     }
 
@@ -50,7 +50,7 @@ export class OcrUserTable extends React.Component{
         this.props.dispatch(saveSelectedOcrUserList(curSelUsers));
         curSelUsers.length === 10 ? this.props.dispatch(selectAllOcrUsers(true)): this.props.dispatch(selectAllOcrUsers(false))
     }
-    selectAllUsers(e){
+    selectAllUsers(){
         this.props.dispatch(selectAllOcrUsers(!this.props.isAllCheckedFlag));
         let curSelUsers = [...this.props.selectedOcrUsers];
         if(!this.props.isAllCheckedFlag){
@@ -68,8 +68,8 @@ export class OcrUserTable extends React.Component{
             bootbox.alert(statusMessages("warning", "Please select users", "small_mascot"));
         }else{
             switch(e.target.id){
-                case "deleteUser":
-                        this.props.dispatch(deleteOcrUserAction(this.props.selectedOcrUsers));
+                case "delete":
+                     this.props.dispatch(deleteUserFlag(true)) //show modal-popup for user confirmation
                     break;
                 case "activate":
                     this.props.dispatch(activateOcrUserAction(this.props.selectedOcrUsers));
@@ -115,7 +115,7 @@ export class OcrUserTable extends React.Component{
         this.props.selectedTabId != "none"?
         this.props.dispatch(fetchOcrListByReviewerType(parseFloat(this.props.selectedTabId),store.getState().ocr.ocrUserPageNum))
         : this.props.dispatch(fetchAllOcrUsersAction(store.getState().ocr.ocrUserPageNum))
-      }
+    }
     handleSearchElement(e){
         this.props.dispatch(saveUserSearchElementAction(e.target.value));
         this.props.selectedTabId === "none"?this.props.dispatch(fetchAllOcrUsersAction(store.getState().ocr.ocrUserPageNum)):this.props.dispatch(fetchOcrListByReviewerType(parseFloat(this.props.selectedTabId),store.getState().ocr.ocrUserPageNum));
@@ -128,9 +128,9 @@ export class OcrUserTable extends React.Component{
     closeDeletePopup = () => {
         this.props.dispatch(deleteUserFlag(false))
      }
-     openPopUp = () => {
-        this.props.dispatch(deleteUserFlag(true))
-     }
+     proceedToDelete = () => {
+        this.props.dispatch(deleteOcrUserAction(this.props.selectedOcrUsers));
+    }
     render(){
         let paginationTag = null;
         let manageUsersTable = ""
@@ -198,51 +198,43 @@ export class OcrUserTable extends React.Component{
                     </tbody>
                 </table>
         }
-        let tabOptions=[];
-        tabOptions.push(<li key={0}className ="active"><a data-toggle="tab" id="none" name="none">All</a></li>);
-        for(var i=0; i<this.props.ocrReviwersList.length; i++){
-            tabOptions.push(<li key={i+1} ><a data-toggle="tab" id={this.props.ocrReviwersList[i].id} name={this.props.ocrReviwersList[i].name}>{this.props.ocrReviwersList[i].name}</a></li>);
-        }
         return(
             <div>
-                <div>
-                        <h4>Manage users</h4>
-                    </div>
+                 <h4>Manage users</h4>
                 <div className="row userActions">
                     <div className="col-md-8">
                         <ul className ="nav nav-tabs" onClick={this.filterByReviewerType.bind(this)} style={{cursor: "default"}}>
-                            {tabOptions}
+                            <li key={0}className ="active"><a data-toggle="tab" id="none" name="none">All</a></li>
+                            {this.props.ocrReviwersList.map(i=>{return <li key={i.id} ><a data-toggle="tab" id={i.id} name={i.name}>{i.name}</a></li>})}
                         </ul>
                     </div>
-                    
                     <div className="col-md-4 text-right">
-					 <a className="btn btn-primary" onClick={this.openAddUserPopup.bind(this)} title="Add User">
-                                <i className ="zmdi zmdi-account-add zmdi-hc-lg">
-                                    <OcrAddUser/>
-                                </i>
-                            </a>
+					    <a className="btn btn-primary" onClick={this.openAddUserPopup.bind(this)} title="Add User">
+                            <i className ="zmdi zmdi-account-add zmdi-hc-lg">
+                                <OcrAddUser/>
+                            </i>
+                        </a>
                         <div className="btn-group xs-ml-5 xs-mr-5">
-						
                             <button type="button" className ="btn btn-default dropdown-toggle" data-toggle="dropdown" title="Action">ACTION <span className ="caret"></span></button>
                             <ul role="menu" className ="dropdown-menu dropdown-menu-right">
-                                <li><a name="actionType" title="Activate" id="activate" onClick={this.selectActiontype.bind(this)}><i className ="fa fa-plus-circle text-primary xs-mr-5"></i> Activate</a></li>
-                                <li><a name="actionType" title="Deactivate" id="deactivate" onClick={this.selectActiontype.bind(this)}><i className ="fa fa-minus-circle text-warning xs-mr-5"></i> Deactivate</a></li>
-                                <li><a name="actionType" title="Delete" id="delete" onClick={this.openPopUp}><i className ="fa fa-trash text-danger xs-mr-5"></i> Delete</a></li>
-                                <li><a name="actionType" title="Edit" id="edit" onClick={this.selectActiontype.bind(this)}><i className ="fa fa-pencil-square-o text-secondary xs-mr-5"></i> Edit</a></li>
+                                <li><a title="Activate" id="activate" onClick={this.selectActiontype.bind(this)}><i className ="fa fa-plus-circle text-primary xs-mr-5"></i> Activate</a></li>
+                                <li><a title="Deactivate" id="deactivate" onClick={this.selectActiontype.bind(this)}><i className ="fa fa-minus-circle text-warning xs-mr-5"></i> Deactivate</a></li>
+                                <li><a title="Delete" id="delete" onClick={this.selectActiontype.bind(this)}><i className ="fa fa-trash text-danger xs-mr-5"></i> Delete</a></li>
+                                <li><a title="Edit" id="edit" onClick={this.selectActiontype.bind(this)}><i className ="fa fa-pencil-square-o text-secondary xs-mr-5"></i> Edit</a></li>
                             </ul>
                         </div>
-                        <div className="pull-right searchOcrUser">
+                        <div className="pull-right">
                             <input type="text" id="searchOcrUser" title="Search User..." className="form-control btn-rounded" placeholder="Search User..." onKeyUp={this.handleSearchElement.bind(this)} />
                             <button className="close-icon"  style={{paddingTop: "0px", marginLeft:"59%"}}  onClick={this.clearSearchVal.bind(this)}type="reset"></button>
                         </div>
                     </div>
                 </div>
                 <div id="deleteUser" role="dialog" className="modal fade modal-colored-header">
-               <Modal backdrop="static" show={this.props.userDeleteFlag} onHide={this.closeDeletePopup.bind(this)} dialogClassName="modal-colored-header">
+               <Modal backdrop="static" show={this.props.userDeleteFlag} onHide={this.closeDeletePopup} dialogClassName="modal-colored-header">
                   <Modal.Header closeButton>
                      <h3 className="modal-title">Delete User</h3>
                   </Modal.Header>
-                  <Modal.Body style={{ padding: '20px 15px 25px 15px' }}>
+                  <Modal.Body style={{ padding: '20px 15px 25px' }}>
                      <div className="row">
                         <div class="col-sm-4">
                            <img style={{ width: '100%' }} src={STATIC_URL + "assets/images/alert_warning.png"} />
@@ -251,8 +243,8 @@ export class OcrUserTable extends React.Component{
                            <h4 class="text-warning">Warning !</h4>
                            <div>Are you sure you want to delete the user?</div>
                            <div className="xs-mt-10">
-                              <Button bsStyle="primary" id="deleteUser" onClick={this.selectActiontype.bind(this)}>Yes</Button>
-                              <Button onClick={this.closeDeletePopup.bind(this)}>No</Button>
+                              <Button bsStyle="primary" id="deleteUser" onClick={this.proceedToDelete}>Yes</Button>
+                              <Button onClick={this.closeDeletePopup}>No</Button>
                            </div>
                         </div>
                      </div>
