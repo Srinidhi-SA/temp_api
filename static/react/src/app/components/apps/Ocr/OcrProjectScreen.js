@@ -116,7 +116,7 @@ export class OcrProjectScreen extends React.Component {
       let paginationTag = null
       if (pages >= 1) {
          paginationTag = (
-            <div class="col-md-12 text-center">
+            <div className="col-md-12 text-center">
                <div className="footer" id="Pagination">
                   <div className="pagination pageRow">
                   <span>Rows per page:</span>
@@ -158,8 +158,8 @@ export class OcrProjectScreen extends React.Component {
          <div>
             <OcrCreateProject />
             <ReactTooltip place="top" type="light" />
-            <div class="table-responsive">
-               <table class="table table-condensed table-hover cst_table ">
+            <div className="table-responsive">
+               <table className="table table-condensed table-hover cst_table ">
                   <thead>
                      <tr>
                         <th data-tip="Click here to see workflows under the respective project" >Project Name</th>
@@ -170,7 +170,7 @@ export class OcrProjectScreen extends React.Component {
                         <th>Action</th>
                      </tr>
                   </thead>
-                  <tbody class="no-border-x">
+                  <tbody className="no-border-x">
                      {OcrProjectTable}
                   </tbody>
                </table>
@@ -184,12 +184,12 @@ export class OcrProjectScreen extends React.Component {
                   </Modal.Header>
                   <Modal.Body>
                      <div className="row">
-                        <div class="col-md-12">
-                           <div class="form-group">
-                              <label for="projectName" class="form-label">Project Name <span class="text-danger">*</span></label>
+                        <div className="col-md-12">
+                        <div class="form-group">
+                              <label for="projectName" className="form-label">Project Name <span className="text-danger">*</span></label>
                               <input className="form-control" id="projectName" type="text" defaultValue={this.state.editProjectName} onChange={this.handleNameChange} />
-                           </div>
                         </div>
+                     </div>
                      </div>
                   </Modal.Body>
                   <Modal.Footer>
@@ -207,11 +207,11 @@ export class OcrProjectScreen extends React.Component {
                   </Modal.Header>
                   <Modal.Body style={{ padding: '20px 15px 25px 15px' }}>
                      <div className="row">
-                        <div class="col-sm-4">
+                        <div className="col-sm-4">
                            <img style={{ width: '100%' }} src={STATIC_URL + "assets/images/alert_warning.png"} />
                         </div>
                         <div className="col-sm-8">
-                           <h4 class="text-warning">Warning !</h4>
+                           <h4 className="text-warning">Warning !</h4>
                            <div>Are you sure you want to delete {this.state.deleteProjectName} project?</div>
                            <div className="xs-mt-10">
                               <Button bsStyle="primary" onClick={this.deleteProject}>Yes</Button>

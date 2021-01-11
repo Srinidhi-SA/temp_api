@@ -22758,17 +22758,17 @@ ul.ocrUploadTabs{
 .stockExtractModel .modal-content{
   overflow: inherit;
 }
-.filter_input{
+.filterOptions li input{
  width: 38px;
  position: relative;
  left: 5px;
  background-color: #fff;
  border: 1px solid #e0e0e0;
 }
-button[disabled], html .filter_input[disabled] {
+button[disabled], html .filterOptions li input[disabled] {
   cursor: not-allowed;
 }
-.filter_input:focus {
+.filterOptions li input:focus {
   box-shadow: 0 0 5px rgba(2, 152, 140, 0.6);
   border-color: rgba(2, 152, 140, 0.8);
 }
@@ -23274,4 +23274,8 @@ body .p-multiselect.regParamFocus:hover {
 }
 .summaryCardHeight{
   height: 77px;
+}
+.filterOptions li a{
+  display:inline-block !important;
+   width:101px !important
 }
