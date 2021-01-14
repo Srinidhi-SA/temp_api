@@ -129,7 +129,7 @@ def send_my_messages(access_token, return_mail_id, subject, htmlData):
 
 @task(name='extract_from_image', queue=CONFIG_FILE_NAME)
 def extract_from_image(image, slug, template):
-    path, extension = ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
+    path, extension, filename = ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
     response = dict()
     if os.path.isdir(path):
         for index, image in enumerate(os.listdir(path)):
@@ -145,7 +145,7 @@ def extract_from_image(image, slug, template):
 def write_to_ocrimage(self, image, slug, template):
     progress_recorder = ProgressRecorder(self)
     progress_recorder.set_progress(1, 6, 'Starting recognition')
-    path, extension = ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
+    path, extension, filename = ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
     progress_recorder.set_progress(2, 6, 'Converting documents')
     res = dict()
     progress_recorder.set_progress(3, 6, 'Running analysis')
@@ -208,7 +208,7 @@ def write_to_ocrimage(self, image, slug, template):
                 temp_obj.save()
                 if image_queryset.imagefile.path[-4:] == '.pdf':
                     image_queryset.status = 'ready_to_assign'
-                    image_queryset.deleted = True
+                    image_queryset.is_recognized = True
                     image_queryset.save()
 
                 progress_recorder.set_progress(6, 6, 'Extract Successful')
@@ -228,7 +228,7 @@ def write_to_ocrimage(self, image, slug, template):
 def write_to_ocrimage2(self, image, slug, language_input, template):
     progress_recorder = ProgressRecorder(self)
     progress_recorder.set_progress(1, 6, 'Starting recognition')
-    path, extension = ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
+    path, extension, filename = ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
     progress_recorder.set_progress(2, 6, 'Converting documents')
     res = dict()
     progress_recorder.set_progress(3, 6, 'Running analysis')
@@ -338,6 +338,7 @@ def process_image(data, response, slug, image_queryset):
         data['project'] = image_queryset.project.id
         data['created_by'] = image_queryset.created_by.id
         data['name'] = response['image_name']
+        data['doctype'] = 'pdf_page'
         serializer = OCRImageSerializer(data=data)
     else:
         del data['slug']
