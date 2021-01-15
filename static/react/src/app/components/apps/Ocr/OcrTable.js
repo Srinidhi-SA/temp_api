@@ -68,20 +68,31 @@ export class OcrTable extends React.Component {
     this.setState({ checkAll: false, checkedList: [] });
     this.props.dispatch(getOcrUploadedFiles());
   }
-  handleImagePageFlag = (slug, name) => {
-    this.getImage(slug)
+  handleImagePageFlag = (slug,name,doctype) => {
+    this.getImage(slug,doctype)
     this.props.dispatch(saveSelectedImageName(name));
     this.props.dispatch(saveImagePageFlag(true));
   }
 
-  getImage = (slug) => {
-    return fetch(API + '/ocr/ocrimage/' + slug + '/', {
-      method: 'get',
-      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-    }).then(response => response.json())
-      .then(data => {
-        this.props.dispatch(saveImageDetails(data));
-      });
+  getImage = (slug, doctype) => {
+    if (doctype == "pdf") {
+      return fetch(API + '/ocr/ocrimage/retrieve_pdf/?slug=' + slug + '&page_size=1&page_number=1', {
+        method: 'get',
+        headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      }).then((response) => response.json())
+        .then(json => {
+          this.props.dispatch(saveImageDetails(json.data[0]));
+        })
+    }
+    else {
+      return fetch(API + '/ocr/ocrimage/' + slug + '/', {
+        method: 'get',
+        headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      }).then(response => response.json())
+        .then(data => {
+          this.props.dispatch(saveImageDetails(data));
+        });
+    }
   }
   sortOcrList(sortBy, sortOrder) {
     this.props.dispatch(storeOcrSortElements(sortBy, sortOrder))
@@ -448,7 +459,7 @@ export class OcrTable extends React.Component {
               <i style={{ color: '#414f50', fontSize: 14 }} className={item.type == ".pdf" ? "fa fa-file-pdf-o" : "fa fa-file-image-o"}></i>
             </td>
             <td style={status.includes(item.status) ? { cursor: 'not-allowed' } : { cursor: 'pointer' }}>
-              <Link title={item.name} style={status.includes(item.status) ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={`/apps/ocr-mq44ewz7bp/project/${item.name}`} onClick={() => { this.handleImagePageFlag(item.slug, item.name) }}>{item.name}</Link>
+              <Link title={item.name} style={status.includes(item.status) ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={`/apps/ocr-mq44ewz7bp/project/${item.name}`} onClick={() => { this.handleImagePageFlag(item.slug, item.name, item.doctype) }}>{item.name}</Link>
             </td>
             <td>{item.status}</td>
             {store.getState().ocr.tabActive == 'active' &&
