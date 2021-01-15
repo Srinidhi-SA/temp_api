@@ -100,6 +100,9 @@ export default function reducer(state = {
   customImgPath: "",
   customImageName:"",
   labelsList:[],
+  pdfSize:1,
+  pdfNumber:1,
+  pdfDoc: false,
 
 }, action) {
   switch (action.type) {
@@ -297,6 +300,16 @@ export default function reducer(state = {
           labelsList: action.data.labels_list,
         }
       }
+      break;
+      case "PDF_PAGINATION":
+        {
+        return{
+          ... state,
+          pdfSize: action.data.total_number_of_pages,
+          pdfNumber: action.data.current_page,
+          pdfDoc: true,
+        }
+        }
       break;
       case "CLOSE_FLAG":
         {
