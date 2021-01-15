@@ -279,28 +279,6 @@ class OCRImageset(models.Model):
         self.save()
 
 
-# class PDFInfo(models.Model):
-#     name = models.CharField(max_length=300, null=True)
-#     slug = models.SlugField(null=False, blank=True, max_length=300)
-#     pages = models.IntegerField(null=False)
-#     created_at = models.DateTimeField(auto_now_add=True, null=True)
-#
-#     def __str__(self):
-#         return " : ".join(["{}".format(x) for x in ["PDFInfo", self.name, self.created_at, self.slug]])
-#
-#     def generate_slug(self):
-#         """generate slug"""
-#         if not self.slug:
-#             self.slug = slugify(''.join(
-#                 random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
-#             self.name = "pdfinfo-" + self.slug
-#
-#     def save(self, *args, **kwargs):
-#         """Save PDFInfo model"""
-#         self.generate_slug()
-#         super(PDFInfo, self).save(*args, **kwargs)
-
-
 class OCRImage(models.Model):
     """
     Model : OCRImage

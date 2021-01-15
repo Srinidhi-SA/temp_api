@@ -45,7 +45,7 @@ from api.exceptions import creation_failed_exception, \
 # ------------------------------------------------------------
 from ocr.query_filtering import get_listed_data, get_image_list_data, \
     get_specific_listed_data, get_reviewer_data, get_filtered_ocrimage_list, get_filtered_project_list, \
-    get_userlisted_data
+    get_userlisted_data, get_image_data
 # -----------------------MODELS-------------------------------
 
 from .ITE.scripts.info_mapping import Final_json
@@ -61,7 +61,7 @@ from .permission import OCRImageRelatedPermission, \
     IsOCRClientUser
 # ------------------------------------------------------------
 
-from ocr.tasks import extract_from_image, write_to_ocrimage, write_to_ocrimage2
+from ocr.tasks import write_to_ocrimage, write_to_ocrimage2
 from celery.result import AsyncResult
 
 # ---------------------SERIALIZERS----------------------------
@@ -975,7 +975,36 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         if instance is None:
             return retrieve_failed_exception("File Doesn't exist.")
         queryset = OCRImage.objects.filter(imageset=instance.imageset, doctype='pdf_page')
-        total_pages = len(queryset)
+        response = get_image_data(self, request, queryset, OCRImageSerializer)
+        object_details = response.data['data'][0]
+
+        temp_obj = Template.objects.first()
+        values = list(json.loads(temp_obj.template_classification).keys())
+        value = [i.upper() for i in values]
+        object_details.update({'values': value})
+        custom_data = json.loads(object_details['custom_data'])
+        generic_labels = {
+            'name': '',
+            'address': '',
+            'contact': '',
+            'amount': '',
+            'quantity': ''
+        }
+        custom_data.update(generic_labels)
+        object_details["labels_list"] = [key for key in custom_data]
+        object_details["image_name"] = object_details['imagefile'].split('/')[-1]
+        object_details['custom_data'] = [{'label_name': label, 'data': data} for label, data in custom_data.items()]
+        desired_response = ['name', 'imagefile', 'slug', 'total_pages', 'generated_image', 'is_recognized', 'tasks',
+                            'values',
+                            'classification', 'custom_data', 'labels_list', 'image_name']
+        object_details = {key: val for key, val in object_details.items() if key in desired_response}
+        mask = 'ocr/ITE/database/{}_mask.png'.format(object_details['slug'])
+        size = cv2.imread(mask).shape
+        dynamic_shape = dynamic_cavas_size(size[:-1])
+        object_details.update({'height': dynamic_shape[0], 'width': dynamic_shape[1]})
+        response.data['data'][0] = object_details
+        return response
+        """total_pages = len(queryset)
         final_data = {}
         for item, obj in enumerate(queryset):
             serializer = OCRImageSerializer(instance=obj)
@@ -1012,7 +1041,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             else:
                 return Response(final_data)
         except KeyError:
-            return JsonResponse({"status": "FAILED", "message": "It appears you've reached the end"})
+            return JsonResponse({"status": "FAILED", "message": "It appears you've reached the end"})"""
 
     def update(self, request, *args, **kwargs):
         data = request.data
