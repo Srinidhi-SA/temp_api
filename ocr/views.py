@@ -752,6 +752,32 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             slug=self.kwargs.get('slug'),
         )
 
+    def add_image_info(self, object_details):
+        temp_obj = Template.objects.first()
+        values = list(json.loads(temp_obj.template_classification).keys())
+        value = [i.upper() for i in values]
+        object_details.update({'values': value})
+        custom_data = json.loads(object_details['custom_data'])
+        generic_labels = {
+            'name': '',
+            'address': '',
+            'contact': '',
+            'amount': '',
+            'quantity': ''
+        }
+        custom_data.update(generic_labels)
+        object_details["labels_list"] = [key for key in custom_data]
+        object_details["image_name"] = object_details['imagefile'].split('/')[-1]
+        object_details['custom_data'] = [{'label_name': label, 'data': data} for label, data in custom_data.items()]
+        desired_response = ['imagefile', 'slug', 'generated_image', 'is_recognized', 'tasks', 'values',
+                            'classification', 'custom_data', 'labels_list', 'image_name']
+        object_details = {key: val for key, val in object_details.items() if key in desired_response}
+        mask = 'ocr/ITE/database/{}_mask.png'.format(object_details['slug'])
+        size = cv2.imread(mask).shape
+        dynamic_shape = dynamic_cavas_size(size[:-1])
+        object_details.update({'height': dynamic_shape[0], 'width': dynamic_shape[1]})
+        return object_details
+
     @list_route(methods=['post'])
     def get_s3_files(self, request, **kwargs):
         """
@@ -942,29 +968,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         serializer = OCRImageSerializer(instance=instance, context={'request': request})
         object_details = serializer.data
-        temp_obj = Template.objects.first()
-        values = list(json.loads(temp_obj.template_classification).keys())
-        value = [i.upper() for i in values]
-        object_details.update({'values': value})
-        custom_data = json.loads(object_details['custom_data'])
-        generic_labels = {
-            'name': '',
-            'address': '',
-            'contact': '',
-            'amount': '',
-            'quantity': ''
-        }
-        custom_data.update(generic_labels)
-        object_details["labels_list"] = [key for key in custom_data]
-        object_details["image_name"] = object_details['imagefile'].split('/')[-1]
-        object_details['custom_data'] = [{'label_name': label, 'data': data} for label, data in custom_data.items()]
-        desired_response = ['imagefile', 'slug', 'generated_image', 'is_recognized', 'tasks', 'values',
-                            'classification', 'custom_data', 'labels_list', 'image_name']
-        object_details = {key: val for key, val in object_details.items() if key in desired_response}
-        mask = 'ocr/ITE/database/{}_mask.png'.format(object_details['slug'])
-        size = cv2.imread(mask).shape
-        dynamic_shape = dynamic_cavas_size(size[:-1])
-        object_details.update({'height': dynamic_shape[0], 'width': dynamic_shape[1]})
+        object_details = self.add_image_info(object_details)
         return Response(object_details)
 
     @list_route(methods=['get'])
@@ -977,71 +981,9 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         queryset = OCRImage.objects.filter(imageset=instance.imageset, doctype='pdf_page')
         response = get_image_data(self, request, queryset, OCRImageSerializer)
         object_details = response.data['data'][0]
-
-        temp_obj = Template.objects.first()
-        values = list(json.loads(temp_obj.template_classification).keys())
-        value = [i.upper() for i in values]
-        object_details.update({'values': value})
-        custom_data = json.loads(object_details['custom_data'])
-        generic_labels = {
-            'name': '',
-            'address': '',
-            'contact': '',
-            'amount': '',
-            'quantity': ''
-        }
-        custom_data.update(generic_labels)
-        object_details["labels_list"] = [key for key in custom_data]
-        object_details["image_name"] = object_details['imagefile'].split('/')[-1]
-        object_details['custom_data'] = [{'label_name': label, 'data': data} for label, data in custom_data.items()]
-        desired_response = ['name', 'imagefile', 'slug', 'total_pages', 'generated_image', 'is_recognized', 'tasks',
-                            'values',
-                            'classification', 'custom_data', 'labels_list', 'image_name']
-        object_details = {key: val for key, val in object_details.items() if key in desired_response}
-        mask = 'ocr/ITE/database/{}_mask.png'.format(object_details['slug'])
-        size = cv2.imread(mask).shape
-        dynamic_shape = dynamic_cavas_size(size[:-1])
-        object_details.update({'height': dynamic_shape[0], 'width': dynamic_shape[1]})
+        object_details = self.add_image_info(object_details)
         response.data['data'][0] = object_details
         return response
-        """total_pages = len(queryset)
-        final_data = {}
-        for item, obj in enumerate(queryset):
-            serializer = OCRImageSerializer(instance=obj)
-            object_details = serializer.data
-            temp_obj = Template.objects.first()
-            values = list(json.loads(temp_obj.template_classification).keys())
-            value = [i.upper() for i in values]
-            object_details.update({'values': value})
-            custom_data = json.loads(object_details['custom_data'])
-            generic_labels = {
-                'name': '',
-                'address': '',
-                'contact': '',
-                'amount': '',
-                'quantity': ''
-            }
-            custom_data.update(generic_labels)
-            object_details["labels_list"] = [key for key in custom_data]
-            object_details["name"] = obj.name
-            object_details["total_pages"] = total_pages
-            object_details["image_name"] = object_details['imagefile'].split('/')[-1]
-            object_details['custom_data'] = [{'label_name': label, 'data': data} for label, data in custom_data.items()]
-            desired_response = ['name', 'imagefile', 'slug', 'total_pages', 'generated_image', 'is_recognized', 'tasks', 'values',
-                                'classification', 'custom_data', 'labels_list', 'image_name']
-            object_details = {key: val for key, val in object_details.items() if key in desired_response}
-            mask = 'ocr/ITE/database/{}_mask.png'.format(object_details['slug'])
-            size = cv2.imread(mask).shape
-            dynamic_shape = dynamic_cavas_size(size[:-1])
-            object_details.update({'height': dynamic_shape[0], 'width': dynamic_shape[1]})
-            final_data[item] = object_details
-        try:
-            if 'item_number' in self.request.query_params:
-                return Response(final_data[int(self.request.query_params.get('item_number')) - 1])
-            else:
-                return Response(final_data)
-        except KeyError:
-            return JsonResponse({"status": "FAILED", "message": "It appears you've reached the end"})"""
 
     def update(self, request, *args, **kwargs):
         data = request.data
