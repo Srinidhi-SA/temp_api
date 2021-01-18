@@ -27,15 +27,27 @@ export class SignalDocumentMode extends React.Component {
   }
 
   searchTree(_Node, cardLists, lastVar) {
-    if (_Node.listOfCards.length!=0&&_Node.listOfCards[_Node.listOfCards.length - 1].slug == lastVar) {
+    if(_Node.name!="Prediction" && _Node.listOfCards.length!=0&&_Node.listOfCards[_Node.listOfCards.length - 1].slug == lastVar) {
       cardLists.push(_Node.listOfCards);
       return cardLists;
     } else {
       var i;
       var result = null;
-      cardLists.push(_Node.listOfCards);
-      for (i = 0; i < _Node.listOfNodes.length; i++) {
-        result = this.searchTree(_Node.listOfNodes[i], cardLists, lastVar);
+      if(_Node.name==="Prediction" && _Node.listOfCards===undefined){
+        for(let i=0;i<Object.keys(_Node).length;i++){
+          var clone_Node = JSON.parse(JSON.stringify(_Node));
+          if(Object.keys(clone_Node)[i].includes("Depth Of Tree")){
+            let node = clone_Node[Object.keys(clone_Node)[i]].listOfCards;            
+            // clone_Node[Object.keys(clone_Node)[i]].listOfCards[0].cardData.filter(i=>i.dataType==="dropdown")[0]["dropdownName"] = clone_Node[Object.keys(clone_Node)[i]].name
+            clone_Node[Object.keys(clone_Node)[i]].listOfCards[0].cardData.filter(i=>i.dataType==="table")[0].data["name"] = clone_Node[Object.keys(clone_Node)[i]].name
+            cardLists.push(node);
+          }
+        }
+      }else{
+        cardLists.push(_Node.listOfCards);
+        for (i = 0; i < _Node.listOfNodes.length; i++) {
+          result = this.searchTree(_Node.listOfNodes[i], cardLists, lastVar);
+        }
       }
       result!=null && this.props.dispatch(saveDocmodeConfig(result))
       return result;
@@ -102,7 +114,7 @@ export class SignalDocumentMode extends React.Component {
 						</h3>
 
                         <div className="clearfix"></div>
-					
+     
                     <div className="panel panel-mAd box-shadow">                      
 
                       <div className="panel-body no-border documentModeSpacing">

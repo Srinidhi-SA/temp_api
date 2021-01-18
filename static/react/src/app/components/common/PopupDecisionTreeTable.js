@@ -10,7 +10,9 @@ import {DecisionTree} from "../common/DecisionTree";
 
 
 @connect((store) => {
-    return { selPrediction: store.signals.selectedPrediction};
+    return { selPrediction: store.signals.selectedPrediction,
+      dtModelShow:store.datasets.dtModelShow
+    };
   })
 //Used in Score Summary Table
 export class PopupDecisionTreeTable extends React.Component {
@@ -22,8 +24,8 @@ export class PopupDecisionTreeTable extends React.Component {
   //    bootbox.alert({title: "Prediction Rule",
   //            message: rule});
   // }
-  showDecisionTreePopup =(rule,path)=>{
-  this.props.dispatch(openDTModalAction(rule,path));
+  showDecisionTreePopup =(rule,path,name)=>{
+  this.props.dispatch(openDTModalAction(rule,path,name));
  }
   componentDidMount(){
       handleDecisionTreeTable();
@@ -71,7 +73,7 @@ generateDecisionTreeRows(table) {
                       else return  <td class="text-center" key={j}>{colData}</td>
 
               });
-              return<tr key={i}>{rows}<td class="cursor text-center" onClick={that.showDecisionTreePopup.bind(this,rule,path)}><a data-toggle="modal" class="btn btn-space btn-default btn-round btn-xs"><i class="fa fa-info"></i></a></td></tr>;
+              return<tr key={i}>{rows}<td class="cursor text-center" onClick={that.showDecisionTreePopup.bind(this,rule,path,that.props.tableData.name)}><a data-toggle="modal" class="btn btn-space btn-default btn-round btn-xs"><i class="fa fa-info"></i></a></td></tr>;
           }
         })
       return tbodyData;
@@ -100,7 +102,7 @@ generateDecisionTreeRows(table) {
    this.callTableSorter()
    return (
            <div class="table-style_2">
-             <DecisionTree/>
+            {this.props.dtModelShow?<DecisionTree/>:""}
            <table id="sorter" className={className}>
                <thead><tr>{headerComponents}<th className="sorter-false" width="2%">Details</th></tr></thead>
 

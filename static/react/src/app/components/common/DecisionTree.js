@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Button, Modal } from "react-bootstrap";
-import {closeDtModalAction,saveDtDataFormat} from "../../actions/dataActions";
+import {closeDtModalAction} from "../../actions/dataActions";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {STATIC_URL} from "../../helpers/env";
 import store from "../../store";
@@ -12,6 +12,7 @@ import store from "../../store";
     dtData: store.signals.signalAnalysis.listOfNodes,
     dtPath: store.datasets.dtPath,
     dtJsonFormat: store.datasets.dtJsonFormat,
+    dtName: store.datasets.dtName,
   };
 })
 
@@ -325,7 +326,7 @@ export class DecisionTree extends React.Component {
        </div>
        }
      </div>
-     <Scrollbars style={this.props.dtData.filter(i=>i.name=="Prediction")[0].decisionTree != undefined ? {height:450} : {minHeight:90,maxHeight:250} }>
+     <Scrollbars style={this.props.dtData.filter(i=>i.name=="Prediction")[0].decisionTree != undefined ? {height:450} : {minHeight:250,maxHeight:450} }>
        <div id="tree-vertical"></div>
      </Scrollbars>
       </div>
@@ -339,20 +340,23 @@ export class DecisionTree extends React.Component {
                
   </div>);}
 componentDidUpdate(){
+    alert("componentDidUpdate");
   this.refs.test.innerHTML = this.props.dtRule;
-  if(!window.location.href.includes("scores")){
-  var Json = this.props.dtData.filter(i=>i.name=="Prediction")[0].decisionTree 
+  var Json = "";
   var newObject;
-  Json != undefined && 
-  ( newObject =  JSON.parse(JSON.stringify(Json)),
-  this.BuildHorizontalTree(newObject, "#tree-vertical"))
+  if(!window.location.href.includes("scores")){
+    if(store.getState().signals.signalAnalysis.listOfNodes.filter(i=>i.name==="Prediction")[0].listOfNodes!=undefined){
+      Json = store.getState().datasets.dtData.filter(i=>i.name=="Prediction")[0].decisionTree 
+    }else{
+      var predConfig = store.getState().signals.signalAnalysis.listOfNodes.filter(i=>i.name==="Prediction")[0]
+      Json = predConfig[store.getState().datasets.dtName].decisionTree
   }
-  else{
-    var Json = store.getState().apps.scoreSummary.data.listOfCards[0].decisionTree
-    var newObject;
-    Json != undefined && 
-    ( newObject =  JSON.parse(JSON.stringify(Json)),
-    this.BuildHorizontalTree(newObject, "#tree-vertical"))
+  }else{
+    Json = store.getState().apps.scoreSummary.data.listOfCards[0].decisionTree
+    }
+   if(Json != undefined && document.getElementById("tree-vertical").childNodes.length===0){
+     newObject =  JSON.parse(JSON.stringify(Json))
+    this.BuildHorizontalTree(newObject, "#tree-vertical")
   }
 }  
 }

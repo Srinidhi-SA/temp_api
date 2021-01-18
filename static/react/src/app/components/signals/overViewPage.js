@@ -14,10 +14,11 @@ import store from "../../store";
 import {getSignalAnalysis, updateselectedL1} from "../../actions/signalActions";
 import {STATIC_URL,API} from "../../helpers/env.js"
 import Slider from "react-slick";
-import {getRoboDataset, getStockAnalysis,getAppsScoreSummary,getScoreSummaryInCSV,uploadStockAnalysisFlag, setLoaderFlagAction} from "../../actions/appActions";
+import {getRoboDataset, getStockAnalysis,getScoreSummaryInCSV,uploadStockAnalysisFlag, setLoaderFlagAction} from "../../actions/appActions";
 import {hideDataPreview} from "../../actions/dataActions";
 import {AppsStockDataPreview} from "../apps/AppsStockDataPreview";
 import { chartdate } from "../../actions/chartActions";
+import SignalPrediction from "./SignalPrediction";
 
 @connect((store) => {
   return {signal: store.signals.signalAnalysis, urlPrefix: store.signals.urlPrefix, customerDataset_slug: store.apps.customerDataset_slug};
@@ -53,7 +54,12 @@ export class OverViewPage extends React.Component {
     }, 0);  
   }
   componentDidUpdate(){
+  if(this.props.match.params.l1.includes("prediction")){
+    this.props.dispatch(updateselectedL1("Prediction"))
+  }else{
     this.props.dispatch(updateselectedL1(this.l1Name))
+  }
+  if(!this.props.match.params.l1.includes("prediction")){
     var that = this;
     $(function() {
       let index = $(".sb_navigation li>a.active").parent().index();
@@ -65,18 +71,19 @@ export class OverViewPage extends React.Component {
       }}
     });
   }
+}
   componentWillUnmount = () => {            
     clearTimeout(this.setTime);    
     this.props.dispatch(setLoaderFlagAction(true))  
 }; 
 
 
-  prevNext(path) {
-    let currentSuffix = path.location.pathname;
+  prevNext(path,sigData) {
+    let currentSuffix = path;
     var delimiter = "/";
     var tokens = currentSuffix.split(delimiter).slice(3);
     currentSuffix = tokens.join(delimiter);
-    let expectedURL = getPrevNext(this.props.signal, currentSuffix);
+    let expectedURL = getPrevNext(sigData, currentSuffix);
     return expectedURL;
   }
   redirectPush(url) {
@@ -165,7 +172,12 @@ export class OverViewPage extends React.Component {
         tabList = [];
         if (this.props.signal.listOfNodes && this.props.signal.listOfNodes.length != 0) {
           tabList = this.props.signal.listOfNodes.map((tab, i) => {
-            let selectedLink = that.urlPrefix + "/" + params.slug + "/" + tab.slug;
+            let selectedLink = ""
+            if(tab.name === "Prediction" && tab.listOfCards===undefined){
+              selectedLink = that.urlPrefix + "/" + params.slug + "/" + tab.slug + "/" + "slug_maxdepth3";
+            }else{
+              selectedLink = that.urlPrefix + "/" + params.slug + "/" + tab.slug;
+            }
             let classname1 = "mAd_icons tab_" + tab.name.toLowerCase();
             return (
               <li key={i}>
@@ -177,11 +189,22 @@ export class OverViewPage extends React.Component {
             )
           });
         }
+        var cloneSigData = JSON.parse(JSON.stringify(this.props.signal));
+
+        if(params.l1.includes("prediction") && this.props.signal.listOfNodes.filter(i=>i.name==="Prediction")[0]["Depth Of Tree 3"]!=undefined){
+          let predictionTab = ""
+          predictionTab = <SignalPrediction ovProps={this.props}/>
+          return predictionTab;
+        }else{
+          if(this.props.signal.listOfNodes.filter(i=>i.name==="Prediction")!=undefined && this.props.signal.listOfNodes.filter(i=>i.name==="Prediction")[0]["Depth Of Tree 3"]!=undefined){
+            let dt = cloneSigData.listOfNodes.filter(i=>i.name!="Prediction")
+            cloneSigData.listOfNodes = dt
+          }
 
         if (Object.keys(params).length < 3) {
-          card = getFirstCard(this.props.signal, params.l1);
+          card = getFirstCard(cloneSigData, params.l1);
           let cardLink = that.urlPrefix + "/" + params.slug + "/" + params.l1 + "/" + card.slug;
-          node  = fetchNodeFromTree(params.l1, this.props.signal)
+          node  = fetchNodeFromTree(params.l1, cloneSigData)
           if(node.listOfCards.length==0){
             if(node.listOfNodes.length>0){
               let level2 = node.listOfNodes[0].slug
@@ -190,7 +213,7 @@ export class OverViewPage extends React.Component {
           }
           return (<Redirect to={cardLink}/>);
         }else {
-          card = fetchCard(params, this.props.signal);
+          card = fetchCard(params, cloneSigData);
           if (params.l3 && params.l3 == "$") {
             let cardLink = that.urlPrefix + "/" + params.slug + "/" + params.l1 + "/" + params.l2 + "/" + card.slug;
             return (<Redirect to={cardLink}/>);
@@ -199,7 +222,7 @@ export class OverViewPage extends React.Component {
 
         var l1Name = params.l1;
         if (params.l1) {
-          var selectedNodeFromLevel1 = fetchNodeFromTree(params.l1, this.props.signal);
+          var selectedNodeFromLevel1 = fetchNodeFromTree(params.l1, cloneSigData);
           l1Name = selectedNodeFromLevel1.name;
           this.l1Name = l1Name
           if (!isEmpty(selectedNodeFromLevel1) && selectedNodeFromLevel1.listOfNodes.length > 0) {
@@ -233,7 +256,7 @@ export class OverViewPage extends React.Component {
           selectedURL = that.urlPrefix + "/" + params.slug + "/" + params.l1 + "/" + params.l2;
         }
        
-        selectedNode = fetchNodeFromTree(selectedNode_slug, this.props.signal);
+        selectedNode = fetchNodeFromTree(selectedNode_slug, cloneSigData);
         if(selectedNode.listOfCards.length!=1) {
           hideListOfAnalysis = false;
           cardList = selectedNode.listOfCards.map((card, i) => {
@@ -255,22 +278,22 @@ export class OverViewPage extends React.Component {
           documentModeLink = "/apps-robo-document-mode/" + this.props.match.params.slug;
         }
 
-        let expectedURL = this.prevNext(this.props);
+        let expectedURL = this.prevNext(this.props.location.pathname,this.props.signal);
         let prevURL = that.urlPrefix + "/" + this.props.match.params.slug + "/" + expectedURL.prev;
         let nextURL = that.urlPrefix + "/" + this.props.match.params.slug + "/" + expectedURL.next;
         this.nextRedirect = nextURL;
      
         if (expectedURL.prev == null) {
-          if (this.props.signal.listOfCards.length > 0) {
-            if (this.props.signal.listOfCards[0].slug) {
+          if (cloneSigData.listOfCards.length > 0) {
+            if (cloneSigData.listOfCards[0].slug) {
               prevURL = that.urlPrefix + "/" + this.props.match.params.slug;
             }
           }else {
             prevURL = that.urlPrefix;
           }
         } else {
-          if (this.props.signal.listOfCards.length > 0) {
-            if (expectedURL.prev == this.props.signal.listOfCards[0].slug) {
+          if (cloneSigData.listOfCards.length > 0) {
+            if (expectedURL.prev == cloneSigData.listOfCards[0].slug) {
               prevURL = that.urlPrefix + "/" + this.props.match.params.slug;
             }
           }else {
@@ -283,7 +306,7 @@ export class OverViewPage extends React.Component {
           nextURL = documentModeLink;
         }
 
-        let lastcard = getLastCardOfTree(this.props.signal);
+        let lastcard = getLastCardOfTree(cloneSigData);
         let nameLink = that.urlPrefix + "/" + this.props.match.params.slug;
         if (that.urlPrefix == "/apps-robo") {
           nameLink = that.urlPrefix + "-list" + "/" + this.props.match.params.slug + "/customer" + "/data/" + store.getState().apps.customerDataset_slug;
@@ -390,4 +413,5 @@ export class OverViewPage extends React.Component {
       }
     }
   }
+}
 }
