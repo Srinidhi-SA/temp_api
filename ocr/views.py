@@ -61,7 +61,7 @@ from .permission import OCRImageRelatedPermission, \
     IsOCRClientUser
 # ------------------------------------------------------------
 
-from ocr.tasks import write_to_ocrimage, write_to_ocrimage2
+from ocr.tasks import write_to_ocrimage, write_to_ocrimage_lang_support
 from celery.result import AsyncResult
 
 # ---------------------SERIALIZERS----------------------------
@@ -1049,7 +1049,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         template = json.loads(Template.objects.first().template_classification)
                         if request.user.username in foreign_user_mapping:
                             # print(f"{'*'*50}{foreign_user_mapping[request.user.username]}{'*'*50}")
-                            response = write_to_ocrimage2.apply_async(
+                            response = write_to_ocrimage_lang_support.apply_async(
                                 args=(image_queryset.imagefile.path, slug, foreign_user_mapping[request.user.username],
                                       template))
                         else:
