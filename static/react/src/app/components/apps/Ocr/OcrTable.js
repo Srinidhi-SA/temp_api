@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import {
-  getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails,
+  getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails, pdfPagination,
   saveSelectedImageName, storeOcrSortElements, updateCheckList, storeOcrFilterStatus, setProjectTabLoaderFlag,
   storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem, tabActiveVal, storeOcrFilterFields, clearImageDetails, storeOcrFilterTemplate, docTablePage, docTablePagesize
 } from '../../../actions/ocrActions';
@@ -23,7 +23,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
     projectName: store.ocr.selected_project_name,
     revDocumentFlag: store.ocr.revDocumentFlag,
     reviewerName: store.ocr.selected_reviewer_name,
-    projectTabLoaderFlag: store.ocr.projectTabLoaderFlag
+    projectTabLoaderFlag: store.ocr.projectTabLoaderFlag,
   };
 })
 
@@ -82,6 +82,7 @@ export class OcrTable extends React.Component {
       }).then((response) => response.json())
         .then(json => {
           this.props.dispatch(saveImageDetails(json.data[0]));
+          this.props.dispatch(pdfPagination(json));
         })
     }
     else {

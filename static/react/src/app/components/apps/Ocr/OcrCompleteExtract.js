@@ -1,7 +1,7 @@
 import React from 'react';
-import { saveImagePageFlag, updateOcrImage, clearImageDetails, closeFlag, setProjectTabLoaderFlag, tabActiveVal } from '../../../actions/ocrActions';
+import { saveImagePageFlag, updateOcrImage, clearImageDetails, closeFlag, setProjectTabLoaderFlag, tabActiveVal, saveImageDetails, pdfPagination } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
-import { Link } from 'react-router-dom';
+import { Pagination } from "react-bootstrap";
 import { API } from "../../../helpers/env";
 import { getUserDetailsOrRestart, statusMessages } from "../../../helpers/helper";
 import { Scrollbars } from 'react-custom-scrollbars';
@@ -23,6 +23,9 @@ import ReactTooltip from 'react-tooltip';
     classification: store.ocr.classification,
     ocrImgHeight: store.ocr.ocrImgHeight,
     ocrImgWidth: store.ocr.ocrImgWidth,
+    pdfSize: store.ocr.pdfSize,
+    pdfNumber: store.ocr.pdfNumber,
+    pdfDoc: store.ocr.pdfDoc,
   };
 })
 
@@ -298,6 +301,16 @@ export class OcrCompleteExtract extends React.Component {
   handleClose = () => {
     this.props.dispatch(saveImagePageFlag(false));
   }
+  handlePagination = (pageNo) => {
+    return fetch(API + '/ocr/ocrimage/retrieve_pdf/?slug=' + this.props.imageSlug + '&page_size=1&page_number=' + pageNo, {
+      method: 'get',
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+    }).then((response) => response.json())
+      .then(json => {
+        this.props.dispatch(saveImageDetails(json.data[0]));
+        this.props.dispatch(pdfPagination(json));
+      })
+  }
   render() {
     let username = ["Devk", "Devc", "Devj"];
     if (this.state.img1Load && this.state.img2Load) {
@@ -425,6 +438,11 @@ export class OcrCompleteExtract extends React.Component {
             </div>
 
           </div>
+          {this.props.pdfDoc &&
+          <div className="col-sm-12 text-center sm-mt-30">
+          <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handlePagination} first last next prev boundaryLinks items={this.props.pdfSize} activePage={this.props.pdfNumber} />
+          </div>
+          }
           <div class="col-sm-12 text-right" style={{ marginTop: '3%' }}>
             {(getUserDetailsOrRestart.get().userRole == "ReviewerL1" || getUserDetailsOrRestart.get().userRole == "ReviewerL2") ?
               <div style={{ display: 'inline' }}>
