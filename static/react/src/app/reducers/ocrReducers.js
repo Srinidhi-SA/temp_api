@@ -338,6 +338,7 @@ export default function reducer(state = {
             is_closed:"",
             template: [],
             classification: "",
+            pdfDoc: false,
           }
         }
         break;
