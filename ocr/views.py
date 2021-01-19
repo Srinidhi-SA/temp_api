@@ -61,7 +61,7 @@ from .permission import OCRImageRelatedPermission, \
     IsOCRClientUser
 # ------------------------------------------------------------
 
-from ocr.tasks import write_to_ocrimage, write_to_ocrimage2
+from ocr.tasks import write_to_ocrimage, write_to_ocrimage_lang_support
 from celery.result import AsyncResult
 
 # ---------------------SERIALIZERS----------------------------
@@ -769,7 +769,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         object_details["labels_list"] = [key for key in custom_data]
         object_details["image_name"] = object_details['imagefile'].split('/')[-1]
         object_details['custom_data'] = [{'label_name': label, 'data': data} for label, data in custom_data.items()]
-        desired_response = ['imagefile', 'slug', 'generated_image', 'is_recognized', 'tasks', 'values',
+        desired_response = ['name', 'imagefile', 'slug', 'generated_image', 'is_recognized', 'tasks', 'values',
                             'classification', 'custom_data', 'labels_list', 'image_name']
         object_details = {key: val for key, val in object_details.items() if key in desired_response}
         mask = 'ocr/ITE/database/{}_mask.png'.format(object_details['slug'])
@@ -978,7 +978,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         if instance is None:
             return retrieve_failed_exception("File Doesn't exist.")
-        queryset = OCRImage.objects.filter(imageset=instance.imageset, doctype='pdf_page')
+        queryset = OCRImage.objects.filter(imageset=instance.imageset, doctype='pdf_page').order_by('name')
         response = get_image_data(self, request, queryset, OCRImageSerializer)
         object_details = response.data['data'][0]
         object_details = self.add_image_info(object_details)
@@ -1049,7 +1049,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         template = json.loads(Template.objects.first().template_classification)
                         if request.user.username in foreign_user_mapping:
                             # print(f"{'*'*50}{foreign_user_mapping[request.user.username]}{'*'*50}")
-                            response = write_to_ocrimage2.apply_async(
+                            response = write_to_ocrimage_lang_support.apply_async(
                                 args=(image_queryset.imagefile.path, slug, foreign_user_mapping[request.user.username],
                                       template))
                         else:
