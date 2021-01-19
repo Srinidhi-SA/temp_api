@@ -357,7 +357,7 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          filter_status: action.status,
+          filter_status: action.value,
         }
       }
     break;
@@ -365,7 +365,7 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          filter_confidence: action.confidence,
+          filter_confidence: action.value,
         }
       }
     break;
@@ -373,7 +373,7 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          filter_assignee: action.assignee
+          filter_assignee: action.value
         }
       }
     break;
@@ -382,7 +382,7 @@ export default function reducer(state = {
     {
       return {
         ...state,
-        filter_template: action.template
+        filter_template: action.value
       }
     }
   break;
@@ -390,10 +390,23 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          filter_fields: action.fields
+          filter_fields: action.value
         }
       }
     break;
+    
+    case "RESET_OCR_TABLE_FILTERS":
+    {
+      return {
+        ...state,
+        filter_status:'',
+        filter_confidence: '',
+        filter_assignee:'',
+        filter_fields:'',
+        filter_template:''
+      }
+    }
+  break;
     // filter for reviewers document table
     case "FILTER_RD_BY_STATUS":
       {
