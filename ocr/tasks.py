@@ -36,6 +36,7 @@ def send_welcome_email(username=None):
     else:
         print("Please enable SEND_WELCOME_MAIL=True in order to send welcome email to users.")
 
+
 @task(name='send_info_email', queue=CONFIG_FILE_NAME)
 def send_info_email(username, supervisor):
     if settings.SEND_INFO_MAIL:
@@ -49,7 +50,7 @@ def send_info_email(username, supervisor):
         print("Sending Info mail to : {0}".format(supervisor))
 
         info_mail('send', access_token=access_token, return_mail_id=user.email,
-                     subject='Marlabs-INFO', username=username, supervisor=supervisor)
+                  subject='Marlabs-INFO', username=username, supervisor=supervisor)
         print("~" * 90)
     else:
         print("Please enable SEND_INFO_MAIL=True in order to send info email to Admin.")
@@ -71,6 +72,7 @@ def info_mail(action_type=None, access_token=None, return_mail_id=None, subject=
             print(e)
             print("Some issue with mail sending module...")
 
+
 def welcome_mail(action_type=None, access_token=None, return_mail_id=None, subject=None, username=None):
     if not access_token:
         return HttpResponseRedirect(reverse('tutorial:home'))
@@ -86,7 +88,6 @@ def welcome_mail(action_type=None, access_token=None, return_mail_id=None, subje
         except Exception as e:
             print(e)
             print("Some issue with mail sending module...")
-
 
 
 def send_my_messages(access_token, return_mail_id, subject, htmlData):
@@ -127,25 +128,11 @@ def send_my_messages(access_token, return_mail_id, subject, htmlData):
         return "{0}: {1}".format(r.status_code, r.text)
 
 
-@task(name='extract_from_image', queue=CONFIG_FILE_NAME)
-def extract_from_image(image, slug, template):
-    path, extension = ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
-    response = dict()
-    if os.path.isdir(path):
-        for index, image in enumerate(os.listdir(path)):
-            response[index] = main(os.path.join(path, image), template)
-            response[index]['extension'] = extension
-        return response
-    else:
-        response[0] = main(path, template, slug)
-        return response
-
-
 @task(name='write_to_ocrimage', queue=CONFIG_FILE_NAME, bind=True)
 def write_to_ocrimage(self, image, slug, template):
     progress_recorder = ProgressRecorder(self)
     progress_recorder.set_progress(1, 6, 'Starting recognition')
-    path, extension = ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
+    path, extension, filename = ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
     progress_recorder.set_progress(2, 6, 'Converting documents')
     res = dict()
     progress_recorder.set_progress(3, 6, 'Running analysis')
@@ -208,7 +195,7 @@ def write_to_ocrimage(self, image, slug, template):
                 temp_obj.save()
                 if image_queryset.imagefile.path[-4:] == '.pdf':
                     image_queryset.status = 'ready_to_assign'
-                    image_queryset.deleted = True
+                    image_queryset.is_recognized = True
                     image_queryset.save()
 
                 progress_recorder.set_progress(6, 6, 'Extract Successful')
@@ -224,11 +211,11 @@ def write_to_ocrimage(self, image, slug, template):
     return results
 
 
-@task(name='write_to_ocrimage2', queue=CONFIG_FILE_NAME, bind=True)
-def write_to_ocrimage2(self, image, slug, language_input, template):
+@task(name='write_to_ocrimage_lang_support', queue=CONFIG_FILE_NAME, bind=True)
+def write_to_ocrimage_lang_support(self, image, slug, language_input, template):
     progress_recorder = ProgressRecorder(self)
     progress_recorder.set_progress(1, 6, 'Starting recognition')
-    path, extension = ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
+    path, extension, filename = ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
     progress_recorder.set_progress(2, 6, 'Converting documents')
     res = dict()
     progress_recorder.set_progress(3, 6, 'Running analysis')
@@ -278,7 +265,7 @@ def write_to_ocrimage2(self, image, slug, language_input, template):
         else:
             slug = response['image_slug']
             progress_recorder.set_progress(5, 6, 'Starting db operations')
-            serializer = process_image2(data, response, slug, image_queryset, language_input)
+            serializer = process_image_lang_support(data, response, slug, image_queryset, language_input)
             if serializer.is_valid():
                 serializer.save()
                 results.append(
@@ -338,6 +325,7 @@ def process_image(data, response, slug, image_queryset):
         data['project'] = image_queryset.project.id
         data['created_by'] = image_queryset.created_by.id
         data['name'] = response['image_name']
+        data['doctype'] = 'pdf_page'
         serializer = OCRImageSerializer(data=data)
     else:
         del data['slug']
@@ -345,7 +333,7 @@ def process_image(data, response, slug, image_queryset):
     return serializer
 
 
-def process_image2(data, response, slug, image_queryset, language):
+def process_image_lang_support(data, response, slug, image_queryset, language):
     from ocr.serializers import OCRImageSerializer
 
     data['final_result'] = json.dumps(response['final_json'])
@@ -386,6 +374,6 @@ def process_image2(data, response, slug, image_queryset, language):
 
 def get_db_object(model_name, model_slug):
     from django.apps import apps
-    mymodel = apps.get_model('ocr', model_name)
-    obj = mymodel.objects.get(slug=model_slug)
+    my_model = apps.get_model('ocr', model_name)
+    obj = my_model.objects.get(slug=model_slug)
     return obj

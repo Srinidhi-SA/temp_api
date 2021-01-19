@@ -1,7 +1,7 @@
 import React from 'react';
-import { saveImagePageFlag, updateOcrImage, clearImageDetails, closeFlag, setProjectTabLoaderFlag, tabActiveVal } from '../../../actions/ocrActions';
+import { saveImagePageFlag, updateOcrImage, clearImageDetails, closeFlag, setProjectTabLoaderFlag, tabActiveVal, saveImageDetails, pdfPagination } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
-import { Link } from 'react-router-dom';
+import { Pagination } from "react-bootstrap";
 import { API } from "../../../helpers/env";
 import { getUserDetailsOrRestart, statusMessages } from "../../../helpers/helper";
 import { Scrollbars } from 'react-custom-scrollbars';
@@ -23,6 +23,9 @@ import ReactTooltip from 'react-tooltip';
     classification: store.ocr.classification,
     ocrImgHeight: store.ocr.ocrImgHeight,
     ocrImgWidth: store.ocr.ocrImgWidth,
+    pdfSize: store.ocr.pdfSize,
+    pdfNumber: store.ocr.pdfNumber,
+    pdfDoc: store.ocr.pdfDoc,
   };
 })
 
@@ -298,6 +301,16 @@ export class OcrCompleteExtract extends React.Component {
   handleClose = () => {
     this.props.dispatch(saveImagePageFlag(false));
   }
+  handlePagination = (pageNo) => {
+    return fetch(API + '/ocr/ocrimage/retrieve_pdf/?slug=' + this.props.imageSlug + '&page_size=1&page_number=' + pageNo, {
+      method: 'get',
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+    }).then((response) => response.json())
+      .then(json => {
+        this.props.dispatch(saveImageDetails(json.data[0]));
+        this.props.dispatch(pdfPagination(json));
+      })
+  }
   render() {
     let username = ["Devk", "Devc", "Devj"];
     if (this.state.img1Load && this.state.img2Load) {
@@ -312,8 +325,23 @@ export class OcrCompleteExtract extends React.Component {
     return (
       <div ref="rootImg">
         <img id="imgLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
-        <div id="imgSection" style={{ display: 'none' }}>
-          <div className="row">
+        <div className="row" id="imgSection" style={{ display: 'none' }}>
+          <div class="col-sm-12">
+              {window.location.href.includes("reviewer") ? (<ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i class="fa fa-arrow-circle-left"></i>{((getUserDetailsOrRestart.get().userRole == "Admin") || (getUserDetailsOrRestart.get().userRole == "Superuser")) ? "Reviewers" : "Projects"}</a></li>
+                {((getUserDetailsOrRestart.get().userRole == "Admin") || (getUserDetailsOrRestart.get().userRole == "Superuser")) ?
+                  <li class="breadcrumb-item active"><a onClick={() => history.go(-1)} href="#">{this.props.reviewerName}</a></li> :
+                  <li class="breadcrumb-item active"><a onClick={() => history.go(-1)} href="#">{this.props.projectName}</a></li>
+                }
+                <li class="breadcrumb-item active"><a style={{ 'cursor': 'default' }} >{this.props.selected_image_name}</a></li>
+              </ol>)
+                : (<ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/project/"><i class="fa fa-arrow-circle-left"></i> Projects</a></li>
+                  <li class="breadcrumb-item active"><a onClick={this.breadcrumbClick} href="#">{this.props.projectName}</a></li>
+                  <li class="breadcrumb-item active"><a style={{ 'cursor': 'default' }}> {this.props.selected_image_name}</a></li>
+                </ol>)
+              }
+            </div>
             <div className="col-sm-12">
               {!username.includes(getUserDetailsOrRestart.get().userName) &&
                 <ul className="export" style={{ float: 'right' }} >
@@ -349,7 +377,7 @@ export class OcrCompleteExtract extends React.Component {
                 </div>
               }
             </div>
-          </div>
+          
           <div className="col-sm-6">
             <div style={{ backgroundColor: '#fff', padding: 15 }}>
               <div className="ocrImgTitle">Original</div>
@@ -410,6 +438,11 @@ export class OcrCompleteExtract extends React.Component {
             </div>
 
           </div>
+          {this.props.pdfDoc &&
+          <div className="col-sm-12 text-center sm-mt-30">
+          <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handlePagination} first last next prev boundaryLinks items={this.props.pdfSize} activePage={this.props.pdfNumber} />
+          </div>
+          }
           <div class="col-sm-12 text-right" style={{ marginTop: '3%' }}>
             {(getUserDetailsOrRestart.get().userRole == "ReviewerL1" || getUserDetailsOrRestart.get().userRole == "ReviewerL2") ?
               <div style={{ display: 'inline' }}>
@@ -425,6 +458,7 @@ export class OcrCompleteExtract extends React.Component {
             <button type="button" class="btn btn-default" style={{ cursor: 'pointer', marginLeft: 5, border: '1px solid #ccc' }} onClick={this.handleClose}>
               <i class="fa fa-times-circle" style={{ fontSize: 15, color: '#7a7a7a' }}></i> Close
             </button>
+          </div>
           </div>
           <div class="modal fade" id="modal_badscan" tabIndex="-1" role="dialog" aria-labelledby="modal_badscan_modalTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -449,7 +483,6 @@ export class OcrCompleteExtract extends React.Component {
             </div>
           </div>
         </div>
-      </div>
     )
   }
 

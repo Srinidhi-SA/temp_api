@@ -44,6 +44,12 @@ export function saveImageDetails(data) {
 		data
 	}
 }
+export function pdfPagination(data) {
+	return {
+		type: "PDF_PAGINATION",
+		data
+	}
+}
 
 export function clearImageDetails() {
 	return {

@@ -55,6 +55,9 @@ class OCRImageSerializer(serializers.ModelSerializer):
         except:
             serialized_data['tasks'] = None
 
+        # if 'pdfinfo' not in serialized_data or not serialized_data['pdfinfo']:
+        #     serialized_data['pdfinfo'] = None
+
         return serialized_data
 
     class Meta:
@@ -83,10 +86,56 @@ class OCRImageListSerializer(serializers.ModelSerializer):
                       "l1_verified": "L1 Verified",
                       "ready_to_verify(L2)": "Ready to Verify(L2)",
                       "ready_to_export": "Ready to Export",
-                      "failed":"Failed to Recognize"}
+                      "failed": "Failed to Recognize"}
 
     def to_representation(self, instance):
         serialized_data = super(OCRImageListSerializer, self).to_representation(instance)
+        serialized_data['assignee'] = instance.get_assignee()
+        try:
+            serialized_data['role'] = instance.assignee.groups.values_list('name', flat=True)
+        except:
+            serialized_data['role'] = None
+        serialized_data['status'] = self.status_mapping[serialized_data['status']]
+        serialized_data['created_by'] = (UserSerializer(instance.created_by).data['username']).capitalize()
+        serialized_data['modified_by'] = (UserSerializer(instance.modified_by).data['username']).capitalize()
+        serialized_data['type'] = serialized_data['imagefile'][-4:]
+
+        if serialized_data['doctype'] == 'pdf_page':
+            return None
+
+        return serialized_data
+
+    class Meta(object):
+        """
+        Meta class definition for OCRImageListSerializer
+        """
+        model = OCRImage
+        fields = ['name', 'slug', 'status', 'confidence', 'comment', 'imagefile', 'classification', 'flag',
+                  'created_at', 'created_by',
+                  'modified_at', 'modified_by', 'assignee', 'fields', 'doctype']
+
+
+class OCRImageListPDFSerializer(serializers.ModelSerializer):
+    """
+        List Serializer definition for OCRImage
+    -------------------------------------------------
+    Model : OCRImage
+    List Serializer : OCRImageListPDFSerializer
+    -------------------------------------------------
+    """
+    status_mapping = {"uploading": "Uploading",
+                      "ready_to_recognize": "Ready to Recognize",
+                      "ready_to_assign": "Ready to Assign",
+                      "recognizing": "Recognizing",
+                      "bad_scan": "Bad Scan",
+                      "ready_to_verify(L1)": "Ready to Verify(L1)",
+                      "l1_verified": "L1 Verified",
+                      "ready_to_verify(L2)": "Ready to Verify(L2)",
+                      "ready_to_export": "Ready to Export",
+                      "failed": "Failed to Recognize"}
+
+    def to_representation(self, instance):
+        serialized_data = super(OCRImageListPDFSerializer, self).to_representation(instance)
         serialized_data['assignee'] = instance.get_assignee()
         try:
             serialized_data['role'] = instance.assignee.groups.values_list('name', flat=True)
@@ -108,7 +157,8 @@ class OCRImageListSerializer(serializers.ModelSerializer):
         Meta class definition for OCRImageListSerializer
         """
         model = OCRImage
-        fields = ['name', 'slug', 'status', 'confidence', 'comment', 'imagefile', 'classification', 'flag', 'created_at', 'created_by',
+        fields = ['name', 'slug', 'status', 'confidence', 'comment', 'imagefile', 'classification', 'flag',
+                  'created_at', 'created_by',
                   'modified_at', 'modified_by', 'assignee', 'fields']
 
 
@@ -323,7 +373,7 @@ class GroupSerializer(serializers.ModelSerializer):
         "Superuser": "Superuser",
         "ReviewerL1": "Reviewer L1",
         "ReviewerL2": "Reviewer L2",
-        }
+    }
 
     def to_representation(self, instance):
         serialized_data = super(GroupSerializer, self).to_representation(instance)
@@ -349,7 +399,7 @@ class ProjectListSerializer(serializers.ModelSerializer):
     """
 
     def to_representation(self, instance):
-        user =  self.context['request'].user
+        user = self.context['request'].user
         serialized_data = super(ProjectListSerializer, self).to_representation(instance)
         serialized_data['project_overview'] = instance.get_project_overview(user)
         serialized_data['created_by'] = UserSerializer(instance.created_by).data['username']

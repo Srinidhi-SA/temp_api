@@ -1,10 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import {
-  getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails,
-  saveSelectedImageName, updateCheckList, setProjectTabLoaderFlag,
-  storeDocSearchElem, tabActiveVal, clearImageDetails, docTablePage, docTablePagesize,
-  storeOcrTableFilterDetails,resetOcrTableFilterValues
+  getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails, pdfPagination,storeOcrTableFilterDetails,resetOcrTableFilterValues,
+  saveSelectedImageName, updateCheckList, setProjectTabLoaderFlag, storeDocSearchElem, tabActiveVal, clearImageDetails, docTablePage, docTablePagesize
 } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import store from "../../../store";
@@ -24,7 +22,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
     projectName: store.ocr.selected_project_name,
     revDocumentFlag: store.ocr.revDocumentFlag,
     reviewerName: store.ocr.selected_reviewer_name,
-    projectTabLoaderFlag: store.ocr.projectTabLoaderFlag
+    projectTabLoaderFlag: store.ocr.projectTabLoaderFlag,
   };
 })
 
@@ -68,20 +66,32 @@ export class OcrTable extends React.Component {
     this.setState({ checkAll: false, checkedList: [] });
     this.props.dispatch(getOcrUploadedFiles());
   }
-  handleImagePageFlag = (slug, name) => {
-    this.getImage(slug)
+  handleImagePageFlag = (slug,name,doctype) => {
+    this.getImage(slug,doctype)
     this.props.dispatch(saveSelectedImageName(name));
     this.props.dispatch(saveImagePageFlag(true));
   }
 
-  getImage = (slug) => {
-    return fetch(API + '/ocr/ocrimage/' + slug + '/', {
-      method: 'get',
-      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-    }).then(response => response.json())
-      .then(data => {
-        this.props.dispatch(saveImageDetails(data));
-      });
+  getImage = (slug, doctype) => {
+    if (doctype == "pdf") {
+      return fetch(API + '/ocr/ocrimage/retrieve_pdf/?slug=' + slug + '&page_size=1&page_number=1', {
+        method: 'get',
+        headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      }).then((response) => response.json())
+        .then(json => {
+          this.props.dispatch(saveImageDetails(json.data[0]));
+          this.props.dispatch(pdfPagination(json));
+        })
+    }
+    else {
+      return fetch(API + '/ocr/ocrimage/' + slug + '/', {
+        method: 'get',
+        headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      }).then(response => response.json())
+        .then(data => {
+          this.props.dispatch(saveImageDetails(data));
+        });
+    }
   }
 
   handleFil = (mode) =>  {
@@ -425,7 +435,7 @@ export class OcrTable extends React.Component {
               <i style={{ color: '#414f50', fontSize: 14 }} className={item.type == ".pdf" ? "fa fa-file-pdf-o" : "fa fa-file-image-o"}></i>
             </td>
             <td style={status.includes(item.status) ? { cursor: 'not-allowed' } : { cursor: 'pointer' }}>
-              <Link title={item.name} style={status.includes(item.status) ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={`/apps/ocr-mq44ewz7bp/project/${item.name}`} onClick={() => { this.handleImagePageFlag(item.slug, item.name) }}>{item.name}</Link>
+              <Link title={item.name} style={status.includes(item.status) ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={`/apps/ocr-mq44ewz7bp/project/${item.name}`} onClick={() => { this.handleImagePageFlag(item.slug, item.name, item.doctype) }}>{item.name}</Link>
             </td>
             <td>{item.status}</td>
             {store.getState().ocr.tabActive == 'active' &&

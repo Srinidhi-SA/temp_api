@@ -76,7 +76,7 @@ class OCRUserProfile(models.Model):
                 "app_id": app.app_id,
                 "displayName": app.displayName
             })
-        return {"app_list":appIDmap}
+        return {"app_list": appIDmap}
 
     def reviewer_data(self):
         from ocrflow.models import Task
@@ -142,13 +142,13 @@ def send_email(sender, instance, created, **kwargs):
         print("Sending welcome mail ...")
         send_welcome_email.delay(username=instance.ocr_user.username)
 
-        #Adding info mail for Admin
+        # Adding info mail for Admin
         from django_currentuser.middleware import (
-        get_current_user, get_current_authenticated_user)
-        user=get_current_authenticated_user()
+            get_current_user, get_current_authenticated_user)
+        user = get_current_authenticated_user()
         send_info_email.delay(username=instance.ocr_user.username,
-            supervisor=user.username
-            )
+                              supervisor=user.username
+                              )
 
 
 def upload_dir(instance, filename):
@@ -207,30 +207,30 @@ class Project(models.Model):
         if userGroup == 'ReviewerL1':
             totalImages = OCRImage.objects.filter(
                 project=self.id,
-                l1_assignee = user,
-                deleted = False).count()
+                l1_assignee=user,
+                deleted=False).count()
             WorkflowCount = OCRImage.objects.filter(
-                project = self.id,
-                l1_assignee = user,
-                status__in = ["ready_to_export", "ready_to_verify(L2)", "l1_verified", "bad_scan"]
+                project=self.id,
+                l1_assignee=user,
+                status__in=["ready_to_export", "ready_to_verify(L2)", "l1_verified", "bad_scan"]
             ).count()
         elif userGroup == 'ReviewerL2':
             totalImages = OCRImage.objects.filter(
                 project=self.id,
-                assignee = user,
-                deleted = False).count()
+                assignee=user,
+                deleted=False).count()
             WorkflowCount = OCRImage.objects.filter(
-                project = self.id,
-                assignee = user,
-                status__in = ["ready_to_export", "bad_scan"]
+                project=self.id,
+                assignee=user,
+                status__in=["ready_to_export", "bad_scan"]
             ).count()
         else:
             totalImages = OCRImage.objects.filter(
                 project=self.id,
-                deleted = False).count()
+                deleted=False).count()
             WorkflowCount = OCRImage.objects.filter(
-                project = self.id,
-                status__in = ["ready_to_export", "bad_scan"]
+                project=self.id,
+                status__in=["ready_to_export", "bad_scan"]
             ).count()
         return totalImages, WorkflowCount
 
@@ -304,7 +304,8 @@ class OCRImage(models.Model):
     imagefile = models.FileField(null=True, upload_to='ocrData', validators=[
         FileExtensionValidator(allowed_extensions=validators.VALID_EXTENSIONS,
                                message=validators.VALIDATION_ERROR_MESSAGE),
-                               validators.max_file_size])
+        validators.max_file_size])
+    doctype = models.CharField(max_length=300, null=True)
     imageset = models.ForeignKey(OCRImageset, null=False, db_index=True)
     project = models.ForeignKey(Project, null=False, db_index=True)
     datasource_type = models.CharField(max_length=300, null=True)
@@ -392,10 +393,8 @@ class OCRImage(models.Model):
 
 
 class Template(models.Model):
-
     template_classification = models.TextField(max_length=3000000, default="{}", null=True)
     modified_at = models.DateTimeField(auto_now_add=True, null=True)
-
 
     def create(self):
         """Create Template model"""
