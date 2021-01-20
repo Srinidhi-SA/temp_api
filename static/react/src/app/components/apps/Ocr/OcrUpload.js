@@ -266,12 +266,12 @@ export class OcrUpload extends React.Component {
   render() {
     var fileNames = this.state.selectedFiles != "" ? Object.values(this.state.selectedFiles).map((item, index) => (
       <li>{item.name} -{item.size/1000} KB
-        <span style={{ marginLeft: "15px" }} onClick={this.removeFile.bind(this, item.name)}>
-          <i class="fa fa-times" aria-hidden="true" style={{ color: '#555', cursor: 'pointer' }}></i>
+        <span className="xs-ml-15" onClick={this.removeFile.bind(this, item.name)}>
+          <i className="fa fa-times" aria-hidden="true" style={{ color: '#555', cursor: 'pointer' }}></i>
         </span>
       </li>
     ))
-      : <div style={{textAlign:"center",paddingLeft:"20px"}}>No files chosen.<br/>Please select file to proceed.</div>
+      : <div className="xs-pl-20" style={{textAlign:"center"}}>No files chosen.<br/>Please select file to proceed.</div>
     let optionsTemp = [];
     for(var i=0; i<this.props.s3FileList.length; i++){
       optionsTemp.push({"value":this.props.s3FileList[i],"label":this.props.s3FileList[i]});
@@ -281,8 +281,8 @@ export class OcrUpload extends React.Component {
       <div style={{ display:"inline-block" }}>
       <ReactTooltip place="top" type="light"/> 
       {this.props.uploadMode == 'topPanel'?
-      <Button bsStyle="primary" onClick={this.openPopup.bind(this)} data-tip="Upload Documents" ><i class="fa fa-upload"></i></Button>:
-      <div class="icon " onClick={this.openPopup.bind(this)}><i  class="fa fa-upload fa-2x xs-mt-10"></i></div>}
+      <Button bsStyle="primary" onClick={this.openPopup.bind(this)} data-tip="Upload Documents" ><i className="fa fa-upload"></i></Button>:
+      <div className="icon " onClick={this.openPopup.bind(this)}><i  className="fa fa-upload fa-2x xs-mt-10"></i></div>}
  
         <div id="uploadData" role="dialog" className="modal fade modal-colored-header">
           <Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header ocrUploadModal" backdrop="static">
@@ -330,7 +330,7 @@ export class OcrUpload extends React.Component {
                       <img className="wow bounceIn" data-wow-delay=".75s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10" src={STATIC_URL + "assets/images/success_outline.png"} style={{ height: 105, width: 105 }} />
 
                       <div className="wow bounceIn" data-wow-delay=".25s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10">
-                        <span style={{ paddingTop: 10, color: 'rgb(50, 132, 121)', display: 'block' }}>Uploaded Successfully</span></div>
+                        <span className="xs-pt-10" style={{ color: 'rgb(50, 132, 121)', display: 'block' }}>Uploaded Successfully</span></div>
                     <div id="uploadError" style={{position:'absolute',bottom:0,padding:'10px 10px 0px 10px',textAlign:'center'}}></div>
                     </div>
                   }
@@ -360,14 +360,14 @@ export class OcrUpload extends React.Component {
                             </div>
                         }
                         <ReactTooltip place="top" type="light"/> 
-                        <Button id="fetchS3FileBtn" bsStyle="default" onClick={this.validateAndFetchS3Files.bind(this)} data-tip="Please click here to get files"><i class="fa fa-files-o"></i> Fetch Files</Button>
+                        <Button id="fetchS3FileBtn" bsStyle="default" onClick={this.validateAndFetchS3Files.bind(this)} data-tip="Please click here to get files"><i className="fa fa-files-o"></i> Fetch Files</Button>
                     </div>
                   }
                   {this.props.s3Uploaded &&
                     <div className="col-md-12 ocrSuccess">
                     <img className="wow bounceIn" data-wow-delay=".75s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10" src={STATIC_URL + "assets/images/success_outline.png"} style={{ height: 105, width: 105 }} />
                     <div className="wow bounceIn" data-wow-delay=".25s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10">
-                      <span style={{ paddingTop: 10, color: 'rgb(50, 132, 121)', display: 'block' }}>Uploaded Successfully</span></div>
+                      <span  className="xs-pt-10" style={{color: 'rgb(50, 132, 121)', display: 'block' }}>Uploaded Successfully</span></div>
                   </div>
                   }
                 </div>
