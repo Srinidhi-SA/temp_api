@@ -1912,24 +1912,43 @@ def chart_changes_in_metadata_chart(chart_data):
 
 def add_slugs(results, object_slug=""):
     from api import helper
-    if settings.DEBUG == True:
-        print(results)
-        print(list(results.keys()))
+
     listOfNodes = results.get('listOfNodes', [])
     listOfCards = results.get('listOfCards', [])
 
-    name = results['name']
-    results['slug'] = helper.get_slug(name)
+    if len(listOfNodes) == 0 and len(listOfCards) == 0:
+        try:
+            for obj in [results['Depth Of Tree 3'],results['Depth Of Tree 4'],results['Depth Of Tree 5']]:
+                listOfNodes = obj.get('listOfNodes', [])
+                listOfCards = obj.get('listOfCards', [])
 
-    if len(listOfCards) > 0:
-        for loC in listOfCards:
-            add_slugs(loC, object_slug=object_slug)
-            if loC['cardType'] == 'normal':
-                convert_chart_data_to_beautiful_things(loC['cardData'], object_slug=object_slug)
+                name = results['name']
+                results['slug'] = helper.get_slug(name)
 
-    if len(listOfNodes) > 0:
-        for loN in listOfNodes:
-            add_slugs(loN, object_slug=object_slug)
+                if len(listOfCards) > 0:
+                    for loC in listOfCards:
+                        add_slugs(loC, object_slug=object_slug)
+                        if loC['cardType'] == 'normal':
+                            convert_chart_data_to_beautiful_things(loC['cardData'], object_slug=object_slug)
+
+                if len(listOfNodes) > 0:
+                    for loN in listOfNodes:
+                            add_slugs(loN, object_slug=object_slug)
+        except:
+            pass
+    else:
+        name = results['name']
+        results['slug'] = helper.get_slug(name)
+
+        if len(listOfCards) > 0:
+            for loC in listOfCards:
+                add_slugs(loC, object_slug=object_slug)
+                if loC['cardType'] == 'normal':
+                    convert_chart_data_to_beautiful_things(loC['cardData'], object_slug=object_slug)
+
+        if len(listOfNodes) > 0:
+            for loN in listOfNodes:
+                    add_slugs(loN, object_slug=object_slug)
 
     return results
 
