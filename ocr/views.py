@@ -1300,38 +1300,80 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         except Exception as e:
             return JsonResponse({'message': 'Failed to generate final results!', 'error': str(e)})
 
+    def create_export_file(self, output_format, result):
+        if output_format == 'json':
+            content_type = "application/json"
+        elif output_format == 'xml':
+            result = json_2_xml(result).decode('utf-8')
+            content_type = "application/xml"
+        elif output_format == 'csv':
+            df = timesheet_main(json.loads(result))
+            result = df.to_csv()
+            content_type = "application/text"
+        else:
+            result = JsonResponse({'message': 'Invalid export format!'})
+            content_type = None
+        return result, content_type
+
     @list_route(methods=['post'])
     def export_data(self, request):
+        import zipfile
         data = request.data
         slug = ast.literal_eval(str(data['slug']))[0]
         try:
             image_queryset = OCRImage.objects.get(slug=slug)
-            final_result = json.loads(image_queryset.final_result)
-            flag = final_result['domain_classification']
-            if flag == 'Time Sheet':
-                data['format'] = 'csv'
-                df = timesheet_main(final_result)
-                result = df.to_csv()
-                response = HttpResponse(result, content_type="application/text")
-                response['Content-Disposition'] = 'attachment; filename={}.csv'.format(data['slug'])
+            doctype = image_queryset.doctype
+            if doctype == 'pdf':
+                queryset = OCRImage.objects.filter(
+                    imageset=image_queryset.imageset,
+                    doctype='pdf_page').order_by('name')
+                pdf_slugs = [item.slug for item in queryset]
+                filenames = []
+                for page_slug in pdf_slugs:
+                    pdf_queryset = OCRImage.objects.get(slug=page_slug)
+                    name = pdf_queryset.name
+                    final_result = json.loads(pdf_queryset.final_result)
+                    flag = final_result['domain_classification']
+                    if flag == 'Time Sheet':
+                        data['format'] = 'csv'
+                        df = timesheet_main(final_result)
+                        result = df.to_csv()
+                        with open(f'{name}.{data["format"]}', 'w') as f:
+                            f.write(result)
+                        filenames.append(f'{name}.{data["format"]}')
+                    else:
+                        result = pdf_queryset.final_result
+                        result, _ = self.create_export_file(data['format'], result)
+                        if isinstance(result, JsonResponse):
+                            return result
+                        with open(f'{name}.{data["format"]}', 'w') as f:
+                            f.write(result)
+                        filenames.append(f'{name}.{data["format"]}')
+                response = HttpResponse(content_type='application/zip')
+                zip_file = zipfile.ZipFile(response, 'w')
+                for filename in filenames:
+                    zip_file.write(filename)
+                    os.remove(filename)
+                zip_file.close()
+                response['Content-Disposition'] = f'attachment; filename={image_queryset.name}'
                 return response
-            result = image_queryset.final_result
-            if data['format'] == 'json':
-                response = HttpResponse(result, content_type="application/json")
-                response['Content-Disposition'] = 'attachment; filename={}.json'.format(data['slug'])
-            elif data['format'] == 'xml':
-                result = json_2_xml(result)
-                response = HttpResponse(result, content_type="application/xml")
-                response['Content-Disposition'] = 'attachment; filename={}.xml'.format(data['slug'])
-            elif data['format'] == 'csv':
-                df = timesheet_main(final_result)
-                result = df.to_csv()
-                # result = json_2_csv(json.loads(result))
-                response = HttpResponse(result, content_type="application/text")
-                response['Content-Disposition'] = 'attachment; filename={}.csv'.format(data['slug'])
             else:
-                response = JsonResponse({'message': 'Invalid export format!'})
-            return response
+                final_result = json.loads(image_queryset.final_result)
+                flag = final_result['domain_classification']
+                if flag == 'Time Sheet':
+                    data['format'] = 'csv'
+                    df = timesheet_main(final_result)
+                    result = df.to_csv()
+                    response = HttpResponse(result, content_type="application/text")
+                    response['Content-Disposition'] = 'attachment; filename={}.csv'.format(data['slug'])
+                    return response
+                result = image_queryset.final_result
+                response, content_type = self.create_export_file(data['format'], result)
+                if isinstance(result, JsonResponse):
+                    return result
+                response = HttpResponse(response, content_type=content_type)
+                response['Content-Disposition'] = f'attachment; filename={image_queryset.name}.{data["format"]}'
+                return response
         except Exception as e:
             return JsonResponse({'message': 'Failed to export data!', 'error': str(e)})
 
