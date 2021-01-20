@@ -752,7 +752,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             slug=self.kwargs.get('slug'),
         )
 
-    def add_image_info(self, object_details):
+    @staticmethod
+    def add_image_info(object_details):
         temp_obj = Template.objects.first()
         values = list(json.loads(temp_obj.template_classification).keys())
         value = [i.upper() for i in values]
@@ -778,7 +779,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         object_details.update({'height': dynamic_shape[0], 'width': dynamic_shape[1]})
         return object_details
 
-    def create_export_file(self, output_format, result):
+    @staticmethod
+    def create_export_file(output_format, result):
         if output_format == 'json':
             content_type = "application/json"
         elif output_format == 'xml':

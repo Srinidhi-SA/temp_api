@@ -103,13 +103,14 @@ class OCRUserProfile(models.Model):
 
     def get_avg_accuracyModel(self):
         imageQueryset = OCRImage.objects.filter(
-            review_requests__tasks__assigned_user=self.ocr_user
+            review_requests__tasks__assigned_user=self.ocr_user,
+            doctype__ne='pdf'
         )
         TotalCount = 0
         TotalConfidence = 0
         for image in imageQueryset:
             accuracyModel = image.get_accuracyModel()
-            if not accuracyModel == None:
+            if accuracyModel is not None:
                 TotalCount += 1
                 TotalConfidence += float(accuracyModel)
             else:
