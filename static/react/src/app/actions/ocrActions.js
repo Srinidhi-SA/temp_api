@@ -56,7 +56,6 @@ export function clearImageDetails() {
 		type: "CLEAR_IMAGE_DETAILS",
 	}
 }
-//Actions for fetching Projects list 
 export function updateOcrImage(data) {
 	return {
 		type: "UPDATE_OCR_IMAGE",
@@ -118,8 +117,7 @@ function fetchProjects(pageNo = store.getState().ocr.projectPage, token) {
 	}
 }
 
-export function fetchProjectsSuccess(doc) {
-	var data = doc;
+export function fetchProjectsSuccess(data) {
 	return {
 		type: "OCR_PROJECT_LIST",
 		data,
@@ -179,8 +177,7 @@ function fetchUploadedFiles(pageNo = store.getState().ocr.docTablePage, token) {
 	};
 }
 
-export function fetchUploadsSuccess(doc) {
-	var data = doc;
+export function fetchUploadsSuccess(data) {
 	return {
 		type: "OCR_UPLOADS_LIST",
 		data,
@@ -472,34 +469,15 @@ export function storeOcrSortElements(ocrFilesSortOn, ocrFilesSortType) {
 		ocrFilesSortType
 	}
 }
-export function storeOcrFilterStatus(status) {
-	return {
-		type: "FILTER_BY_STATUS",
-		status,
+export function storeOcrTableFilterDetails(filterOn,value){
+		 return {
+			type: `FILTER_BY_${filterOn.toUpperCase()}`,
+			value,
+		}
 	}
-}
-export function storeOcrFilterConfidence(confidence) {
+export function resetOcrTableFilterValues() {
 	return {
-		type: "FILTER_BY_CONFIDENCE",
-		confidence,
-	}
-}
-export function storeOcrFilterAssignee(assignee) {
-	return {
-		type: "FILTER_BY_ASSIGNEE",
-		assignee
-	}
-}
-export function storeOcrFilterTemplate(template) {
-	return {
-		type: "FILTER_BY_TEMPLATE",
-		template
-	}
-}
-export function storeOcrFilterFields(fields) {
-	return {
-		type: "FILTER_BY_FIELDS",
-		fields
+		type: "RESET_OCR_TABLE_FILTERS",
 	}
 }
 export function ocrRdFilterStatus(status) {
@@ -577,10 +555,7 @@ export function fetchAllOcrUsersAction(pageNo) {
 		})
 	}
 }
-export function fetchAllOcrUsersAPI(pageNo, token) {
-	if (pageNo === undefined) {
-		pageNo = 1;
-	}
+export function fetchAllOcrUsersAPI(pageNo=1, token) {
 	let searchElement = store.getState().ocr.ocrSearchElement;
 	let userTablePagesize = store.getState().ocr.userTablePagesize;
 	if (userTablePagesize === "All") {
@@ -636,10 +611,7 @@ export function fetchOcrListByReviewerType(id, pageNo) {
 		})
 	}
 }
-function fetchOcrListByReviewerTypeAPI(id, pageNo, token) {
-	if (pageNo === undefined) {
-		pageNo = 1;
-	}
+function fetchOcrListByReviewerTypeAPI(id, pageNo=1, token) {
 	let searchElement = store.getState().ocr.ocrSearchElement;
 	let userTablePagesize = store.getState().ocr.userTablePagesize;
 

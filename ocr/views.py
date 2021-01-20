@@ -23,7 +23,7 @@ import os
 import random
 import ast
 from typing import Dict
-
+import zipfile
 import cv2
 import simplejson as json
 from django.db.models import Q, Sum
@@ -61,7 +61,7 @@ from .permission import OCRImageRelatedPermission, \
     IsOCRClientUser
 # ------------------------------------------------------------
 
-from ocr.tasks import write_to_ocrimage, write_to_ocrimage2
+from ocr.tasks import write_to_ocrimage, write_to_ocrimage_lang_support
 from celery.result import AsyncResult
 
 # ---------------------SERIALIZERS----------------------------
@@ -752,7 +752,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             slug=self.kwargs.get('slug'),
         )
 
-    def add_image_info(self, object_details):
+    @staticmethod
+    def add_image_info(object_details):
         temp_obj = Template.objects.first()
         values = list(json.loads(temp_obj.template_classification).keys())
         value = [i.upper() for i in values]
@@ -769,7 +770,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         object_details["labels_list"] = [key for key in custom_data]
         object_details["image_name"] = object_details['imagefile'].split('/')[-1]
         object_details['custom_data'] = [{'label_name': label, 'data': data} for label, data in custom_data.items()]
-        desired_response = ['imagefile', 'slug', 'generated_image', 'is_recognized', 'tasks', 'values',
+        desired_response = ['name', 'imagefile', 'slug', 'generated_image', 'is_recognized', 'tasks', 'values',
                             'classification', 'custom_data', 'labels_list', 'image_name']
         object_details = {key: val for key, val in object_details.items() if key in desired_response}
         mask = 'ocr/ITE/database/{}_mask.png'.format(object_details['slug'])
@@ -777,6 +778,22 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         dynamic_shape = dynamic_cavas_size(size[:-1])
         object_details.update({'height': dynamic_shape[0], 'width': dynamic_shape[1]})
         return object_details
+
+    @staticmethod
+    def create_export_file(output_format, result):
+        if output_format == 'json':
+            content_type = "application/json"
+        elif output_format == 'xml':
+            result = json_2_xml(result).decode('utf-8')
+            content_type = "application/xml"
+        elif output_format == 'csv':
+            df = timesheet_main(json.loads(result))
+            result = df.to_csv()
+            content_type = "application/text"
+        else:
+            result = JsonResponse({'message': 'Invalid export format!'})
+            content_type = None
+        return result, content_type
 
     @list_route(methods=['post'])
     def get_s3_files(self, request, **kwargs):
@@ -978,7 +995,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         if instance is None:
             return retrieve_failed_exception("File Doesn't exist.")
-        queryset = OCRImage.objects.filter(imageset=instance.imageset, doctype='pdf_page')
+        queryset = OCRImage.objects.filter(imageset=instance.imageset, doctype='pdf_page').order_by('name')
         response = get_image_data(self, request, queryset, OCRImageSerializer)
         object_details = response.data['data'][0]
         object_details = self.add_image_info(object_details)
@@ -1049,7 +1066,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         template = json.loads(Template.objects.first().template_classification)
                         if request.user.username in foreign_user_mapping:
                             # print(f"{'*'*50}{foreign_user_mapping[request.user.username]}{'*'*50}")
-                            response = write_to_ocrimage2.apply_async(
+                            response = write_to_ocrimage_lang_support.apply_async(
                                 args=(image_queryset.imagefile.path, slug, foreign_user_mapping[request.user.username],
                                       template))
                         else:
@@ -1306,32 +1323,58 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         slug = ast.literal_eval(str(data['slug']))[0]
         try:
             image_queryset = OCRImage.objects.get(slug=slug)
-            final_result = json.loads(image_queryset.final_result)
-            flag = final_result['domain_classification']
-            if flag == 'Time Sheet':
-                data['format'] = 'csv'
-                df = timesheet_main(final_result)
-                result = df.to_csv()
-                response = HttpResponse(result, content_type="application/text")
-                response['Content-Disposition'] = 'attachment; filename={}.csv'.format(data['slug'])
+            doctype = image_queryset.doctype
+            if doctype == 'pdf':
+                queryset = OCRImage.objects.filter(
+                    imageset=image_queryset.imageset,
+                    doctype='pdf_page').order_by('name')
+                pdf_slugs = [item.slug for item in queryset]
+                filenames = []
+                for page_slug in pdf_slugs:
+                    pdf_queryset = OCRImage.objects.get(slug=page_slug)
+                    name = pdf_queryset.name
+                    final_result = json.loads(pdf_queryset.final_result)
+                    flag = final_result['domain_classification']
+                    if flag == 'Time Sheet':
+                        data['format'] = 'csv'
+                        df = timesheet_main(final_result)
+                        result = df.to_csv()
+                        with open('{}.{}'.format(name, data["format"]), 'w') as f:
+                            f.write(result)
+                        filenames.append('{}.{}'.format(name, data["format"]))
+                    else:
+                        result = pdf_queryset.final_result
+                        result, _ = self.create_export_file(data['format'], result)
+                        if isinstance(result, JsonResponse):
+                            return result
+                        with open('{}.{}'.format(name, data["format"]), 'w') as f:
+                            f.write(result)
+                        filenames.append('{}.{}'.format(name, data["format"]))
+                response = HttpResponse(content_type='application/zip')
+                zip_file = zipfile.ZipFile(response, 'w')
+                for filename in filenames:
+                    zip_file.write(filename)
+                    os.remove(filename)
+                zip_file.close()
+                response['Content-Disposition'] = 'attachment; filename={}'.format(image_queryset.name)
                 return response
-            result = image_queryset.final_result
-            if data['format'] == 'json':
-                response = HttpResponse(result, content_type="application/json")
-                response['Content-Disposition'] = 'attachment; filename={}.json'.format(data['slug'])
-            elif data['format'] == 'xml':
-                result = json_2_xml(result)
-                response = HttpResponse(result, content_type="application/xml")
-                response['Content-Disposition'] = 'attachment; filename={}.xml'.format(data['slug'])
-            elif data['format'] == 'csv':
-                df = timesheet_main(final_result)
-                result = df.to_csv()
-                # result = json_2_csv(json.loads(result))
-                response = HttpResponse(result, content_type="application/text")
-                response['Content-Disposition'] = 'attachment; filename={}.csv'.format(data['slug'])
             else:
-                response = JsonResponse({'message': 'Invalid export format!'})
-            return response
+                final_result = json.loads(image_queryset.final_result)
+                flag = final_result['domain_classification']
+                if flag == 'Time Sheet':
+                    data['format'] = 'csv'
+                    df = timesheet_main(final_result)
+                    result = df.to_csv()
+                    response = HttpResponse(result, content_type="application/text")
+                    response['Content-Disposition'] = 'attachment; filename={}.csv'.format(data['slug'])
+                    return response
+                result = image_queryset.final_result
+                response, content_type = self.create_export_file(data['format'], result)
+                if isinstance(result, JsonResponse):
+                    return result
+                response = HttpResponse(response, content_type=content_type)
+                response['Content-Disposition'] = 'attachment; filename={}.{}'.format(image_queryset.name, data["format"])
+                return response
         except Exception as e:
             return JsonResponse({'message': 'Failed to export data!', 'error': str(e)})
 

@@ -168,7 +168,7 @@ export class OcrEditUser extends React.Component{
                                 <form role="form" id="userProfileRoles" onChange={this.updateFormSelected.bind(this)}>
                                 <div className="row">
                                     <div className="col-sm-12 allApplist">
-                                        <label className="mandate" style={{marginBottom:5}} >Select required App</label>
+                                        <label className="mandate xs-mb-5" >Select required App</label>
                                         <MultiSelect id="appList" className="applist-disabled"
                                         value={this.state.appId} style={{width: "100%" }} name="app_list" 
                                         options={this.handleAllAppsOptions()} onChange={(e)=>this.setState({appId:e.value},this.saveAppList)}

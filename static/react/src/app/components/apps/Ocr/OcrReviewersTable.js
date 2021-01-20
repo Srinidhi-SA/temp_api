@@ -142,7 +142,7 @@ filterRevList(filtertBy, filterOn,reset) {
                     <a href="#" data-toggle="dropdown" className="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
                       <span>Model Accuracy</span> <b className="caret"></b>
                     </a>
-                    <ul class="dropdown-menu scrollable-menu filterOptions">
+                    <ul className="dropdown-menu scrollable-menu filterOptions">
                       <li><a className="cursor" onClick={this.filterRevList.bind(this, '', 'accuracy','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
                       <li><a>Equal to</a>
                         <input id='CEQL' onChange={this.handleFil.bind(this,'CEQL')} type='number' ></input></li>

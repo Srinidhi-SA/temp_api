@@ -211,8 +211,8 @@ def write_to_ocrimage(self, image, slug, template):
     return results
 
 
-@task(name='write_to_ocrimage2', queue=CONFIG_FILE_NAME, bind=True)
-def write_to_ocrimage2(self, image, slug, language_input, template):
+@task(name='write_to_ocrimage_lang_support', queue=CONFIG_FILE_NAME, bind=True)
+def write_to_ocrimage_lang_support(self, image, slug, language_input, template):
     progress_recorder = ProgressRecorder(self)
     progress_recorder.set_progress(1, 6, 'Starting recognition')
     path, extension, filename = ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
@@ -265,7 +265,7 @@ def write_to_ocrimage2(self, image, slug, language_input, template):
         else:
             slug = response['image_slug']
             progress_recorder.set_progress(5, 6, 'Starting db operations')
-            serializer = process_image2(data, response, slug, image_queryset, language_input)
+            serializer = process_image_lang_support(data, response, slug, image_queryset, language_input)
             if serializer.is_valid():
                 serializer.save()
                 results.append(
@@ -333,7 +333,7 @@ def process_image(data, response, slug, image_queryset):
     return serializer
 
 
-def process_image2(data, response, slug, image_queryset, language):
+def process_image_lang_support(data, response, slug, image_queryset, language):
     from ocr.serializers import OCRImageSerializer
 
     data['final_result'] = json.dumps(response['final_json'])
@@ -374,6 +374,6 @@ def process_image2(data, response, slug, image_queryset, language):
 
 def get_db_object(model_name, model_slug):
     from django.apps import apps
-    mymodel = apps.get_model('ocr', model_name)
-    obj = mymodel.objects.get(slug=model_slug)
+    my_model = apps.get_model('ocr', model_name)
+    obj = my_model.objects.get(slug=model_slug)
     return obj
