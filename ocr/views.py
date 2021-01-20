@@ -1338,24 +1338,24 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         data['format'] = 'csv'
                         df = timesheet_main(final_result)
                         result = df.to_csv()
-                        with open(f'{name}.{data["format"]}', 'w') as f:
+                        with open('{}.{}'.format(name, data["format"]), 'w') as f:
                             f.write(result)
-                        filenames.append(f'{name}.{data["format"]}')
+                        filenames.append('{}.{}'.format(name, data["format"]))
                     else:
                         result = pdf_queryset.final_result
                         result, _ = self.create_export_file(data['format'], result)
                         if isinstance(result, JsonResponse):
                             return result
-                        with open(f'{name}.{data["format"]}', 'w') as f:
+                        with open('{}.{}'.format(name, data["format"]), 'w') as f:
                             f.write(result)
-                        filenames.append(f'{name}.{data["format"]}')
+                        filenames.append('{}.{}'.format(name, data["format"]))
                 response = HttpResponse(content_type='application/zip')
                 zip_file = zipfile.ZipFile(response, 'w')
                 for filename in filenames:
                     zip_file.write(filename)
                     os.remove(filename)
                 zip_file.close()
-                response['Content-Disposition'] = f'attachment; filename={image_queryset.name}'
+                response['Content-Disposition'] = 'attachment; filename={}'.format(image_queryset.name)
                 return response
             else:
                 final_result = json.loads(image_queryset.final_result)
@@ -1372,7 +1372,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 if isinstance(result, JsonResponse):
                     return result
                 response = HttpResponse(response, content_type=content_type)
-                response['Content-Disposition'] = f'attachment; filename={image_queryset.name}.{data["format"]}'
+                response['Content-Disposition'] = 'attachment; filename={}.{}'.format(image_queryset.name, data["format"])
                 return response
         except Exception as e:
             return JsonResponse({'message': 'Failed to export data!', 'error': str(e)})
