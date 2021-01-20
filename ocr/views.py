@@ -23,7 +23,7 @@ import os
 import random
 import ast
 from typing import Dict
-
+import zipfile
 import cv2
 import simplejson as json
 from django.db.models import Q, Sum
@@ -778,6 +778,21 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         object_details.update({'height': dynamic_shape[0], 'width': dynamic_shape[1]})
         return object_details
 
+    def create_export_file(self, output_format, result):
+        if output_format == 'json':
+            content_type = "application/json"
+        elif output_format == 'xml':
+            result = json_2_xml(result).decode('utf-8')
+            content_type = "application/xml"
+        elif output_format == 'csv':
+            df = timesheet_main(json.loads(result))
+            result = df.to_csv()
+            content_type = "application/text"
+        else:
+            result = JsonResponse({'message': 'Invalid export format!'})
+            content_type = None
+        return result, content_type
+
     @list_route(methods=['post'])
     def get_s3_files(self, request, **kwargs):
         """
@@ -1300,24 +1315,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         except Exception as e:
             return JsonResponse({'message': 'Failed to generate final results!', 'error': str(e)})
 
-    def create_export_file(self, output_format, result):
-        if output_format == 'json':
-            content_type = "application/json"
-        elif output_format == 'xml':
-            result = json_2_xml(result).decode('utf-8')
-            content_type = "application/xml"
-        elif output_format == 'csv':
-            df = timesheet_main(json.loads(result))
-            result = df.to_csv()
-            content_type = "application/text"
-        else:
-            result = JsonResponse({'message': 'Invalid export format!'})
-            content_type = None
-        return result, content_type
-
     @list_route(methods=['post'])
     def export_data(self, request):
-        import zipfile
         data = request.data
         slug = ast.literal_eval(str(data['slug']))[0]
         try:
