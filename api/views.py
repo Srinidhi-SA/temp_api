@@ -1916,39 +1916,25 @@ def add_slugs(results, object_slug=""):
     listOfNodes = results.get('listOfNodes', [])
     listOfCards = results.get('listOfCards', [])
 
-    if len(listOfNodes) == 0 and len(listOfCards) == 0:
-        try:
-            for obj in [results['Depth Of Tree 3'],results['Depth Of Tree 4'],results['Depth Of Tree 5']]:
-                listOfNodes = obj.get('listOfNodes', [])
-                listOfCards = obj.get('listOfCards', [])
+    name = results['name']
+    results['slug'] = helper.get_slug(name)
 
-                name = results['name']
-                results['slug'] = helper.get_slug(name)
+    if len(listOfCards) > 0:
+        for loC in listOfCards:
+            add_slugs(loC, object_slug=object_slug)
+            if loC['cardType'] == 'normal':
+                convert_chart_data_to_beautiful_things(loC['cardData'], object_slug=object_slug)
 
-                if len(listOfCards) > 0:
-                    for loC in listOfCards:
-                        add_slugs(loC, object_slug=object_slug)
-                        if loC['cardType'] == 'normal':
-                            convert_chart_data_to_beautiful_things(loC['cardData'], object_slug=object_slug)
-
-                if len(listOfNodes) > 0:
-                    for loN in listOfNodes:
-                            add_slugs(loN, object_slug=object_slug)
-        except:
-            pass
-    else:
-        name = results['name']
-        results['slug'] = helper.get_slug(name)
-
-        if len(listOfCards) > 0:
-            for loC in listOfCards:
-                add_slugs(loC, object_slug=object_slug)
-                if loC['cardType'] == 'normal':
-                    convert_chart_data_to_beautiful_things(loC['cardData'], object_slug=object_slug)
-
-        if len(listOfNodes) > 0:
-            for loN in listOfNodes:
+    if len(listOfNodes) > 0:
+        for loN in listOfNodes:
+            try:
+                if loN["name"]=="Prediction" and "Depth Of Tree 3" in loN:
+                    for loNN in [loN["Depth Of Tree 3"],loN["Depth Of Tree 4"],loN["Depth Of Tree 5"]]:
+                        add_slugs(loNN, object_slug=object_slug)
+                else:
                     add_slugs(loN, object_slug=object_slug)
+            except:
+                add_slugs(loN, object_slug=object_slug)
 
     return results
 
@@ -1956,8 +1942,8 @@ def add_slugs(results, object_slug=""):
 def convert_chart_data_to_beautiful_things(data, object_slug=""):
     from api import helper
     for card in data:
-        if settings.DEBUG == True:
-            print(card)
+        #if settings.DEBUG == True:
+            #print(card)
         if card["dataType"] == "c3Chart":
             chart_raw_data = card["data"]
             # function
