@@ -100,8 +100,8 @@ class OCRImageListSerializer(serializers.ModelSerializer):
         serialized_data['modified_by'] = (UserSerializer(instance.modified_by).data['username']).capitalize()
         serialized_data['type'] = serialized_data['imagefile'][-4:]
 
-        if serialized_data['doctype'] == 'pdf_page':
-            return None
+        # if serialized_data['doctype'] == 'pdf_page':
+        #     return None
 
         return serialized_data
 
