@@ -45,12 +45,12 @@ def ingestion_1(file_full_path, path):
                     os.path.join(path, folder_name, '{}_page_{}.jpg'.format(filename.split("/")[-1], str(index))),
                     'JPEG')
                 index = index + 1
-            return os.path.join(path, folder_name), file_extension
+            return os.path.join(path, folder_name), file_extension, filename
 
         elif file_extension in [".jpg", ".png", ".jpeg", ".JPG", ".PNG", "JPEG"]:
             shutil.copy(file_full_path, path)
             print("no conversion needed")
-            return os.path.join(path, file_full_path), file_extension
+            return os.path.join(path, file_full_path), file_extension, filename
 
     else:
         for i in os.listdir(file_full_path):
@@ -65,9 +65,9 @@ def ingestion_1(file_full_path, path):
                                                                                       str(index))),
                               'JPEG')
                     index = index + 1
-                return os.path.join(path, folder_name), file_extension
+                return os.path.join(path, folder_name), file_extension, filename
 
             elif file_extension == ".jpg" or file_extension == ".png" or file_extension == ".jpeg":
                 shutil.copy(file_full_path + "/" + i, path)
                 print("no conversion needed")
-                return os.path.join(path, file_full_path), file_extension
+                return os.path.join(path, file_full_path), file_extension, filename

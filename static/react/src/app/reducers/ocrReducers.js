@@ -100,6 +100,9 @@ export default function reducer(state = {
   customImgPath: "",
   customImageName:"",
   labelsList:[],
+  pdfSize:1,
+  pdfNumber:1,
+  pdfDoc: false,
 
 }, action) {
   switch (action.type) {
@@ -298,6 +301,16 @@ export default function reducer(state = {
         }
       }
       break;
+      case "PDF_PAGINATION":
+        {
+        return{
+          ... state,
+          pdfSize: action.data.total_number_of_pages,
+          pdfNumber: action.data.current_page,
+          pdfDoc: true,
+        }
+        }
+      break;
       case "CLOSE_FLAG":
         {
           return{
@@ -325,6 +338,7 @@ export default function reducer(state = {
             is_closed:"",
             template: [],
             classification: "",
+            pdfDoc: false,
           }
         }
         break;
@@ -357,7 +371,7 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          filter_status: action.status,
+          filter_status: action.value,
         }
       }
     break;
@@ -365,7 +379,7 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          filter_confidence: action.confidence,
+          filter_confidence: action.value,
         }
       }
     break;
@@ -373,7 +387,7 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          filter_assignee: action.assignee
+          filter_assignee: action.value
         }
       }
     break;
@@ -382,7 +396,7 @@ export default function reducer(state = {
     {
       return {
         ...state,
-        filter_template: action.template
+        filter_template: action.value
       }
     }
   break;
@@ -390,10 +404,23 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          filter_fields: action.fields
+          filter_fields: action.value
         }
       }
     break;
+    
+    case "RESET_OCR_TABLE_FILTERS":
+    {
+      return {
+        ...state,
+        filter_status:'',
+        filter_confidence: '',
+        filter_assignee:'',
+        filter_fields:'',
+        filter_template:''
+      }
+    }
+  break;
     // filter for reviewers document table
     case "FILTER_RD_BY_STATUS":
       {

@@ -1,10 +1,8 @@
 import React from 'react'
 import { Link, Redirect } from "react-router-dom";
-import { saveDocumentPageFlag,saveRevDocumentPageFlag,storeProjectSearchElem, getOcrProjectsList,selectedProjectDetails,projectTablePagesize } from '../../../actions/ocrActions';
+import {saveRevDocumentPageFlag,storeProjectSearchElem, getOcrProjectsList,selectedProjectDetails,projectTablePagesize } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
-import { store } from '../../../store';
 import { Pagination } from "react-bootstrap";
-import { OcrCreateProject } from './OcrCreateProject';
 import { STATIC_URL } from '../../../helpers/env';
 import ReactTooltip from 'react-tooltip';
 import { Modal, Button, } from "react-bootstrap/";
@@ -51,7 +49,7 @@ export class RevProjectTable extends React.Component {
       this.props.dispatch(storeProjectSearchElem(searchElememt))
       this.props.dispatch(getOcrProjectsList())
     }
-    clearSearchElement(e){
+    clearSearchElement(){
       document.getElementById('searchRevProject').value=""
       this.props.dispatch(storeProjectSearchElem(''));
       this.props.dispatch(getOcrProjectsList())
@@ -91,7 +89,7 @@ export class RevProjectTable extends React.Component {
       let paginationTag = null
       if (pages >= 1) {
         paginationTag = (
-          <div class="col-md-12 text-center">
+          <div className="col-md-12 text-center">
            <div className="footer" id="Pagination">
             <div className="pagination pageRow">
             <span>Rows per page:</span>
@@ -130,19 +128,19 @@ export class RevProjectTable extends React.Component {
             )
       return (
          <div>
-            {/* <OcrCreateProject /> */}
-            <div class="table-responsive">
-            <div class="col-md-10 col-md-offset-2 text-right">
-            <div class="form-inline">
+			   <ReactTooltip place="top" type="light"/>
+            <div className="table-responsive">
+            <div className="col-md-12 text-right">
+            <div className="form-inline">
             {(getUserDetailsOrRestart.get().userRole == "ReviewerL1" || getUserDetailsOrRestart.get().userRole == "ReviewerL2")?
               <span className="search-wrapper">
-                <input style={{marginBottom:'20px'}} type="text" title="Search Project..." id="searchRevProject" class="form-control btn-rounded " onKeyUp={this.handleSearchBox.bind(this)}  placeholder="Search project..."></input>
+                <input className="form-control btn-rounded xs-mb-20" type="text" title="Search Project..." id="searchRevProject" onKeyUp={this.handleSearchBox.bind(this)}  placeholder="Search project..."></input>
                 <button className="close-icon"  style={{position:"absolute",left:'165px',top:'-2px'}}  onClick={this.clearSearchElement.bind(this)}type="reset"></button>
                
                 </span>:""}
             </div>
           </div>
-               <table class="table table-condensed table-hover cst_table ">
+               <table className="table table-condensed table-hover cst_table ">
                   <thead>
                      <tr>
                         <th data-tip="Click here to see workflows under the respective project" >Project Name</th>
@@ -153,7 +151,7 @@ export class RevProjectTable extends React.Component {
                         <th>Action</th>
                      </tr>
                   </thead>
-                  <tbody class="no-border-x">
+                  <tbody className="no-border-x">
                      {OcrProjectTable}
                   </tbody>
                </table>
@@ -161,21 +159,21 @@ export class RevProjectTable extends React.Component {
             </div>
 
             <div id="deleteProject" role="dialog" className="modal fade modal-colored-header">
-               <Modal backdrop="static" show={this.state.deleteProjectFlag} onHide={this.closeDeletePopup.bind(this)} dialogClassName="modal-colored-header">
+               <Modal backdrop="static" show={this.state.deleteProjectFlag} onHide={this.closeDeletePopup} dialogClassName="modal-colored-header">
                   <Modal.Header closeButton>
                      <h3 className="modal-title">Delete Project</h3>
                   </Modal.Header>
                   <Modal.Body style={{ padding: '20px 15px 25px 15px' }}>
                      <div className="row">
-                        <div class="col-sm-4">
+                        <div className="col-sm-4">
                            <img style={{ width: '100%' }} src={STATIC_URL + "assets/images/alert_warning.png"} />
                         </div>
                         <div className="col-sm-8">
-                           <h4 class="text-warning">Warning !</h4>
+                           <h4 className="text-warning">Warning !</h4>
                            <div>Are you sure you want to delete {this.state.deleteProjectName} project?</div>
                            <div className="xs-mt-10">
                               <Button bsStyle="primary" onClick={this.deleteProject}>Yes</Button>
-                              <Button onClick={this.closeDeletePopup.bind(this)}>No</Button>
+                              <Button onClick={this.closeDeletePopup}>No</Button>
                            </div>
                         </div>
                      </div>

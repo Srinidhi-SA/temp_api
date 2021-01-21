@@ -40,40 +40,40 @@ export class OcrConfigure extends React.Component {
     this.props.dispatch(clearReviewerConfigStatesAction());
     this.props.dispatch(storeSelectedConfigureTabAction(e.target.name));
     if(e.target.name === "initialReview"){
-      $("#searchSR")[0].value = ""
+      document.getElementById("searchSR").value = ""
       this.props.dispatch(setIRLoaderFlagAction(true));
       this.props.dispatch(fetchInitialReviewerList(3));
     }else{
-      $("#searchIR")[0].value = ""
+      document.getElementById("searchIR").value = ""
       this.props.dispatch(setSRLoaderFlagAction(true));
       this.props.dispatch(fetchSeconadryReviewerList(4))
     }
   }
 
-  submitReviewerConfig(e){
+  submitReviewerConfig(){
     if(this.props.configureTabSelected === "initialReview"){
       if(!this.props.iRToggleFlag){
         let msg= statusMessages("warning","Enable automatic reviewer assignment, to assign documents to reviewers according to your choices.","small_mascot");
         bootbox.alert(msg);
-      }else if(!$("#assigniRDocsToAll")[0].checked && !$("#assigniRDocsToSelect")[0].checked){
+      }else if(!document.getElementById("assigniRDocsToAll").checked && !document.getElementById("assigniRDocsToSelect").checked){
         let msg= statusMessages("warning","Please select how to assign documents","small_mascot");
         bootbox.alert(msg);
-      }else if($("#assigniRDocsToSelect")[0].checked && this.props.selectedIRList.length === 0){
+      }else if(document.getElementById("assigniRDocsToSelect").checked && this.props.selectedIRList.length === 0){
         let msg= statusMessages("warning","Please select reviewers","small_mascot");
         bootbox.alert(msg);
-      }else if(($("#assignRemaningIRDocs")[0].checked || $("#assignRemaningIRDocs1")[0].checked || $("#assignRemaningIRDocs2")[0].checked)===false){
+      }else if((document.getElementById("assignRemaningIRDocs").checked|| document.getElementById("assignRemaningIRDocs1").checked || document.getElementById("assignRemaningIRDocs2").checked)===false){
         let msg= statusMessages("warning","Please input how to assign remaining documents","small_mascot");
         bootbox.alert(msg);
-      }else if($("#assigniRDocsToAll")[0].checked ){
-        if($("#iRdocsCountToAll")[0].value === "" || !Number.isInteger(parseFloat($("#iRdocsCountToAll")[0].value)) || parseFloat($("#iRdocsCountToAll")[0].value) < 1 ){
+      }else if(document.getElementById("assigniRDocsToAll").checked ){
+        if(document.getElementById("iRdocsCountToAll").value ==="" || !Number.isInteger(parseFloat(document.getElementById("iRdocsCountToAll").value)) || parseFloat(document.getElementById("iRdocsCountToAll").value) < 1 ){
           let msg= statusMessages("warning","Please enter valid input.","small_mascot");
           bootbox.alert(msg);
         }
         else{
           this.props.dispatch(submitReviewerConfigAction("initialReview",this.props.iRConfigureDetails));
         }
-      }else if($("#assigniRDocsToSelect")[0].checked){
-        if( $("#iRdocsCountToSelect")[0].value === "" || !Number.isInteger(parseFloat($("#iRdocsCountToSelect")[0].value)) || parseFloat($("#iRdocsCountToSelect")[0].value) < 1 ){
+      }else if(document.getElementById("assigniRDocsToSelect").checked){
+        if(document.getElementById("iRdocsCountToSelect").value === "" || !Number.isInteger(parseFloat(document.getElementById("iRdocsCountToSelect").value)) || parseFloat(document.getElementById("iRdocsCountToSelect").value) < 1 ){
           let msg= statusMessages("warning","Please enter valid input.","small_mascot");
           bootbox.alert(msg);
         }
@@ -87,20 +87,20 @@ export class OcrConfigure extends React.Component {
         let msg= statusMessages("warning","Enable automatic reviewer assignment, to assign verified documents to auditors according to your choices.","small_mascot");
         bootbox.alert(msg);
       }
-      else if(!$("#assignSRDocsToAll")[0].checked && !$("#assignSRDocsToSelect")[0].checked){
+      else if(!document.getElementById("assignSRDocsToAll").checked && !document.getElementById("assignSRDocsToSelect").checked){
         let msg= statusMessages("warning","Please select sampling procedure for Audit","small_mascot");
         bootbox.alert(msg);
       }
-      else if($("#assignSRDocsToSelect")[0].checked && this.props.selectedSRList.length === 0){
+      else if(document.getElementById("assignSRDocsToSelect").checked && this.props.selectedSRList.length === 0){
         let msg= statusMessages("warning","Please select reviewers","small_mascot");
         bootbox.alert(msg);
       }
-      else if(($("#assignRemaningSRDocs")[0].checked || $("#assignRemaningSRDocs1")[0].checked || $("#assignRemaningSRDocs2")[0].checked)===false){
+      else if((document.getElementById("assignRemaningSRDocs").checked || document.getElementById("assignRemaningSRDocs1").checked || document.getElementById("assignRemaningSRDocs2").checked)===false){
         let msg= statusMessages("warning","Please input how to assign remaining documents","small_mascot");
         bootbox.alert(msg);
       }
-      else if($("#assignSRDocsToAll")[0].checked){
-        if($("#sRdocsCountToAll")[0].value === "" || !Number.isInteger(parseFloat($("#sRdocsCountToAll")[0].value)) || parseFloat($("#sRdocsCountToAll")[0].value) < 1){
+      else if(document.getElementById("assignSRDocsToAll").checked){
+        if(document.getElementById("sRdocsCountToAll").value === "" || !Number.isInteger(parseFloat(document.getElementById("sRdocsCountToAll").value)) || parseFloat(document.getElementById("sRdocsCountToAll").value) < 1){
           let msg= statusMessages("warning","Please enter valid input.","small_mascot");
           bootbox.alert(msg);
         }
@@ -108,8 +108,8 @@ export class OcrConfigure extends React.Component {
           this.props.dispatch(submitReviewerConfigAction("secondaryReview",this.props.sRConfigureDetails));
         }
       }
-      else if($("#assignSRDocsToSelect")[0].checked){
-        if($("#sRdocsCountToSelect")[0].value === "" || !Number.isInteger(parseFloat($("#sRdocsCountToSelect")[0].value)) || parseFloat($("#sRdocsCountToSelect")[0].value) < 1 ){
+      else if(document.getElementById("assignSRDocsToSelect").checked){
+        if(document.getElementById("sRdocsCountToSelect").value === "" || !Number.isInteger(parseFloat(document.getElementById("sRdocsCountToSelect").value)) || parseFloat(document.getElementById("sRdocsCountToSelect").value) < 1 ){
           let msg= statusMessages("warning","Please enter valid input.","small_mascot");
           bootbox.alert(msg);
         }
@@ -120,7 +120,7 @@ export class OcrConfigure extends React.Component {
     }
   }
 
-  clearReviewerConfigStates(e){
+  clearReviewerConfigStates(){
     this.props.dispatch(clearReviewerConfigStatesAction())
   }
 
@@ -148,7 +148,7 @@ export class OcrConfigure extends React.Component {
                     <OcrSecondaryReview/>
                   </div>
                   <div className="row">
-                      <div className="col-md-6 col-md-offset-6 text-right" style={{marginTop:"10px",marginBottom:"10px"}}>
+                      <div className="col-md-12 text-right xs-mt-10 xs-mb-10">
                           <button className="btn btn-default" title="Cancel" onClick={this.clearReviewerConfigStates.bind(this)}>Cancel</button> 
                           <button className="btn btn-primary" title="Save" onClick={this.submitReviewerConfig.bind(this)}><i className="fa fa-check-circle"></i> &nbsp; Save</button>
                       </div>
