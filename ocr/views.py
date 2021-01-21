@@ -726,7 +726,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             created_by=self.request.user,
             project__slug=projectslug,
             deleted=False
-        ).order_by('-created_at')
+        ).exclude(doctype='pdf_page').order_by('-created_at')
 
     def get_backlog_queryset(self, projectslug):
         return OCRImage.objects.filter(
@@ -734,7 +734,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             created_by=self.request.user,
             project__slug=projectslug,
             deleted=False
-        ).order_by('-created_at')
+        ).exclude(doctype='pdf_page').order_by('-created_at')
 
     def get_queryset_by_status(self, projectslug, imageStatus):
         if imageStatus == 'active':
