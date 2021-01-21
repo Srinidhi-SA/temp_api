@@ -125,3 +125,7 @@ if(output.listOfNodes.length!=0){
     return output.listOfCards[output.listOfCards.length - 1];
   }
 }
+
+export function fetchMaxDepthCard(node){
+  return node.listOfCards[0];
+}
