@@ -22,6 +22,7 @@ import datetime
 import os
 import random
 import ast
+import string
 from typing import Dict
 import zipfile
 import cv2
@@ -888,6 +889,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     django_file = File(open(os.path.join(s3_dir, file), 'rb'), name=file)
                     img_data['imagefile'] = django_file
                     img_data['doctype'] = file.split('.')[-1]
+                    img_data['identifier'] = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
                     img_data['projectslug'] = data['projectslug']
                     img_data['imageset'] = OCRImageset.objects.filter(id=imageset_id)
                     if file is None:
@@ -906,6 +908,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 if data['dataSourceType'] == 'fileUpload':
                     img_data['imagefile'] = file
                     img_data['doctype'] = file.name.split('.')[-1]
+                    img_data['identifier'] = ''.join(
+                        random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
                     img_data['imageset'] = OCRImageset.objects.filter(id=imageset_id)
                     if file is None:
                         img_data['name'] = img_data.get('name',
@@ -995,7 +999,9 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         if instance is None:
             return retrieve_failed_exception("File Doesn't exist.")
-        queryset = OCRImage.objects.filter(imageset=instance.imageset, doctype='pdf_page').order_by('name')
+        queryset = OCRImage.objects.filter(imageset=instance.imageset,
+                                           doctype='pdf_page',
+                                           identifier=instance.identifier).order_by('name')
         response = get_image_data(self, request, queryset, OCRImageSerializer)
         object_details = response.data['data'][0]
         object_details = self.add_image_info(object_details)

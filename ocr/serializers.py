@@ -112,7 +112,7 @@ class OCRImageListSerializer(serializers.ModelSerializer):
         model = OCRImage
         fields = ['name', 'slug', 'status', 'confidence', 'comment', 'imagefile', 'classification', 'flag',
                   'created_at', 'created_by',
-                  'modified_at', 'modified_by', 'assignee', 'fields', 'doctype']
+                  'modified_at', 'modified_by', 'assignee', 'fields', 'doctype', 'identifier']
 
 
 class OCRImageListPDFSerializer(serializers.ModelSerializer):
