@@ -177,7 +177,7 @@ export class OverViewPage extends React.Component {
           cloneSigData.listOfNodes = dt
         }
 
-        if(params.l1.includes("prediction") && this.props.signal.listOfNodes.filter(i=>i.name==="Prediction")[0]["Depth Of Tree 3"]!=undefined){
+        if(params.l1.includes("prediction_maxdepth") && this.props.signal.listOfNodes.filter(i=>i.name==="Prediction")[0]["Depth Of Tree 3"]!=undefined){
           this.l1Name = "Prediction"
           let cardLink = "";
           let predNodes = this.props.signal.listOfNodes.filter(i=>i.name==="Prediction")[0];

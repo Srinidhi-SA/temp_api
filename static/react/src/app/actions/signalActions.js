@@ -273,9 +273,9 @@ function fetchPosts_analysis(token, errandId) {
 }
 
 function fetchPostsSuccess_analysis(signalAnalysis, errandId, dispatch) {
-  if(signalAnalysis.status == SUCCESS && (signalAnalysis.data.listOfCards.length === 0 && signalAnalysis.data.listOfNodes.length === 0)){
+  if(signalAnalysis.status == SUCCESS && (signalAnalysis.data.listOfCards === undefined && signalAnalysis.data.listOfNodes === undefined)){
     bootbox.dialog({
-            message:"Unable to fetch score summary, try creating again.",
+            message:"Unable to fetch signal summary, try creating again.",
             buttons: {
                 'confirm': {
                     label: 'Ok',
