@@ -306,6 +306,7 @@ class OCRImage(models.Model):
                                message=validators.VALIDATION_ERROR_MESSAGE),
         validators.max_file_size])
     doctype = models.CharField(max_length=300, null=True)
+    identifier = models.CharField(max_length=300, null=True)
     imageset = models.ForeignKey(OCRImageset, null=False, db_index=True)
     project = models.ForeignKey(Project, null=False, db_index=True)
     datasource_type = models.CharField(max_length=300, null=True)
