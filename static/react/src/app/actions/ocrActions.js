@@ -480,39 +480,20 @@ export function resetOcrTableFilterValues() {
 		type: "RESET_OCR_TABLE_FILTERS",
 	}
 }
-export function ocrRdFilterStatus(status) {
+export function ocrRdFilterDetails(filterOn,value) {
 	return {
-		type: "FILTER_RD_BY_STATUS",
-		status,
-	}
-}
-export function ocrRdFilterConfidence(confidence) {
-	return {
-		type: "FILTER_RD_BY_CONFIDENCE",
-		confidence,
+		type: "UPDATE_FILTER_RD_DETAILS",
+		value,
+		filterOn
 	}
 }
 
-export function ocrRdFilterFields(fields) {
+export function resetRdFilterSearchDetails() {
 	return {
-		type: "FILTER_RD_BY_FIELDS",
-		fields
-	}
+		type: "RESET_RD_FILTER_SEARCH"
+		}
 }
 
-export function ocrRdFiltertemplate(template) {
-	return {
-		type: "FILTER_RD_BY_TEMPLATE",
-		template
-	}
-}
-
-export function ocrRevFilterTime(time) {
-	return {
-		type: "FILTER_REV_BY_TIME",
-		time,
-	}
-}
 
 export function ocrRevFilterAccuracy(accuracy) {
 	return {

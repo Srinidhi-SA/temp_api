@@ -139,7 +139,7 @@ export class Card extends React.Component {
                 break;
             case "dropdown":
                 if(story.data.length!=0 && story.data!=undefined)
-                    return (<PredictionDropDown key={randomNum} label={story.label} jsonData={story.data} type={story.dataType}/>);
+                    return (<PredictionDropDown key={randomNum} label={story.label} dropdownName={story.dropdownName!=undefined?story.dropdownName:""} jsonData={story.data} type={story.dataType}/>);
                 else
                     return ""
                 break;
