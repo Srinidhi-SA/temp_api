@@ -6,6 +6,7 @@ db.sqlite3
 dump.*
 celerybeat-*
 venv
+venv1
 ENV
 metastore_db
 server_log
