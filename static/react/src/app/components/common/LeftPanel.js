@@ -1,7 +1,7 @@
 import React from "react";
 import {NavLink, withRouter} from "react-router-dom";
 import {connect} from "react-redux";
-import {appsStoreSearchEle, appsStoreSortElements, clearAppsList, getAppsList, updateAnalystModeSelectedFlag, updateAppsFilterList} from "../../actions/appActions"
+import {appsStoreSearchEle, appsStoreSortElements, getAppsList, updateAnalystModeSelectedFlag, updateAppsFilterList} from "../../actions/appActions"
 import {hideDataPreview, getDataList,storeDataSearchElement,storeDataSortElements, clearDataList} from "../../actions/dataActions";
 import {getList,storeSearchElement,emptySignalAnalysis, clearSignalList, storeSortElements} from "../../actions/signalActions";
 import {getUserDetailsOrRestart} from "../../helpers/helper";
@@ -42,7 +42,6 @@ class LeftPanel extends React.Component {
     this.props.dispatch(appsStoreSearchEle(""));
     this.props.dispatch(appsStoreSortElements("",""));
     this.props.dispatch(updateAppsFilterList([]));
-    this.props.dispatch(clearAppsList());
     this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken,1))
   }
   hideDataPrev(){
