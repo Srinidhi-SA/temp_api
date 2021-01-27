@@ -38,6 +38,8 @@ export class SignalDocumentMode extends React.Component {
           var clone_Node = JSON.parse(JSON.stringify(_Node));
           if(Object.keys(clone_Node)[i].includes("Depth Of Tree")){
             let node = clone_Node[Object.keys(clone_Node)[i]].listOfCards;            
+            let newHeader = "<h3 style=text-align:left;padding-bottom:15px>" + Object.keys(clone_Node)[i] + ": "+ /<h3>(.*?)<\/h3>/g.exec(clone_Node[Object.keys(clone_Node)[i]].listOfCards[0].cardData[0].data)[1] + "</h3>"
+            clone_Node[Object.keys(clone_Node)[i]].listOfCards[0].cardData[0].data = newHeader
             clone_Node[Object.keys(clone_Node)[i]].listOfCards[0].cardData.filter(i=>i.dataType==="dropdown")[0]["dropdownName"] = clone_Node[Object.keys(clone_Node)[i]].name
             clone_Node[Object.keys(clone_Node)[i]].listOfCards[0].cardData.filter(i=>i.dataType==="table")[0].data["name"] = clone_Node[Object.keys(clone_Node)[i]].name
             cardLists.push(node);

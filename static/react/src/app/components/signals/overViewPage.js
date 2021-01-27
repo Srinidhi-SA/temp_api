@@ -207,6 +207,8 @@ export class OverViewPage extends React.Component {
           }else {
             let selectedMaxNode = Object.values(predNodes).filter(i=>i.slug===params.l2)[0];
             card = fetchMaxDepthCard(selectedMaxNode);
+            let newHeader = "<h3 style=text-align:left;padding-bottom:15px>" + /<h3>(.*?)<\/h3>/g.exec(card.cardData[0].data)[1] + "</h3>"
+            card.cardData[0].data = newHeader
             card.cardData.filter(i=>i.data.tableType==="popupDecisionTreeTable")[0].data["name"] = selectedMaxNode.name;
             card.cardData.filter(i=>i.dataType==="dropdown")[0]["dropdownName"] = selectedMaxNode.name;
             cardLink = that.urlPrefix + "/" + params.slug + "/" + params.l1 + "/" + params.l2;
