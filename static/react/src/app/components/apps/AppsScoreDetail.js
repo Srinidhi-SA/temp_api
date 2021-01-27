@@ -45,7 +45,7 @@ export class AppsScoreDetail extends React.Component {
     let scoreDataLink = "/apps/"+this.props.match.params.AppId+ slink +"/scores/"+scoreSlugtoDownload+"/dataPreview";
     var showViewButton = true;
     var showDownloadButton = true;
-		if (!$.isEmptyObject(scoreSummary)) {
+		if (!$.isEmptyObject(scoreSummary) && (this.props.scoreSummary.slug === this.props.match.params.slug)) {
 			showViewButton = scoreSummary.permission_details.download_score;
 			showDownloadButton = scoreSummary.permission_details.download_score;
 			if(this.props.currentAppDetails != null && this.props.currentAppDetails.app_type == "REGRESSION"){
