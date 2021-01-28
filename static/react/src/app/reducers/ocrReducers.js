@@ -422,51 +422,49 @@ export default function reducer(state = {
     }
   break;
     // filter for reviewers document table
-    case "FILTER_RD_BY_STATUS":
-      {
-        return {
-          ...state,
-          filter_rd_status: action.status,
-        }
+    case "RESET_RD_FILTER_SEARCH":
+    {
+      return {
+        ...state,
+        filter_rd_status: '',
+        filter_rd_confidence:'',
+        filter_rd_fields:'',
+        filter_rd_template:'',
+        search_project_in_revtable:''
       }
-    break;
-    case "FILTER_RD_BY_CONFIDENCE":
-      {
-        return {
-          ...state,
-          filter_rd_confidence: action.confidence,
+    }
+  break;
+  case "UPDATE_FILTER_RD_DETAILS":
+   {
+        if(action.filterOn=="status"){
+          return {
+            ...state,
+            filter_rd_status: action.value,
+          }
+        }else if(action.filterOn=='confidence'){
+          return {
+            ...state,
+            filter_rd_confidence: action.value,
+          }
+        }else if(action.filterOn=='fields'){
+          return {
+            ...state,
+            filter_rd_fields: action.value
+          }
         }
-      }
-    break;
-    case "FILTER_RD_BY_FIELDS":
-      {
-        return {
-          ...state,
-          filter_rd_fields: action.fields
+        else if(action.filterOn=='template'){
+          return {
+            ...state,
+            filter_rd_template: action.value
+          }
         }
-      }
-    break;
-    case "FILTER_RD_BY_TEMPLATE":
-      {
-        return {
-          ...state,
-          filter_rd_template: action.template
-        }
-      }
+    }
     break;
     case "FILTER_REV_BY_ACCURACY":
     {
       return {
         ...state,
         filter_rev_accuracy: action.accuracy,
-      }
-    }
-  break;
-  case "FILTER_REV_BY_TIME":
-    {
-      return {
-        ...state,
-        filter_rev_time: action.time,
       }
     }
   break; 
