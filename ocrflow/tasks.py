@@ -36,18 +36,27 @@ def start_auto_assignment_L1():
                 for pdf_data in ocrPdfQueryset:
                     imageQueryset = OCRImage.objects.filter(
                         identifier=pdf_data.identifier,
-                        doctype = 'pdf_page',
+                        #doctype = 'pdf_page',
                         is_L1assigned = False
                     ).order_by('created_at')
 
                     if len(imageQueryset)>0:
                         for image in imageQueryset:
                             if len(ReviewRequest.objects.filter(ocr_image=image))==0:
-                                object = ReviewRequest.objects.create(
-                                    ocr_image = image,
-                                    created_by = image.created_by,
-                                    rule = OCRRule
-                                )
+                                if image.doctype == 'pdf_page':
+                                    object = ReviewRequest.objects.create(
+                                        ocr_image = image,
+                                        created_by = image.created_by,
+                                        rule = OCRRule,
+                                        doc_type = 'pdf_page'
+                                    )
+                                elif image.doctype == 'pdf':
+                                    object = ReviewRequest.objects.create(
+                                        ocr_image = image,
+                                        created_by = image.created_by,
+                                        rule = OCRRule,
+                                        doc_type = 'pdf'
+                                    )
                             else:
                                 object = ReviewRequest.objects.get(ocr_image = image)
                                 object.start_simpleflow()
@@ -78,7 +87,7 @@ def start_auto_assignment_L1():
                 is_recognized=True,
                 is_L1assigned=False,
                 created_by = OCRRule.created_by,
-                doctype = ''
+                doctype__in = ['jpg', 'png', 'jpeg', 'tif']
             ).order_by('created_at')
             if len(ocrImageQueryset)>0:
                 for image in ocrImageQueryset:
@@ -87,7 +96,8 @@ def start_auto_assignment_L1():
                         object = ReviewRequest.objects.create(
                             ocr_image = image,
                             created_by = image.created_by,
-                            rule = OCRRule
+                            rule = OCRRule,
+                            doc_type = 'image'
                         )
                     else:
                         #TODO Try to assign the backlog task
