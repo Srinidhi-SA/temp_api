@@ -124,7 +124,7 @@ export class AppsCreateModel extends React.Component {
 
 	updateDataset(e){
 		this.selectedData = e.target.value;
-		if(!store.getState().apps.analystModeSelectedFlag){
+		if(window.location.pathname.includes("autoML")){
 			this.fetchDataAutoML(e.target.value);
 		}
 		this.props.dispatch(updateDatasetName(e.target.value));
@@ -235,7 +235,7 @@ export class AppsCreateModel extends React.Component {
 			cls += " disable-card";
 			title= ACCESSDENIED
 		}
-		var modeType = store.getState().apps.analystModeSelectedFlag?'Analyst' :'AutoML'
+		var modeType = window.location.pathname.includes("autoML")?'AutoML':'Analyst';
 		return (
 			<div class="col-md-3 xs-mb-15 list-boxes xs-mt-20" title={title}>
 				<div className={cls} onClick={this.openModelPopup.bind(this)}>

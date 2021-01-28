@@ -108,19 +108,11 @@ export class Apps extends React.Component {
     }
    }
 
-  proceedToModelManagement(tabId)
-  {
-    var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
-    if (tabId == "score")
-    {
-      this.props.dispatch(getAppsAlgoList(1));
-      this.props.dispatch(refreshAppsAlgoList(this.props));
-     this.props.history.push('/apps/' + this.props.match.params.AppId +modeSelected +'/modelManagement');
-    }else{
-      this.props.dispatch(getAppsAlgoList(1));
-      this.props.dispatch(refreshAppsAlgoList(this.props));
-    this.props.history.push('/apps/' + this.props.match.params.AppId + modeSelected +'/modelManagement');
-    }
+  proceedToModelManagement(tabId){
+    var modeSelected= window.location.pathname.includes("autoML")?'/autoML':'/analyst'
+    this.props.dispatch(getAppsAlgoList(1));
+    this.props.dispatch(refreshAppsAlgoList(this.props));
+    this.props.history.push('/apps/' + this.props.match.params.AppId +modeSelected +'/modelManagement');
   }
 
 

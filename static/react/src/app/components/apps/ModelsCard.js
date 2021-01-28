@@ -73,11 +73,10 @@ import {getAppsModelList,updateModelSlug,
             var modelList = this.props.data;
             var appsModelList = modelList.map((data, i) => {
                 var  modelEditLink = "/apps/"+this.props.match.params.AppId+"/analyst/models/data/" + data.dataset+"/createModel";
-                 var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
                     if(data.status==FAILED){
-                        var modelLink = "/apps/"+this.props.match.params.AppId+ modeSelected + "/models/";
+                        var modelLink = this.props.match.url
                     }else{
-                        var modelLink = "/apps/"+this.props.match.params.AppId+ modeSelected + "/models/" + data.slug;
+                        var modelLink = this.props.match.url + "/" + data.slug;
                     }
                     var percentageDetails = "";
                     if(data.status == INPROGRESS){
