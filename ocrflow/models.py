@@ -187,21 +187,36 @@ class SimpleFlow(models.Model):
         group = Group.objects.get(name=state['group'])
         content_type = ContentType.objects.get_for_model(self)
 
-        if self.doc_type =='pdf':
-            reviewer = None
+        if initial == 'initial':
+            rules = json.loads(self.rule.rulesL1)
         else:
-            if initial == 'initial':
-                rules = json.loads(self.rule.rulesL1)
-            else:
-                rules = json.loads(self.rule.rulesL2)
-            if rules['auto']['active'] == "True":
-                reviewer = self.assigned_user(initial, state, rules)
-            else:
-                usersList = rules['custom']['selected_reviewers']
-                reviewer = self.assigned_user(initial, state, rules, users=usersList)
-            if reviewer is None:
-                print("No Reviewers available. Moving to backlog")
+            rules = json.loads(self.rule.rulesL2)
+        if rules['auto']['active'] == "True":
+            reviewer = self.assigned_user(initial, state, rules)
+        else:
+            usersList = rules['custom']['selected_reviewers']
+            reviewer = self.assigned_user(initial, state, rules, users=usersList)
+        if reviewer is None:
+            print("No Reviewers available. Moving to backlog")
+            pass
+        else:
+            if self.doc_type =='pdf':
                 pass
+            elif self.doc_type =='pdf_page':
+                try:
+                    pdfobj = OCRImage.objects.get(identifier = self.ocr_image.identifier)
+                    reviewer = pdfobj.assignee
+
+                    Task.objects.create(
+                        name=state['name'],
+                        slug=initial,
+                        assigned_group=group,
+                        assigned_user=reviewer,
+                        content_type=content_type,
+                        object_id=self.id
+                    )
+                except:
+                    pass
             else:
                 Task.objects.create(
                     name=state['name'],
@@ -211,20 +226,20 @@ class SimpleFlow(models.Model):
                     content_type=content_type,
                     object_id=self.id
                 )
-        imageObject=OCRImage.objects.get(id=self.ocr_image.id)
-        if initial == 'initial':
-            imageObject.is_L1assigned = True
-            imageObject.status='ready_to_verify(L1)'
-            imageObject.assignee=reviewer
-            imageObject.l1_assignee=reviewer
-            self.status='submitted_for_review(L1)'
-        else:
-            imageObject.is_L2assigned = True
-            imageObject.status='ready_to_verify(L2)'
-            imageObject.assignee=reviewer
-            self.status='submitted_for_review(L2)'
-        imageObject.save()
-        self.save()
+            imageObject=OCRImage.objects.get(id=self.ocr_image.id)
+            if initial == 'initial':
+                imageObject.is_L1assigned = True
+                imageObject.status='ready_to_verify(L1)'
+                imageObject.assignee=reviewer
+                imageObject.l1_assignee=reviewer
+                self.status='submitted_for_review(L1)'
+            else:
+                imageObject.is_L2assigned = True
+                imageObject.status='ready_to_verify(L2)'
+                imageObject.assignee=reviewer
+                self.status='submitted_for_review(L2)'
+            imageObject.save()
+            self.save()
 
 class ReviewRequest(SimpleFlow):
     # assign your process here

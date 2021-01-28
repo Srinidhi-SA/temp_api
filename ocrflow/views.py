@@ -222,9 +222,10 @@ class ReviewRequestView(viewsets.ModelViewSet):
 
     def get_specific_assigned_queryset(self, username):
         queryset = ReviewRequest.objects.filter(
-            tasks__assigned_user__username=username,
+            #tasks__assigned_user__username=username,
+            ocr_image__assignee__username=username,
             ocr_image__deleted=False
-        ).exclude(ocr_image__doctype='pdf_page').order_by('-created_on')
+        ).exclude(doc_type='pdf_page').order_by('-created_on')
         return queryset
 
     def get_object_from_all(self):
