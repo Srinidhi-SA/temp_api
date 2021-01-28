@@ -69,9 +69,7 @@ def start_auto_assignment_L1():
                                 print("Task : {0}  : STATUS : UN-ASSIGNED ".format(image.name))
 
                     else:
-                        pdf_data.is_L1assigned = True
-                        pdf_data.status = 'ready_to_verify(L1)'
-                        pdf_data.save()
+                        continue
 
             else:
                 print("All PDFs got assigned for review for Superuser-{0}".format(OCRRule.created_by))

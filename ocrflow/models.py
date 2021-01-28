@@ -211,20 +211,20 @@ class SimpleFlow(models.Model):
                     content_type=content_type,
                     object_id=self.id
                 )
-            imageObject=OCRImage.objects.get(id=self.ocr_image.id)
-            if initial == 'initial':
-                imageObject.is_L1assigned = True
-                imageObject.status='ready_to_verify(L1)'
-                imageObject.assignee=reviewer
-                imageObject.l1_assignee=reviewer
-                self.status='submitted_for_review(L1)'
-            else:
-                imageObject.is_L2assigned = True
-                imageObject.status='ready_to_verify(L2)'
-                imageObject.assignee=reviewer
-                self.status='submitted_for_review(L2)'
-            imageObject.save()
-            self.save()
+        imageObject=OCRImage.objects.get(id=self.ocr_image.id)
+        if initial == 'initial':
+            imageObject.is_L1assigned = True
+            imageObject.status='ready_to_verify(L1)'
+            imageObject.assignee=reviewer
+            imageObject.l1_assignee=reviewer
+            self.status='submitted_for_review(L1)'
+        else:
+            imageObject.is_L2assigned = True
+            imageObject.status='ready_to_verify(L2)'
+            imageObject.assignee=reviewer
+            self.status='submitted_for_review(L2)'
+        imageObject.save()
+        self.save()
 
 class ReviewRequest(SimpleFlow):
     # assign your process here
