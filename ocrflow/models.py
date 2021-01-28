@@ -204,7 +204,10 @@ class SimpleFlow(models.Model):
                 pass
             elif self.doc_type =='pdf_page':
                 try:
-                    pdfobj = OCRImage.objects.get(identifier = self.ocr_image.identifier)
+                    pdfobj = OCRImage.objects.get(
+                        identifier = self.ocr_image.identifier,
+                        doctype='pdf'
+                    )
                     reviewer = pdfobj.assignee
 
                     Task.objects.create(
