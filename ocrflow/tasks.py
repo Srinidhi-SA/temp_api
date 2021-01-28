@@ -62,9 +62,12 @@ def start_auto_assignment_L1():
                                 object.start_simpleflow()
 
                             if object.status =='submitted_for_review(L1)':
-                                task=Task.objects.get(object_id = object.id)
-                                print("Task assigned:  {0}  -  User:  {1}".format(image.name, task.assigned_user))
-                                continue
+                                try:
+                                    task=Task.objects.get(object_id = object.id)
+                                    print("Task assigned:  {0}  -  User:  {1}".format(image.name, task.assigned_user))
+                                    continue
+                                except:
+                                    pass
                             else:
                                 print("Task : {0}  : STATUS : UN-ASSIGNED ".format(image.name))
 

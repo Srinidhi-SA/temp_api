@@ -188,7 +188,7 @@ class SimpleFlow(models.Model):
         content_type = ContentType.objects.get_for_model(self)
 
         if self.doc_type =='pdf':
-            pass
+            reviewer = None
         else:
             if initial == 'initial':
                 rules = json.loads(self.rule.rulesL1)
