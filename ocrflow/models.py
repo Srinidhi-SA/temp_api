@@ -200,14 +200,35 @@ class SimpleFlow(models.Model):
             print("No Reviewers available. Moving to backlog")
             pass
         else:
-            Task.objects.create(
-                name=state['name'],
-                slug=initial,
-                assigned_group=group,
-                assigned_user=reviewer,
-                content_type=content_type,
-                object_id=self.id
-            )
+            if self.doc_type =='pdf':
+                pass
+            elif self.doc_type =='pdf_page':
+                try:
+                    pdfobj = OCRImage.objects.get(
+                        identifier = self.ocr_image.identifier,
+                        doctype='pdf'
+                    )
+                    reviewer = pdfobj.assignee
+
+                    Task.objects.create(
+                        name=state['name'],
+                        slug=initial,
+                        assigned_group=group,
+                        assigned_user=reviewer,
+                        content_type=content_type,
+                        object_id=self.id
+                    )
+                except:
+                    pass
+            else:
+                Task.objects.create(
+                    name=state['name'],
+                    slug=initial,
+                    assigned_group=group,
+                    assigned_user=reviewer,
+                    content_type=content_type,
+                    object_id=self.id
+                )
             imageObject=OCRImage.objects.get(id=self.ocr_image.id)
             if initial == 'initial':
                 imageObject.is_L1assigned = True
@@ -261,6 +282,16 @@ class ReviewRequest(SimpleFlow):
             ('reviewerL1_reviewed', 'ReviewerL1 Reviewed'),
             ('reviewerL1_rejected', 'ReviewerL1 Rejected'),
         ]
+    )
+    doc_type = models.CharField(
+        max_length=40,
+        blank=True,
+        null=True,
+        choices=[
+            ('pdf', 'PDF'),
+            ('pdf_page', 'PDF PAGE'),
+            ('image', 'IMAGE'),
+        ],
     )
     def save(self, *args, **kwargs):
         """Save OCRUserProfile model"""

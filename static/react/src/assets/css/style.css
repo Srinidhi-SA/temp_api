@@ -23120,6 +23120,12 @@ min-width: 102px; }
 	margin-right: auto;
 	width: 89%;
 }
+.predictionSlider {
+	margin-left: 20px;
+}
+.predictionSlider .slick-prev,.predictionSlider .slick-next {
+  display: none !important;
+}
 .overViewHead{
   position: fixed;
   z-index: 12;

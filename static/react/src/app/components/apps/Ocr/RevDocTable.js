@@ -1,6 +1,7 @@
+//Reviewers document table contains list of documents belongs to particular reviewer
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { getRevrDocsList, saveImagePageFlag,saveImageDetails,saveSelectedImageName,saveRevDocumentPageFlag,ocrRdFilterFields,ocrRdFilterConfidence,ocrRdFilterStatus,clearImageDetails,storeSearchInRevElem,ocrRdFiltertemplate, rDocTablePagesize, pdfPagination} from '../../../actions/ocrActions';
+import { getRevrDocsList, saveImagePageFlag,saveImageDetails,saveSelectedImageName,saveRevDocumentPageFlag,ocrRdFilterDetails,resetRdFilterSearchDetails,clearImageDetails,storeSearchInRevElem,rDocTablePagesize,pdfPagination} from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { Pagination } from "react-bootstrap";
 import { STATIC_URL } from '../../../helpers/env';
@@ -44,12 +45,10 @@ export class RevDocTable extends React.Component {
     };
   };
 
-  handlePagination(pageNo){
-    this.props.dispatch(getRevrDocsList(pageNo))
-  }
+  handlePagination = (pageNo) =>  this.props.dispatch(getRevrDocsList(pageNo))
+  
   handleRPageRow=(e)=>{
-    let selectedVal= e.target.value;
-    this.props.dispatch(rDocTablePagesize(selectedVal));
+    this.props.dispatch(rDocTablePagesize(e.target.value));
     this.props.dispatch(getRevrDocsList())
   }
   handleImagePageFlag = (slug,name,doctype) => {
@@ -80,12 +79,12 @@ export class RevDocTable extends React.Component {
   }
 }
 
-  handleFil(mode){
+  handleFil = (mode) =>{
     this.disableInputs(mode,'')
     this.setState({filterVal:mode})
   }
  
-  disableInputs(mode,reset,filterOn=null){
+  disableInputs = (mode,reset,filterOn=null) => {
     if(reset=="reset"){ //clear entered value and enable all fields on reset(All)
       var selectedFieldIds = filterOn=='confidence'? ['CEQL','CGTE','CLTE']:['FEQL','FGTE','FLTE'];
       selectedFieldIds.map(i=>document.getElementById(i).value='')
@@ -101,48 +100,32 @@ export class RevDocTable extends React.Component {
     }
 }
 
-  filterRevDocrList(filtertBy, filterOn,reset ) {
+  filterRevDocrList = (filtertBy, filterOn,reset ) => {
     var filterByVal=''
     if(reset!='reset'){
       filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?$(`#${this.state.filterVal}`).val().trim()!=''?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val().trim()):"":filtertBy;
     }
-    switch (filterOn) {
-      case 'status':
-      this.props.dispatch(ocrRdFilterStatus(filterByVal))
-      break;
-      case 'confidence':
-      this.props.dispatch(ocrRdFilterConfidence(filterByVal))
-      break;
-      case 'fields':
-      this.props.dispatch(ocrRdFilterFields(filterByVal))
-      break;
-      case 'template':
-      this.props.dispatch(ocrRdFiltertemplate(filterByVal))
-      break;
-    }
+    this.props.dispatch(ocrRdFilterDetails(filterOn,filterByVal))
     this.props.dispatch(getRevrDocsList())
     if(reset=='reset'){
       this.disableInputs(this.state.filterVal,'reset',filterOn)
     }
   }
 
-  handleSearchBox(){
+  handleSearchBox = () => {
     var searchElememt=document.getElementById('searchInRev').value.trim()
     this.props.dispatch(storeSearchInRevElem(searchElememt))
     this.props.dispatch(getRevrDocsList())
   }
-  clearSearchElement(){
+  clearSearchElement = () => {
     document.getElementById('searchInRev').value=""
     this.props.dispatch(storeSearchInRevElem(''));
     this.props.dispatch(getRevrDocsList())
   }
 
-  closeDeletePopup = () => {
-    this.setState({ deleteDocFlag: false })
- }
- openDeletePopUp = (name, slug, task) => {
-    this.setState({ deleteDocName: name, deleteDocSlug: slug, deleteDocFlag: true, deleteTask: task})
- }
+  closeDeletePopup = () =>  this.setState({ deleteDocFlag: false })
+ 
+  openDeletePopUp = (name, slug, task) => this.setState({ deleteDocName: name, deleteDocSlug: slug, deleteDocFlag: true, deleteTask: task})
 
  deleteDocument = () => {
   let task = this.state.deleteTask[0].id;
@@ -176,7 +159,7 @@ export class RevDocTable extends React.Component {
                   <option value="100">100</option>
                   <option value="All">All</option>
                 </select>
-              <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handlePagination.bind(this)} first last next prev boundaryLinks items={pages} activePage={current_page} />
+              <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handlePagination} first last next prev boundaryLinks items={pages} activePage={current_page} />
             </div>
           </div>
         </div>
@@ -223,7 +206,7 @@ export class RevDocTable extends React.Component {
     let templateOptions= (this.props.OcrRevwrDocsList!=""?
     this.props.OcrRevwrDocsList.values.map((item,index)=>{
       return(
-          <li key={index}><a className={ this.props.template == item ? "active cursor" : "cursor" } onClick={this.filterRevDocrList.bind(this,item,'template')} name={item} data-toggle="modal" data-target="#modal_equal"> {item}</a></li>
+          <li key={index}><a className={ this.props.template == item ? "active cursor" : "cursor" } onClick={()=> this.filterRevDocrList(item,'template')} name={item} data-toggle="modal" data-target="#modal_equal"> {item}</a></li>
       )}):
       "")
     return (
@@ -237,8 +220,8 @@ export class RevDocTable extends React.Component {
             <span className="search-wrapper">
               {(getUserDetailsOrRestart.get().userRole == "Admin" || getUserDetailsOrRestart.get().userRole == "Superuser")?
               <div className="form-group xs-mr-5">
-                <input type="text" title="Search Project..." id="searchInRev" className="form-control btn-rounded " onKeyUp={this.handleSearchBox.bind(this)} placeholder="Search project..."></input>
-                <button className="close-icon"  style={{position:"absolute",left:'165px',top:'7px'}} onClick={this.clearSearchElement.bind(this)} type="reset"></button>
+                <input type="text" title="Search Project..." id="searchInRev" className="form-control btn-rounded " onKeyUp={this.handleSearchBox} placeholder="Search project..."></input>
+                <button className="close-icon"  style={{position:"absolute",left:'165px',top:'7px'}} onClick={this.clearSearchElement} type="reset"></button>
               </div>
                 :""}
             </span>
@@ -259,11 +242,11 @@ export class RevDocTable extends React.Component {
                     <span>STATUS</span> <b className="caret"></b>
                   </a>
                   <ul className="dropdown-menu scrollable-menu">
-                    <li><a className="cursor" onClick={this.filterRevDocrList.bind(this,'', 'status')} name='all'>All</a></li>
-                    <li><a className="cursor" onClick={this.filterRevDocrList.bind(this, 'pendingL1', 'status')} name="pending">Review Pending(L1)</a></li>
-                    <li><a className="cursor" onClick={this.filterRevDocrList.bind(this, 'pendingL2', 'status')} name="reviewed">Review Pending(L2)</a></li>
-                    <li><a className="cursor" onClick={this.filterRevDocrList.bind(this, 'reviewedL1', 'status')} name="pending">Review Completed(L1)</a></li>
-                    <li><a className="cursor" onClick={this.filterRevDocrList.bind(this, 'reviewedL2', 'status')} name="reviewed">Review Completed(L2)</a></li>
+                    <li><a className="cursor" onClick={()=>this.filterRevDocrList('', 'status')} name='all'>All</a></li>
+                    <li><a className="cursor" onClick={()=>this.filterRevDocrList('pendingL1', 'status')} name="pending">Review Pending(L1)</a></li>
+                    <li><a className="cursor" onClick={()=>this.filterRevDocrList('pendingL2', 'status')} name="reviewed">Review Pending(L2)</a></li>
+                    <li><a className="cursor" onClick={()=>this.filterRevDocrList('reviewedL1', 'status')} name="pending">Review Completed(L1)</a></li>
+                    <li><a className="cursor" onClick={()=>this.filterRevDocrList('reviewedL2', 'status')} name="reviewed">Review Completed(L2)</a></li>
                   </ul>
                 </th>
                 <th className="dropdown" >
@@ -272,7 +255,7 @@ export class RevDocTable extends React.Component {
                           </a>
                           <ul className="dropdown-menu scrollable-menu dropdownScroll template xs-pl-0" style={{minWidth:'130px'}}>
                           <Scrollbars className="templateScroll" style={{ height: 160,overflowX:'hidden' }} >
-                            <li><a className={ this.props.template == "" ? "active cursor" : "cursor" } onClick={this.filterRevDocrList.bind(this, '', 'template')} name='all'>All</a></li>
+                            <li><a className={ this.props.template == "" ? "active cursor" : "cursor" } onClick={()=>this.filterRevDocrList('', 'template')} name='all'>All</a></li>
                             {templateOptions}
                              </Scrollbars>
                           </ul>
@@ -282,14 +265,14 @@ export class RevDocTable extends React.Component {
                             <span>FIELDS</span> <b className="caret"></b>
                           </a>
                           <ul className="dropdown-menu scrollable-menu filterOptions">
-                            <li><a className="cursor" onClick={this.filterRevDocrList.bind(this, '', 'fields','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
+                            <li><a className="cursor" onClick={()=>this.filterRevDocrList('', 'fields','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
                             <li><a>Equal to</a> 
-                             <input id='FEQL' onChange={this.handleFil.bind(this,'FEQL')} type='number'></input></li>
+                             <input id='FEQL' onChange={()=>this.handleFil('FEQL')} type='number'></input></li>
                             <li><a>Greater than</a>
-                             <input id='FGTE' onChange={this.handleFil.bind(this,'FGTE')} type='number'></input></li>
+                             <input id='FGTE' onChange={()=>this.handleFil('FGTE')} type='number'></input></li>
                             <li><a>Less than</a>
-                             <input id='FLTE' onChange={this.handleFil.bind(this,'FLTE')} type='number'></input></li>
-                            <button className="btn btn-primary filterCheckBtn"  onClick={this.filterRevDocrList.bind(this, '', 'fields','')}><i className="fa fa-check"></i></button>
+                             <input id='FLTE' onChange={()=>this.handleFil('FLTE')} type='number'></input></li>
+                            <button className="btn btn-primary filterCheckBtn"  onClick={()=>this.filterRevDocrList('', 'fields','')}><i className="fa fa-check"></i></button>
                          </ul>
                         </th>
                        <th className="dropdown" >
@@ -297,14 +280,14 @@ export class RevDocTable extends React.Component {
                             <span>ACCURACY</span> <b className="caret"></b>
                           </a>
                           <ul className="dropdown-menu scrollable-menu filterOptions">
-                            <li><a className="cursor" onClick={this.filterRevDocrList.bind(this, '', 'confidence','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
+                            <li><a className="cursor" onClick={()=>this.filterRevDocrList('', 'confidence','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
                             <li><a >Equal to</a>
-                             <input id='CEQL' onChange={this.handleFil.bind(this,'CEQL')} type='number' ></input></li>
+                             <input id='CEQL' onChange={()=>this.handleFil('CEQL')} type='number' ></input></li>
                             <li><a >Greater than</a>
-                             <input id='CGTE' onChange={this.handleFil.bind(this,'CGTE')} type='number' ></input></li>
+                             <input id='CGTE' onChange={()=>this.handleFil('CGTE')} type='number' ></input></li>
                             <li><a >Less than</a>
-                             <input id='CLTE' onChange={this.handleFil.bind(this,'CLTE')} type='number'></input></li>
-                            <button className="btn btn-primary filterCheckBtn" onClick={this.filterRevDocrList.bind(this, '', 'confidence','')}><i className="fa fa-check"></i></button>
+                             <input id='CLTE' onChange={()=>this.handleFil('CLTE')} type='number'></input></li>
+                            <button className="btn btn-primary filterCheckBtn" onClick={()=>this.filterRevDocrList( '', 'confidence','')}><i className="fa fa-check"></i></button>
                           </ul>
                         </th>
                 <th>Created</th>
@@ -323,7 +306,7 @@ export class RevDocTable extends React.Component {
           {paginationTag}
          </div>
          <div id="deleteProject" role="dialog" className="modal fade modal-colored-header">
-               <Modal backdrop="static" show={this.state.deleteDocFlag} onHide={this.closeDeletePopup.bind(this)} dialogClassName="modal-colored-header">
+               <Modal backdrop="static" show={this.state.deleteDocFlag} onHide={this.closeDeletePopup} dialogClassName="modal-colored-header">
                   <Modal.Header closeButton>
                      <h3 className="modal-title">Delete Project</h3>
                   </Modal.Header>
@@ -337,7 +320,7 @@ export class RevDocTable extends React.Component {
                            <div>Are you sure you want to delete {this.state.deleteDocName} document?</div>
                            <div className="xs-mt-10">
                               <Button bsStyle="primary" onClick={this.deleteDocument}>Yes</Button>
-                              <Button onClick={this.closeDeletePopup.bind(this)}>No</Button>
+                              <Button onClick={this.closeDeletePopup}>No</Button>
                            </div>
                         </div>
                      </div>
@@ -349,6 +332,6 @@ export class RevDocTable extends React.Component {
   }
   componentWillUnmount = () => {
     this.props.dispatch(clearImageDetails());
-    this.props.dispatch(ocrRdFiltertemplate(""));
+    this.props.dispatch(resetRdFilterSearchDetails())
   }
 }

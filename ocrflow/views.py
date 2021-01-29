@@ -222,9 +222,10 @@ class ReviewRequestView(viewsets.ModelViewSet):
 
     def get_specific_assigned_queryset(self, username):
         queryset = ReviewRequest.objects.filter(
-            tasks__assigned_user__username=username,
+            #tasks__assigned_user__username=username,
+            ocr_image__assignee__username=username,
             ocr_image__deleted=False
-        ).order_by('-created_on')
+        ).exclude(doc_type='pdf_page').order_by('-created_on')
         return queryset
 
     def get_object_from_all(self):
@@ -256,59 +257,6 @@ class ReviewRequestView(viewsets.ModelViewSet):
             list_serializer=ReviewRequestSerializer,
             username=username
         )
-        # add_key = response.data['data']
-        # if 'accuracy' in request.GET or 'field_count' in request.GET or 'project' in request.GET:
-        #     accuracy_operator, accuracy = request.GET['accuracy'][:3], request.GET['accuracy'][3:]
-        #     fields_operator, fields = request.GET['field_count'][:3], request.GET['field_count'][3:]
-        #
-        #     if accuracy:
-        #         if accuracy_operator == 'GTE':
-        #             buffer = list()
-        #             for user in add_key:
-        #                 if not float(user['ocrImageData']['confidence']) >= float(accuracy):
-        #                     buffer.append(user)
-        #             add_key = [ele for ele in add_key if ele not in buffer]
-        #         if accuracy_operator == 'LTE':
-        #             buffer = list()
-        #             for user in add_key:
-        #                 if not float(user['ocrImageData']['confidence']) <= float(accuracy):
-        #                     buffer.append(user)
-        #             add_key = [ele for ele in add_key if ele not in buffer]
-        #         if accuracy_operator == 'EQL':
-        #             buffer = list()
-        #             for user in add_key:
-        #                 if not float(user['ocrImageData']['confidence']) == float(accuracy):
-        #                     buffer.append(user)
-        #             add_key = [ele for ele in add_key if ele not in buffer]
-        #
-        #     if fields:
-        #         if fields_operator == 'GTE':
-        #             buffer = list()
-        #             for user in add_key:
-        #                 if not int(user['ocrImageData']['fields']) >= int(fields):
-        #                     buffer.append(user)
-        #             add_key = [ele for ele in add_key if ele not in buffer]
-        #         if fields_operator == 'LTE':
-        #             buffer = list()
-        #             for user in add_key:
-        #                 if not int(user['ocrImageData']['fields']) <= int(fields):
-        #                     buffer.append(user)
-        #             add_key = [ele for ele in add_key if ele not in buffer]
-        #         if fields_operator == 'EQL':
-        #             buffer = list()
-        #             for user in add_key:
-        #                 if not int(user['ocrImageData']['fields']) == int(fields):
-        #                     buffer.append(user)
-        #             add_key = [ele for ele in add_key if ele not in buffer]
-        #
-        #     if request.GET['project']:
-        #         buffer = list()
-        #         for user in add_key:
-        #             if not request.GET['project'] in user['project']:
-        #                 buffer.append(user)
-        #         add_key = [ele for ele in add_key if ele not in buffer]
-        #
-        #     response.data['data'] = add_key
         temp_obj = Template.objects.first()
         values = list(json.loads(temp_obj.template_classification).keys())
         value = [i.upper() for i in values]
