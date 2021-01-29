@@ -127,7 +127,8 @@ class TaskView(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
     model = Task
     permission_classes = (IsAuthenticated,)
-    pagination_class = CustomOCRPagination
+    pagination_class = CustomOCRPagination,
+    lookup_field = 'id'
 
     def get_queryset(self):
         queryset = Task.objects.all()
@@ -140,33 +141,70 @@ class TaskView(viewsets.ModelViewSet):
             request=request,
             list_serializer=TaskSerializer
         )
+    # def get_object(self,id):
+    #     return Task.objects.get(id=id)
 
-    @property
-    def task(self):
-        return self.get_object()
+    # @property
+    # def task(self,id):
+    #     return self.get_object(id)
+    def update_pdfReview(self,user,slug):
+        imageObject = OCRImage.objects.get(slug=slug)
+        reviewObject = ReviewRequest.objects.get(ocr_image_id=imageObject.id)
 
-    def post(self, request, *args, **kwargs):
-        task_object = self.task
-        if request.user == task_object.assigned_user:
-            form = self.task.get_approval_form(request.POST)
-            if form.is_valid():
-                self.task.submit(
-                    form,
-                    request.user
-                )
-                return JsonResponse({
-                    "submitted": True,
-                    "is_closed": True,
-                    "message": "Task Updated Successfully."
-                })
-            else:
-                return JsonResponse({
-                    "submitted": False,
-                    "is_closed": True,
-                    "message": form.errors
-                })
+        if imageObject.is_L2assigned == True:
+            ocrImageStatus = 'ready_to_export'
+            reviewObject.status = "reviewerL2_reviewed"
         else:
-            raise PermissionDenied("Not allowed to perform this POST action.")
+            ocrImageStatus = 'l1_verified'
+            reviewObject.status = "reviewerL1_reviewed"
+
+        imageObject.modified_at = datetime.datetime.now()
+        imageObject.modified_by = user
+        imageObject.update_status(status=ocrImageStatus)
+
+        reviewObject.modified_at = datetime.datetime.now()
+        reviewObject.modified_by = user
+        reviewObject.save()
+
+
+    @list_route(methods=['post'])
+    def submit_task(self, request, *args, **kwargs):
+        try:
+            data = request.data
+
+            for id in data['task_id']:
+                task_object = Task.objects.get(id=id)
+                if request.user == task_object.assigned_user:
+                    form = task_object.get_approval_form(request.POST)
+                    form.data['status'] = data['status']
+                    form.data['remarks'] = data['remarks']
+                    if form.is_valid():
+                        task_object.submit(
+                            form,
+                            request.user
+                        )
+                    else:
+                        return JsonResponse({
+                            "submitted": False,
+                            "is_closed": True,
+                            "message": form.errors
+                        })
+                else:
+                    raise PermissionDenied("Not allowed to perform this action.")
+
+            if data['slug']!="":
+                self.update_pdfReview(request.user,slug=data['slug'])
+
+            return JsonResponse({
+                        "submitted": True,
+                        "is_closed": True,
+                        "message": "Task Updated Successfully."
+                    })
+        except Exception as err:
+            return JsonResponse({
+                        "submitted": False,
+                        "Error": str(err)
+                    })
 
     @list_route(methods=['post'])
     def feedback(self, request, *args, **kwargs):
