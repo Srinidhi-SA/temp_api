@@ -208,40 +208,56 @@ class TaskView(viewsets.ModelViewSet):
 
     @list_route(methods=['post'])
     def feedback(self, request, *args, **kwargs):
-        data = request.data
-        instance = Task.objects.get(id=self.request.query_params.get('feedbackId'))
-        if request.user == instance.assigned_user:
-            form = feedbackForm(request.POST)
-            if form.is_valid():
-                bad_scan = form.cleaned_data['bad_scan']
-                instance.bad_scan = bad_scan
-                instance.is_closed = True
-                instance.save()
-                reviewrequest = ReviewRequest.objects.get(id=instance.object_id)
-                reviewrequest.status = "reviewerL1_reviewed"
-                reviewrequest.modified_at = datetime.datetime.now()
-                reviewrequest.modified_by = request.user
-                reviewrequest.save()
-                image_queryset = OCRImage.objects.get(slug=data['slug'])
-                image_queryset.status = "bad_scan"
-                image_queryset.modified_by = self.request.user
-                image_queryset.save()
-                # data = {'status': 'bad_scan'}
-                # serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
-                #                                  context={"request": self.request})
-                # if serializer.is_valid():
-                #     serializer.save()
-                return JsonResponse({
-                    "submitted": True,
-                    "message": "Feedback submitted Successfully."
-                })
-            else:
-                return JsonResponse({
-                    "submitted": False,
-                    "message": form.errors
-                })
-        else:
-            raise PermissionDenied("Not allowed to perform this POST action.")
+        try:
+            data = request.data
+            for id in data['task_id']:
+                instance = Task.objects.get(id=id)
+                if request.user == instance.assigned_user:
+                    form = feedbackForm(request.POST)
+                    form.data['bad_scan'] = data['bad_scan']
+                    if form.is_valid():
+                        instance.bad_scan = form.cleaned_data['bad_scan']
+                        instance.is_closed = True
+                        instance.save()
+                        reviewrequest = ReviewRequest.objects.get(id=instance.object_id)
+                        reviewrequest.status = "reviewerL1_reviewed"
+                        reviewrequest.modified_at = datetime.datetime.now()
+                        reviewrequest.modified_by = request.user
+                        reviewrequest.save()
+                        image_queryset = OCRImage.objects.get(id=reviewrequest.ocr_image.id)
+                        image_queryset.status = "bad_scan"
+                        image_queryset.modified_by = self.request.user
+                        image_queryset.save()
+                    else:
+                        return JsonResponse({
+                            "submitted": False,
+                            "message": form.errors
+                        })
+                else:
+                    raise PermissionDenied("Not allowed to perform this POST action.")
+            if data['slug']!="":
+                imageObject = OCRImage.objects.get(slug=data['slug'])
+                reviewObject = ReviewRequest.objects.get(ocr_image_id=imageObject.id)
+
+                reviewObject.status = "reviewerL1_reviewed"
+                reviewObject.modified_at = datetime.datetime.now()
+                reviewObject.modified_by = request.user
+                reviewObject.save()
+
+                imageObject.status = "bad_scan"
+                imageObject.modified_by = self.request.user
+                imageObject.save()
+
+            return JsonResponse({
+                            "submitted": True,
+                            "message": "Feedback submitted Successfully."
+                        })
+        except Exception as error:
+            return JsonResponse({
+                        "submitted": False,
+                        "message": str(error)
+                    })
+
 
 
 class ReviewRequestView(viewsets.ModelViewSet):
