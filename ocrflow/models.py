@@ -256,21 +256,40 @@ class SimpleFlow(models.Model):
         elif self.doc_type == 'pdf_page':
             if reviewer is not None:
                 if initial == 'RL2_approval':
+                    #Fetch OCRImage with PDF
+                    pdfObject = OCRImage.objects.get(
+                        identifier=self.ocr_image.identifier,
+                        doctype='pdf')
+
+                    if pdfObject.is_L2assigned == False:
+                       pdfObject.assignee = reviewer
+                       pdfObject.is_L2assigned = True
+                       pdfObject.status='ready_to_verify(L2)'
+                       pdfObject.save()
+                       #Update PDF Review Object
+                       revObject = ReviewRequest.objects.get(ocr_image=pdfObject)
+                       revObject.status = 'submitted_for_review(L2)'
+                       revObject.save()
+
                     Task.objects.create(
                         name=state['name'],
                         slug=initial,
                         assigned_group=group,
-                        assigned_user=reviewer,
+                        assigned_user=pdfObject.assignee,
                         content_type=content_type,
                         object_id=self.id
                     )
+                    #Update Pdf_page and corresponding review object
                     imageObject=OCRImage.objects.get(id=self.ocr_image.id)
                     imageObject.is_L2assigned = True
                     imageObject.status='ready_to_verify(L2)'
-                    imageObject.assignee=reviewer
+                    imageObject.assignee=pdfObject.assignee
                     self.status='submitted_for_review(L2)'
                     imageObject.save()
                     self.save()
+            else:
+                print("No Reviewers available. Moving to backlog")
+                pass
         else:
             if reviewer is not None:
                 Task.objects.create(

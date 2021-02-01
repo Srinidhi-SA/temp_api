@@ -126,11 +126,14 @@ def start_auto_assignment_L2():
                 for reviewObj in reviewRequestQueryset:
                     reviewObj.start_simpleflow(initial_state='RL2_approval')
 
-                    if reviewObj.status =='submitted_for_review(L2)':
-                        task=Task.objects.get(object_id = reviewObj.id, is_closed=False)
-                        print("Task assigned:  {0}  -  User:  {1}".format(reviewObj.ocr_image.name, task.assigned_user))
+                    if reviewObj.doc_type == 'pdf_page':
+                       print("Task assigned:  {0}  -  User:  {1}".format(reviewObj.ocr_image.name, reviewObj.ocr_image.assignee))
+                    else:
+                        if reviewObj.status =='submitted_for_review(L2)':
+                            #task=Task.objects.get(object_id = reviewObj.id, is_closed=False)
+                            print("Task assigned:  {0}  -  User:  {1}".format(reviewObj.ocr_image.name, reviewObj.ocr_image.assignee)
             else:
-                print("All images got assigned for L2 review for Superuser-{0}".format(OCRRule.created_by))
+                print("All images/PDFs got assigned for L2 review for Superuser-{0}".format(OCRRule.created_by))
 
             print("~" * 90)
         else:
