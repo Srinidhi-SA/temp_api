@@ -131,7 +131,7 @@ def start_auto_assignment_L2():
                     else:
                         if reviewObj.status =='submitted_for_review(L2)':
                             #task=Task.objects.get(object_id = reviewObj.id, is_closed=False)
-                            print("Task assigned:  {0}  -  User:  {1}".format(reviewObj.ocr_image.name, reviewObj.ocr_image.assignee)
+                            print("Task assigned:  {0}  -  User:  {1}".format(reviewObj.ocr_image.name, reviewObj.ocr_image.assignee))
             else:
                 print("All images/PDFs got assigned for L2 review for Superuser-{0}".format(OCRRule.created_by))
 
