@@ -1,14 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Redirect } from "react-router";
-import store from "../../store";
-import {getSignalAnalysis,handleTopPredictions} from "../../actions/signalActions";
+import {handleTopPredictions} from "../../actions/signalActions";
 import renderHTML from 'react-render-html';
-import HeatMap from '../../helpers/heatmap';
-import { Scrollbars } from 'react-custom-scrollbars';
 
 @connect((store) => {
-    return {login_response: store.login.login_response,
+    return {
         selectedPrediction:store.signals.selectedPrediction,
     };
 })

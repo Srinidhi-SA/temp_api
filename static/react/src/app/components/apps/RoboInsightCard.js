@@ -1,41 +1,18 @@
 import React from "react";
-import store from "../../store";
 import {connect} from "react-redux";
-import {Link, Redirect} from "react-router-dom";
-import {push} from "react-router-redux";
+import {Link} from "react-router-dom";
 
-import {MainHeader} from "../common/MainHeader";
-import {
-  Tabs,
-  Tab,
-  Pagination,
-  Tooltip,
-  OverlayTrigger,
-  Popover
-} from "react-bootstrap";
-import {getRoboDataset, handleInsightDelete, handleInsightRename, storeRoboSearchElement,clearRoboSummary,openAppsLoader,roboDataUploadFilesSuccessAnalysis} from "../../actions/appActions";
+import {getRoboDataset, handleInsightDelete, handleInsightRename, clearRoboSummary,openAppsLoader,roboDataUploadFilesSuccessAnalysis} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js";
-import {RoboDataUpload} from "./RoboDataUpload";
-import {AppsLoader} from "../common/AppsLoader";
 import Dialog from 'react-bootstrap-dialog'
-import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS} from "../../helpers/helper"
+import {getUserDetailsOrRestart,SUCCESS,INPROGRESS} from "../../helpers/helper"
 
 var dateFormat = require('dateformat');
 
 @connect((store) => {
   return {
-    login_response: store.login.login_response,
     roboList: store.apps.roboList,
-    currentAppId: store.apps.currentAppId,
-    showRoboDataUploadPreview: store.apps.showRoboDataUploadPreview,
-    roboDatasetSlug: store.apps.roboDatasetSlug,
-    roboSummary: store.apps.roboSummary,
-    dataPreviewFlag: store.datasets.dataPreviewFlag,
-    robo_search_element: store.apps.robo_search_element,
-    customerDataset_slug:store.apps.customerDataset_slug,
-    historialDataset_slug:store.apps.historialDataset_slug,
-    externalDataset_slug:store.apps.externalDataset_slug,
   };
 })
 
@@ -61,7 +38,6 @@ export class RoboInsightCard extends React.Component {
 
   render() {
       const roboList = this.props.data;
-      let addButton = <RoboDataUpload match={this.props.match}/>
 
       const appsRoboList = roboList.map((data, i) => {
         var modelLink = "/apps-robo-list/" + data.slug+"/customer/data/"+data.customer_dataset;

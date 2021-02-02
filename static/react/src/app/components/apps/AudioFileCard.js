@@ -1,28 +1,18 @@
 import React from "react";
-import {MainHeader} from "../common/MainHeader";
-import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
-import {Link, Redirect} from "react-router-dom";
-import store from "../../store";
+import {OverlayTrigger,Popover} from "react-bootstrap";
+import {Link} from "react-router-dom";
 import {connect} from "react-redux";
-import {APPID4,APPNAME4} from "../../helpers/helper.js";
-import {AudioFileUpload} from "./AudioFileUpload";
-import {AppsLoader} from "../common/AppsLoader";
-import {getAudioFile,getAudioFileList,handleAudioDelete,handleAudioRename} from "../../actions/appActions";
+import {getAudioFile,handleAudioDelete,handleAudioRename} from "../../actions/appActions";
 import {STATIC_URL} from "../../helpers/env.js"
-import {isEmpty,SEARCHCHARLIMIT,getUserDetailsOrRestart} from "../../helpers/helper";
+import {getUserDetailsOrRestart} from "../../helpers/helper";
 import {DetailOverlay} from "../common/DetailOverlay";
 import Dialog from 'react-bootstrap-dialog'
-import Breadcrumb from 'react-breadcrumb';
 
 var dateFormat = require('dateformat');
 
 @connect((store) => {
-    return {login_response: store.login.login_response,
-        currentAppId:store.apps.currentAppId,
-        audioFileSummaryFlag:store.apps.audioFileSummaryFlag,
-        audioFileSlug:store.apps.audioFileSlug,
+    return {
         audioList:store.apps.audioList,
-        audio_search_element:store.apps.audio_search_element
         };
 })
 

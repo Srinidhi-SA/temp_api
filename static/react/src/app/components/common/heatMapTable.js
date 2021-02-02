@@ -1,9 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
-import { Redirect } from "react-router";
-import store from "../../store";
-import {getSignalAnalysis} from "../../actions/signalActions";
-import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
 
 export class HeatMapTable extends React.Component {
@@ -14,7 +9,7 @@ export class HeatMapTable extends React.Component {
       HeatMap("heat-table-map");
       //table.find('tr').each(function (i) {
       $(function(){
-        $(".idDecisionTreeTable").each(function (i) {
+        $(".idDecisionTreeTable").each(function () {
             var $tds = $(this).find('td');
             var $divs  =  $tds.eq(1).find('div');
             var $div2  =  $tds.eq(2).find('div');
@@ -50,7 +45,7 @@ export class HeatMapTable extends React.Component {
                     </div>
                   );
            });
-           let thirdTd =item[1].map((thirdItem,thirdI)=>{
+           let thirdTd =item[1].map((thirdItem)=>{
                 return(
                   <div style="min-height: 20px; padding: 8px; overflow-y: auto; border-bottom: 1px solid rgb(230, 230, 230); width: 100%; height: 41px;" id="id_prop_0">
                     {thirdItem}

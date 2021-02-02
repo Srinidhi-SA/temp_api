@@ -1,6 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
-import {Redirect} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {Modal,Button} from "react-bootstrap";
 import store from "../../store";
 import {showCreateScorePopup,hideCreateScorePopup,updateSelectedAlg,updateModelSummaryFlag,checkCreateScoreToProceed,updateSelectedAlgObj} from "../../actions/appActions";
@@ -12,6 +12,7 @@ import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from
 		dataPreview: store.datasets.dataPreview,
 		appsScoreShowModal:store.apps.appsScoreShowModal,
 		dataPreviewFlag:store.datasets.dataPreviewFlag,
+		selectedDataSet:store.datasets.selectedDataSet,
 	};
 })
 
@@ -57,10 +58,6 @@ export class AppsCreateScore extends React.Component {
 	}
 
 	render() {
-		if(store.getState().datasets.dataPreviewFlag){
-			let _link = this.props.match.url+"/data/"+store.getState().datasets.selectedDataSet;
-			return(<Redirect to={_link}/>);
-		}
 		const dataSets = store.getState().datasets.allDataSets.data;
 		const algorithms = store.getState().apps.algorithmsList;
 		let renderSelectBox = null;
@@ -103,7 +100,7 @@ export class AppsCreateScore extends React.Component {
 					</Modal.Body>
 					<Modal.Footer>
 						<Button className="btn btn-primary md-close" onClick={this.closeScorePopup.bind(this)}>Close</Button>
-						<Button bsStyle="primary"  onClick={this.getDataSetPreview.bind(this)} >Create</Button>
+						<Link className="btn btn-primary" id="modalCreateButton" onClick={this.getDataSetPreview.bind(this)} to={this.props.match.url+"/data/"+this.props.selectedDataSet}>Create</Link>
 					</Modal.Footer>
 				</Modal>
 			</div>

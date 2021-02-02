@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {saveRevDocumentPageFlag,storeProjectSearchElem, getOcrProjectsList,selectedProjectDetails,projectTablePagesize } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { Pagination } from "react-bootstrap";

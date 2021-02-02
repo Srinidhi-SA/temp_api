@@ -1,28 +1,9 @@
 import React from "react";
-import store from "../../store";
 import {connect} from "react-redux";
-import {Link, Redirect} from "react-router-dom";
-import {push} from "react-router-redux";
 
-import {MainHeader} from "../common/MainHeader";
-import {
-  Tabs,
-  Tab,
-  Pagination,
-  Tooltip,
-  OverlayTrigger,
-  Popover
-} from "react-bootstrap";
-import {storeRoboSearchElement} from "../../actions/appActions";
-import {DetailOverlay} from "../common/DetailOverlay";
-import {STATIC_URL} from "../../helpers/env.js";
 import {RoboDataUpload} from "./RoboDataUpload";
-import {AppsLoader} from "../common/AppsLoader";
-import Dialog from 'react-bootstrap-dialog'
-import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from "../../helpers/helper";
 import {RoboInsightCard} from "./RoboInsightCard";
 
-var dateFormat = require('dateformat');
 
 @connect((store) => {
   return {

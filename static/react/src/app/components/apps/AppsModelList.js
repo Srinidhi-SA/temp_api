@@ -1,31 +1,20 @@
 import React from "react";
 import store from "../../store";
 import {connect} from "react-redux";
-import {Link, Redirect} from "react-router-dom";
-import {push} from "react-router-redux";
-
-import {MainHeader} from "../common/MainHeader";
-import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
-import {AppsCreateModel} from "./AppsCreateModel";
-import {getAppsModelList,updateModelSlug,
-    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsModelList,getAllModelList,storeAppsModelFilterElement, clearAppsAlgoList} from "../../actions/appActions";
+import {Pagination} from "react-bootstrap";
+import {getAppsModelList,updateModelSlug,updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,
+    storeAppsModelSortElements,getAppDetails,refreshAppsModelList,getAllModelList,storeAppsModelFilterElement, clearAppsAlgoList} from "../../actions/appActions";
 import {paginationFlag, updateSelectedVariablesAction} from "../../actions/dataActions";
-import {DetailOverlay} from "../common/DetailOverlay";
-import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
+import {SEARCHCHARLIMIT} from  "../../helpers/helper"
 import {STATIC_URL} from "../../helpers/env.js";
 import Dialog from 'react-bootstrap-dialog'
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import {ModelsCard} from "./ModelsCard";
-import {LatestModels} from "./LatestModels";
-var dateFormat = require('dateformat');
-    
-    
+import {LatestModels} from "./LatestModels";  
     @connect((store) => {
-        return {login_response: store.login.login_response,
+        return {
             modelList: store.apps.modelList,
             algoList: store.apps.algoList,
-            modelSummaryFlag:store.apps.modelSummaryFlag,
-            modelSlug:store.apps.modelSlug,
             currentAppId:store.apps.currentAppId,
             model_search_element: store.apps.model_search_element,
             apps_model_sorton:store.apps.apps_model_sorton,

@@ -1,18 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Redirect } from "react-router";
 import {Link} from "react-router-dom";
 import store from "../../store";
 import {Modal,Button} from "react-bootstrap";
-import {openAppsLoaderValue,closeAppsLoaderValue,getAppsModelList,clearAppsIntervel,updateModelSummaryFlag,getHeader, showCreateModalPopup,} from "../../actions/appActions";
-import {hideDataPreview, getDataSetPreview} from "../../actions/dataActions";
-import renderHTML from 'react-render-html';
-import HeatMap from '../../helpers/heatmap';
-import {STATIC_URL, API} from "../../helpers/env";
-import {handleJobProcessing, getUserDetailsOrRestart} from "../../helpers/helper";
+import {openAppsLoaderValue,closeAppsLoaderValue,clearAppsIntervel,updateModelSummaryFlag,showCreateModalPopup,} from "../../actions/appActions";
+import {hideDataPreview} from "../../actions/dataActions";
+import {STATIC_URL} from "../../helpers/env";
+import {handleJobProcessing} from "../../helpers/helper";
 
 @connect((store) => {
-	return {login_response: store.login.login_response,
+	return {
 		appsLoaderModal:store.apps.appsLoaderModal,
 		appsLoaderPerValue:store.apps.appsLoaderPerValue,
 		appsLoaderText:store.apps.appsLoaderText,
@@ -20,7 +17,7 @@ import {handleJobProcessing, getUserDetailsOrRestart} from "../../helpers/helper
 		appsLoaderImage:store.apps.appsLoaderImage,
 		dataLoadedText:store.datasets.dataLoadedText,
 		currentAppId: store.apps.currentAppId,
-	    modelSlug: store.apps.modelSlug,
+		modelSlug: store.apps.modelSlug,
 		scoreSlug:store.apps.scoreSlug,
 		stockSlug:store.apps.stockSlug,
 		roboDatasetSlug:store.apps.roboDatasetSlug,
@@ -39,7 +36,6 @@ export class AppsLoader extends React.Component {
 
 
 	componentWillUpdate(){
-   	var getText = [];
 		if((this.props.appsLoaderPerValue < 0) && (Object.keys(this.props.appsLoadedText).length <= 0) ){
 				$("#loadingMsgs1").empty()
 				$("#loadingMsgs2").empty()
