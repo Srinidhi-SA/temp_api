@@ -1,7 +1,7 @@
 //Reviewers document table contains list of documents belongs to particular reviewer
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { getRevrDocsList, saveImagePageFlag,saveImageDetails,saveSelectedImageName,saveRevDocumentPageFlag,ocrRdFilterDetails,resetRdFilterSearchDetails,clearImageDetails,storeSearchInRevElem,rDocTablePagesize} from '../../../actions/ocrActions';
+import { getRevrDocsList, saveImagePageFlag,saveImageDetails,saveSelectedImageName,saveRevDocumentPageFlag,ocrRdFilterDetails,resetRdFilterSearchDetails,clearImageDetails,storeSearchInRevElem,rDocTablePagesize,pdfPagination} from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { Pagination } from "react-bootstrap";
 import { STATIC_URL } from '../../../helpers/env';
@@ -51,13 +51,24 @@ export class RevDocTable extends React.Component {
     this.props.dispatch(rDocTablePagesize(e.target.value));
     this.props.dispatch(getRevrDocsList())
   }
-  handleImagePageFlag = (slug,name) => {
-    this.getImage(slug)
+  handleImagePageFlag = (slug,name,doctype) => {
+    this.getImage(slug,doctype)
     this.props.dispatch(saveSelectedImageName(name));
     this.props.dispatch(saveImagePageFlag(true));
   }
 
-  getImage = (slug) => {
+  getImage = (slug,doctype) => {
+    if (doctype == "pdf") {
+      return fetch(API + '/ocr/ocrimage/retrieve_pdf/?slug=' + slug + '&page_size=1&page_number=1', {
+        method: 'get',
+        headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      }).then((response) => response.json())
+        .then(json => {
+          this.props.dispatch(saveImageDetails(json.data[0]));
+          this.props.dispatch(pdfPagination(json));
+        })
+    }
+    else {
     return fetch(API + '/ocr/ocrimage/'+ slug +'/', {
       method: 'get',
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
@@ -66,6 +77,7 @@ export class RevDocTable extends React.Component {
         this.props.dispatch(saveImageDetails(data));
       });
   }
+}
 
   handleFil = (mode) =>{
     this.disableInputs(mode,'')
@@ -172,7 +184,7 @@ export class RevDocTable extends React.Component {
       this.props.OcrRevwrDocsList != '' ? (this.props.OcrRevwrDocsList.data.length != 0 ? this.props.OcrRevwrDocsList.data.map((item, index) => {
         return (
           <tr key={index} id={index}>
-            <td><Link to={`/apps/ocr-mq44ewz7bp/reviewer/${item.ocrImageData.name}`}onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug,item.ocrImageData.name) }} title={item.ocrImageData.name}>{item.ocrImageData.name}</Link></td>
+            <td><Link to={`/apps/ocr-mq44ewz7bp/reviewer/${item.ocrImageData.name}`}onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug,item.ocrImageData.name,item.ocrImageData.doctype) }} title={item.ocrImageData.name}>{item.ocrImageData.name}</Link></td>
             <td>{item.status}</td>
             <td>{item.ocrImageData.classification}</td>
             <td>{item.ocrImageData.fields}</td>
