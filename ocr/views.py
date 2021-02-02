@@ -1306,20 +1306,50 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data = request.data
         try:
             image_queryset = OCRImage.objects.get(slug=data['slug'])
-            final_result = json.loads(image_queryset.final_result)
-            final_result_user = cleaned_final_json(final_result)
-            final_result_user = sort_json(final_result_user)
-            data['google_response'] = json.dumps(final_result_user)
-            review_end_time = image_queryset.review_end
-            if not review_end_time:
-                data['review_end'] = datetime.datetime.now()
 
-            serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
-                                             context={"request": self.request})
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse({'message': 'SUCCESS'})
-            return Response(serializer.errors)
+            doctype = image_queryset.doctype
+            if doctype == 'pdf':
+                queryset = OCRImage.objects.filter(
+                    imageset=image_queryset.imageset,
+                    doctype='pdf_page').order_by('name')
+                pdf_slugs = [item.slug for item in queryset]
+                status_list = []
+                for page_slug in pdf_slugs:
+                    pdf_queryset = OCRImage.objects.get(slug=page_slug)
+                    final_result = json.loads(pdf_queryset.final_result)
+                    final_result_user = cleaned_final_json(final_result)
+                    final_result_user = sort_json(final_result_user)
+                    data['google_response'] = json.dumps(final_result_user)
+                    review_end_time = pdf_queryset.review_end
+                    if not review_end_time:
+                        data['review_end'] = datetime.datetime.now()
+
+                    serializer = self.get_serializer(instance=pdf_queryset, data=data, partial=True,
+                                                     context={"request": self.request})
+                    if serializer.is_valid():
+                        serializer.save()
+                        status_list.append(1)
+                    else:
+                        status_list.append(0)
+                if 0 in status_list:
+                    return Response(serializer.errors)
+                else:
+                    return JsonResponse({'message': 'SUCCESS'})
+            else:
+                final_result = json.loads(image_queryset.final_result)
+                final_result_user = cleaned_final_json(final_result)
+                final_result_user = sort_json(final_result_user)
+                data['google_response'] = json.dumps(final_result_user)
+                review_end_time = image_queryset.review_end
+                if not review_end_time:
+                    data['review_end'] = datetime.datetime.now()
+
+                serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                                 context={"request": self.request})
+                if serializer.is_valid():
+                    serializer.save()
+                    return JsonResponse({'message': 'SUCCESS'})
+                return Response(serializer.errors)
         except Exception as e:
             return JsonResponse({'message': 'Failed to generate final results!', 'error': str(e)})
 
@@ -1459,6 +1489,15 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return Response({
             "data": set(item['name'] for item in serializer.data)
         })
+
+    # @list_route(methods=['get'])
+    # def get_task_id(self, request, *args, **kwargs):
+    #     slug = self.request.query_params.get('slug')
+    #     instance = OCRImage.objects.get(slug=slug)
+    #
+    #     if instance is None:
+    #         return retrieve_failed_exception("File Doesn't exist.")
+    #     reviewObject = ReviewRequest.objects.get(ocr_image_id=instance.id)
 
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
