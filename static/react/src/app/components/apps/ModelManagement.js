@@ -248,7 +248,7 @@ export class ModelManagement extends React.Component {
             <td class="text-left"><div class="ellipse-text" title={item.project_name}> {item.project_name}</div></td>
             <td className="text-left"> {item.algorithm}</td>
             <td > {item.accuracy}</td>
-            <td> {setDateFormat( item.created_at, " mmm d,yyyy")}</td>
+            <td> {this.setDateFormat( item.created_at)}</td>
             <td> {item.deployment}</td>
             <td> {item.total_deployment}</td>
             <td> {item.runtime}</td>
