@@ -1,7 +1,6 @@
 import { displayName } from "react-bootstrap-dialog";
 
 export default function reducer(state = {
-        analystModeSelectedFlag:false,
         appsModelShowModal:false,
         modelList: {},
         allModelList: {},
@@ -125,14 +124,6 @@ export default function reducer(state = {
 }, action) {
 
     switch (action.type) {
-        case "UPDATE_MODE_SELECTION":
-    {
-        return {
-            ...state,
-            analystModeSelectedFlag:action.flag,
-        }
-    }
-    break;
     case "APPS_MODEL_SHOW_POPUP":
     {
         return {

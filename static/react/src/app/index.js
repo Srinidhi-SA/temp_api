@@ -300,7 +300,7 @@ class App extends React.Component {
 
       } else if (this.hasTrainerRoutePermission()) {
         let model_url = "/apps"
-        var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
+        var modeSelected= window.location.pathname.includes("autoML")?'/autoML':'/analyst'
         if (props.match.params.AppId)
           model_url = "/apps/" + props.match.params.AppId +modeSelected+"/models"
         return (<Redirect to={model_url}/>)

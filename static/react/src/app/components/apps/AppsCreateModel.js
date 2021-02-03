@@ -2,7 +2,6 @@ import React from "react";
 import {connect} from "react-redux";
 import {API} from "../../helpers/env";
 import {getUserDetailsOrRestart,statusMessages} from "../../helpers/helper";
-import {Redirect} from "react-router-dom";
 import {Modal,Button} from "react-bootstrap";
 import store from "../../store";
 import {closeModelPopup,openModelPopup,updateSelectedVariable,getRegressionAppAlgorithmData,createModel,getAllModelList,selectMetricAction,saveSelectedValuesForModel, clearDataPreview} from "../../actions/appActions";
@@ -124,7 +123,7 @@ export class AppsCreateModel extends React.Component {
 
 	updateDataset(e){
 		this.selectedData = e.target.value;
-		if(!store.getState().apps.analystModeSelectedFlag){
+		if(window.location.pathname.includes("autoML")){
 			this.fetchDataAutoML(e.target.value);
 		}
 		this.props.dispatch(updateDatasetName(e.target.value));
@@ -159,13 +158,7 @@ export class AppsCreateModel extends React.Component {
 	render() {
 	 	const dataSets = store.getState().datasets.allDataSets.data;
 		let renderSelectBox = null;
-		let _link = "";
 		let hideCreate=false
-		if(store.getState().datasets.dataPreviewFlag && window.location.href.includes("analyst")&&(!this.props.editmodelFlag)){
-			//Added &&, To restrict route to dataPreview page once dataPreviewFlag set true in autoML mode
-			let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+"/analyst/models/data/"+store.getState().datasets.selectedDataSet;
-			return(<Redirect to={_link}/>);
-		}
 		if(dataSets){
 			renderSelectBox = (
 				<div>
@@ -235,7 +228,7 @@ export class AppsCreateModel extends React.Component {
 			cls += " disable-card";
 			title= ACCESSDENIED
 		}
-		var modeType = store.getState().apps.analystModeSelectedFlag?'Analyst' :'AutoML'
+		var modeType = window.location.pathname.includes("autoML")?'AutoML':'Analyst';
 		return (
 			<div class="col-md-3 xs-mb-15 list-boxes xs-mt-20" title={title}>
 				<div className={cls} onClick={this.openModelPopup.bind(this)}>

@@ -180,7 +180,7 @@ function fetchDataPreview(slug,dispatch,interval) {
 //get preview data
 function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
     if(window.location.pathname != "/apps-stock-advisor/"){
-        dataPreview.meta_data.scriptMetaData.columnData != undefined && dataPreview.meta_data.scriptMetaData.columnData.forEach(column => {
+        dataPreview.meta_data.scriptMetaData!=undefined && dataPreview.meta_data.scriptMetaData.columnData != undefined && dataPreview.meta_data.scriptMetaData.columnData.forEach(column => {
             column.checked = true;
         });
     }
@@ -248,7 +248,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
         dispatch(dispatchDataPreviewLoadingMsg(dataPreview));
         if(Object.keys(dataPreview.initial_messages).length != 0){
             dispatch(setDataLoadedText(dataPreview.initial_messages));
-            if(dataPreview.message[0].globalCompletionPercentage !=-1 && store.getState().datasets.metaDataLoaderidxVal!=0){
+            if(dataPreview.message[0].globalCompletionPercentage!=undefined && dataPreview.message[0].globalCompletionPercentage !=-1 && store.getState().datasets.metaDataLoaderidxVal!=0){
                 dispatch(updateMetaDataIndex(store.getState().datasets.metaDataLoaderidxVal))
             }
             dispatch(updateMetaDataIndexValue(dataPreview.message.length));

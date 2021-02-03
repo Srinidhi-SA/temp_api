@@ -1,26 +1,16 @@
 import React from "react";
 import {connect} from "react-redux";
 import {Link} from "react-router-dom";
-import {getRoboDataset, handleInsightDelete, handleInsightRename, storeRoboSearchElement,clearRoboSummary,openAppsLoader,roboDataUploadFilesSuccessAnalysis} from "../../actions/appActions";
+
+import {getRoboDataset, handleInsightDelete, handleInsightRename, clearRoboSummary,openAppsLoader,roboDataUploadFilesSuccessAnalysis} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js";
-import {RoboDataUpload} from "./RoboDataUpload";
 import Dialog from 'react-bootstrap-dialog'
 import {getUserDetailsOrRestart,SUCCESS,INPROGRESS,setDateFormatHelper} from "../../helpers/helper"
 
 @connect((store) => {
   return {
-    login_response: store.login.login_response,
     roboList: store.apps.roboList,
-    currentAppId: store.apps.currentAppId,
-    showRoboDataUploadPreview: store.apps.showRoboDataUploadPreview,
-    roboDatasetSlug: store.apps.roboDatasetSlug,
-    roboSummary: store.apps.roboSummary,
-    dataPreviewFlag: store.datasets.dataPreviewFlag,
-    robo_search_element: store.apps.robo_search_element,
-    customerDataset_slug:store.apps.customerDataset_slug,
-    historialDataset_slug:store.apps.historialDataset_slug,
-    externalDataset_slug:store.apps.externalDataset_slug,
   };
 })
 
@@ -46,7 +36,6 @@ export class RoboInsightCard extends React.Component {
 
   render() {
       const roboList = this.props.data;
-      let addButton = <RoboDataUpload match={this.props.match}/>
 
       const appsRoboList = roboList.map((data, i) => {
         var modelLink = "/apps-robo-list/" + data.slug+"/customer/data/"+data.customer_dataset;

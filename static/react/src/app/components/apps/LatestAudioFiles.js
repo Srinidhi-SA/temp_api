@@ -5,8 +5,7 @@ import {AudioFileUpload} from "./AudioFileUpload";
 import {AudioFileCard} from "./AudioFileCard";
 
 @connect((store) => {
-    return {login_response: store.login.login_response,
-        currentAppId:store.apps.currentAppId,
+    return {
         latestAudioList:store.apps.latestAudioList,
         };
 })

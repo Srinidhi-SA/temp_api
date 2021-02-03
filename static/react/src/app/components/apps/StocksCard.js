@@ -7,11 +7,9 @@ import {STATIC_URL} from "../../helpers/env.js";
 import {DetailOverlay} from "../common/DetailOverlay";
 
 @connect((store) => {
-    return {login_response: store.login.login_response,
-        currentAppId:store.apps.currentAppId,
+    return {
         stockList: store.apps.stockAnalysisList,
-         dataPreviewFlag: store.datasets.dataPreviewFlag,
-         stockAnalysisFlag:store.apps.stockAnalysisFlag,
+        stockAnalysisFlag:store.apps.stockAnalysisFlag,
          stockSlug:store.apps.stockSlug,
         signal: store.signals.signalAnalysis,
     };

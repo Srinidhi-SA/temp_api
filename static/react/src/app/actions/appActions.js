@@ -980,9 +980,6 @@ export function openAppsLoader(value, text) {
 export function updateModelSummaryFlag(flag) {
   return { type: "UPDATE_MODEL_FLAG", flag }
 }
-export function updateAnalystModeSelectedFlag(flag) {
-  return { type: "UPDATE_MODE_SELECTION", flag }
-}
 export function updateScoreSummaryFlag(flag) {
   return { type: "UPDATE_SCORE_FLAG", flag }
 }

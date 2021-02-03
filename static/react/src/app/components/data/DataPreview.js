@@ -75,7 +75,7 @@ export class DataPreview extends React.Component {
       if(this.props.match.path.includes("models") && this.props.match.path.includes("modelSlug") && this.props.match.path.includes("slug")) {
         let modeSelected =  window.location.pathname.includes("analyst")?"/analyst":"/autoML"
         this.buttons['close'] = {
-          url: "/apps/"+this.props.match.params.AppId+modeSelected+"/models",
+          url: "/apps/"+this.props.match.params.AppId+modeSelected+"/models/"+this.props.match.params.modelSlug,
           text: "Close"
         };
         this.buttons['create'] = {

@@ -1,10 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
-import { Redirect } from "react-router";
-import store from "../../store";
-import {getSignalAnalysis} from "../../actions/signalActions";
-import renderHTML from 'react-render-html';
-import HeatMap from '../../helpers/heatmap';
 import {generateHeaders,generateNormalTableRows} from "../../helpers/helper";
 import { Scrollbars } from 'react-custom-scrollbars';
 

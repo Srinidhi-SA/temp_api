@@ -10,12 +10,8 @@ import Dialog from 'react-bootstrap-dialog'
 
 
 @connect((store) => {
-    return {login_response: store.login.login_response,
-        currentAppId:store.apps.currentAppId,
-        audioFileSummaryFlag:store.apps.audioFileSummaryFlag,
-        audioFileSlug:store.apps.audioFileSlug,
+    return {
         audioList:store.apps.audioList,
-        audio_search_element:store.apps.audio_search_element
         };
 })
 

@@ -27,9 +27,7 @@ export class DataPreviewLeftPanel extends React.Component {
     }
 
     render() {
-        var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
-		var scoreSlug=(store.getState().apps.scoreSlug!=null||store.getState().apps.scoreSlug!=undefined)?store.getState().apps.scoreSlug:this.props.match.params.slug;
-        var scoreLink = "/apps/" + this.props.match.params.AppId + modeSelected+"/scores/" + scoreSlug;
+        var scoreLink = this.props.match.url.slice(0, this.props.match.url.lastIndexOf('/'));
         const scoreData = this.props.scoreCSVData;
 		var tableThTemplate = "";
 		var tableRowTemplate = "";
