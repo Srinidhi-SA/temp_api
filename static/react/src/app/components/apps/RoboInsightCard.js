@@ -1,27 +1,12 @@
 import React from "react";
-import store from "../../store";
 import {connect} from "react-redux";
-import {Link, Redirect} from "react-router-dom";
-import {push} from "react-router-redux";
-
-import {MainHeader} from "../common/MainHeader";
-import {
-  Tabs,
-  Tab,
-  Pagination,
-  Tooltip,
-  OverlayTrigger,
-  Popover
-} from "react-bootstrap";
+import {Link} from "react-router-dom";
 import {getRoboDataset, handleInsightDelete, handleInsightRename, storeRoboSearchElement,clearRoboSummary,openAppsLoader,roboDataUploadFilesSuccessAnalysis} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js";
 import {RoboDataUpload} from "./RoboDataUpload";
-import {AppsLoader} from "../common/AppsLoader";
 import Dialog from 'react-bootstrap-dialog'
-import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS} from "../../helpers/helper"
-
-var dateFormat = require('dateformat');
+import {getUserDetailsOrRestart,SUCCESS,INPROGRESS,setDateFormatHelper} from "../../helpers/helper"
 
 @connect((store) => {
   return {
@@ -94,14 +79,6 @@ export class RoboInsightCard extends React.Component {
                     <div className="clearfix"></div>
                      {percentageDetails}
                     
-                     {/*<!-- Popover Content link -->
-                  <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
-                    <a className="pover cursor">
-                    <div class="card_icon">
-                      <img src={STATIC_URL + "assets/images/apps_model_icon.png"} alt="LOADING"/>
-                    </div>
-                    </a>
-                  </OverlayTrigger>*/}
                     
                   </div>
                 </div>
@@ -109,7 +86,7 @@ export class RoboInsightCard extends React.Component {
               <div className="card-footer">
                 <div className="left_div">
                   <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
-                  <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
+                  <span className="footerTitle">{setDateFormatHelper(data.created_at)}</span>
                 </div>
 				
 				<div class="btn-toolbar pull-right">

@@ -675,3 +675,9 @@ export function FocusInputErrorFields(){
    }
    return inputsError
 }
+
+export function setDateFormatHelper(created_at){
+  let date = new Date( Date.parse(created_at) );
+  let fomattedDate=date.toLocaleString('default', { month: 'short' })+" "+date.getDate()+","+date.getFullYear()+" "+(date.getHours() < 10 ? '0' : '')+date.getHours()+':'+(date.getMinutes() < 10 ? '0' : '')+date.getMinutes()
+ return fomattedDate
+ }

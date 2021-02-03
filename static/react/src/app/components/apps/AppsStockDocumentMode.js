@@ -1,12 +1,10 @@
 import React from "react";
 import {connect} from "react-redux";
 import {Link} from "react-router-dom";
-import store from "../../store";
-import Breadcrumb from 'react-breadcrumb';
 import {Card} from "../signals/Card";
 import {STATIC_URL} from "../../helpers/env.js";
 import {getStockAnalysis} from "../../actions/appActions";
-import {isEmpty, subTreeSetting} from "../../helpers/helper";
+import {isEmpty} from "../../helpers/helper";
 import {hideDataPreview} from "../../actions/dataActions";
 
 @connect((store) => {

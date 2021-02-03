@@ -1,23 +1,17 @@
 import React from "react";
 import store from "../../store";
 import {connect} from "react-redux";
-import {Link, Redirect} from "react-router-dom";
-import {push} from "react-router-redux";
 
-import {MainHeader} from "../common/MainHeader";
-import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
-import {AppsCreateModel} from "./AppsCreateModel";
+import {Pagination} from "react-bootstrap";
 import {getAppsModelList,updateModelSlug,
     updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsModelList,getAllModelList,storeAppsModelFilterElement, clearAppsAlgoList} from "../../actions/appActions";
 import {paginationFlag, updateSelectedVariablesAction} from "../../actions/dataActions";
-import {DetailOverlay} from "../common/DetailOverlay";
-import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
+import {SEARCHCHARLIMIT} from  "../../helpers/helper"
 import {STATIC_URL} from "../../helpers/env.js";
 import Dialog from 'react-bootstrap-dialog'
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import {ModelsCard} from "./ModelsCard";
 import {LatestModels} from "./LatestModels";
-var dateFormat = require('dateformat');
     
     
     @connect((store) => {
@@ -177,7 +171,6 @@ var dateFormat = require('dateformat');
                         <div className="btn-toolbar pull-right">
                         <div className="input-group">
                         
-                        {/*<input type="text" name="model_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control" placeholder="Search Model insights..."/>*/}
                         
                         <div className="search-wrapper">
                         <input type="text" name="model_insights" defaultValue={this.props.model_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control search-box" placeholder="Search Model insights..." required />
@@ -187,9 +180,6 @@ var dateFormat = require('dateformat');
                         
                         </div>
                         <div className="btn-group">
-                        {/*<button type="button" className="btn btn-default" title="Select All Card">
-											<i className="fa fa-address-card-o fa-lg"></i>
-										</button>*/}
                         <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false">
                         <i className="zmdi zmdi-hc-lg zmdi-sort-asc"></i>
                         </button>

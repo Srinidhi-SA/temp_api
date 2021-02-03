@@ -1,21 +1,18 @@
 import React from "react";
 import {connect} from "react-redux";
-import {Link, Redirect} from "react-router-dom";
+import { Redirect} from "react-router-dom";
 import store from "../../store";
 import {
   getList,
-  emptySignalAnalysis,
   storeSearchElement,
   storeSortElements,
   assignSignalData,
-  triggerSignalAnalysis,
   refreshSignals,
   getAllSignalList,
   clearSignalList
 } from "../../actions/signalActions";
 import { Pagination } from "react-bootstrap";
 
-var dateFormat = require('dateformat');
 import {STATIC_URL} from "../../helpers/env";
 import {SEARCHCHARLIMIT, getUserDetailsOrRestart, isEmpty} from "../../helpers/helper"
 import {getAllDataList, hideDataPreview,getAllUsersList,setEditModelValues,fetchModelEditAPISuccess,variableSlectionBack, paginationFlag} from "../../actions/dataActions";

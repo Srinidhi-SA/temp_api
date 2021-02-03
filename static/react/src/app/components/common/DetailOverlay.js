@@ -1,11 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
-import { Redirect } from "react-router";
-import store from "../../store";
-import renderHTML from 'react-render-html';
-import HeatMap from '../../helpers/heatmap';
-import {generateHeaders,generateCircularChartRows} from "../../helpers/helper";
-var dateFormat = require('dateformat');
+import {setDateFormatHelper} from "../../helpers/helper";
 //Info of all listing pages
 export class DetailOverlay extends React.Component {
   constructor(props){
@@ -16,7 +10,8 @@ export class DetailOverlay extends React.Component {
 	  return <p className="overlayTooltip">{displayName}&nbsp;:&nbsp;{value}</p>
   }
   getDateValues(displayName,value,name){
-	  value = dateFormat(value, "mmm d,yyyy HH:MM");
+	  value = setDateFormatHelper(value);
+    
 	 return <p className="overlayTooltip">{displayName}&nbsp;:&nbsp;{value}</p>
   }
   getAnalysisValues(displayName,value,name){
@@ -57,7 +52,6 @@ export class DetailOverlay extends React.Component {
          (template.length>0)?
          (template):(<div>Details cannot be loaded.</div>)
        }
-           {/*{template}*/}
          </div>
        );
   }

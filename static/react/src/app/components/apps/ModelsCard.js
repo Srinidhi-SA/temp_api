@@ -1,23 +1,14 @@
 import React from "react";
 import store from "../../store";
 import {connect} from "react-redux";
-import {Button} from "react-bootstrap";
-import {Link, Redirect} from "react-router-dom";
-import {push} from "react-router-redux";
-import {openShareModalAction,closeShareModalAction,fetchModelEdit,getDataSetPreview,setEditModelValues} from "../../actions/dataActions";
-import {MainHeader} from "../common/MainHeader";
-import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
-import {AppsCreateModel} from "./AppsCreateModel";
-import {getAppsModelList,updateModelSlug,
-    handleModelDelete,handleModelRename,openAppsLoader,createModelSuccessAnalysis, showCreateModalPopup, clearModelList, clearModelSummary} from "../../actions/appActions";
+import {Link} from "react-router-dom";
+import {openShareModalAction,fetchModelEdit,getDataSetPreview,setEditModelValues} from "../../actions/dataActions";
+import {updateModelSlug,handleModelDelete,handleModelRename,openAppsLoader,
+    createModelSuccessAnalysis, showCreateModalPopup, clearModelList, clearModelSummary} from "../../actions/appActions";
     import {DetailOverlay} from "../common/DetailOverlay";
-    import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS, FAILED, statusMessages} from  "../../helpers/helper"
+    import {getUserDetailsOrRestart,SUCCESS,INPROGRESS, FAILED, statusMessages, setDateFormatHelper} from  "../../helpers/helper"
     import {STATIC_URL} from "../../helpers/env.js";
     import Dialog from 'react-bootstrap-dialog'
-    import {DataUploadLoader} from "../common/DataUploadLoader";
-    
-    var dateFormat = require('dateformat');
-    
     
     @connect((store) => {
         return {login_response: store.login.login_response,
@@ -68,7 +59,7 @@ import {getAppsModelList,updateModelSlug,
             this.props.dispatch(getDataSetPreview(dataSlug));
             this.props.dispatch(fetchModelEdit(modelSlug))
            }
-        render() {
+         render() {
 
             var modelList = this.props.data;
             var appsModelList = modelList.map((data, i) => {
@@ -127,7 +118,7 @@ import {getAppsModelList,updateModelSlug,
                             <Link to={data.status == INPROGRESS?"#":modelLink} id={data.slug} onClick={data.status== INPROGRESS?this.openDataLoaderScreen.bind(this,data):this.getFailedMsg.bind(this,data.status,data.slug)}>                          
                             <div className="left_div">
                             <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
-                            <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
+                            <span className="footerTitle">{setDateFormatHelper(data.created_at)}</span>
                             </div>
                             </Link>
                             

@@ -1,13 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
 import store from "../../store";
-import {} from "../../actions/appActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import {isEmpty} from "../../helpers/helper";
 import {getAudioFile,getListOfCards,updateAudioFileSummaryFlag} from "../../actions/appActions";
 import {Card} from "../signals/Card";
 import {Link} from "react-router-dom";
-import Breadcrumb from 'react-breadcrumb';
 
 @connect((store) => {
 	return {login_response: store.login.login_response,
@@ -55,24 +53,8 @@ export class AudioFileSummary extends React.Component {
 						<div className="side-body">
 
 						<div className="page-head">
-			              <div class="row hidden">
-			                <div class="col-md-12">
-			                  <Breadcrumb path={[
-			                    {
-			                      path: '/apps',
-			                      label: 'Apps'
-			                    }, {
-				                      path: '/apps/audio',
-				                      label: 'Audio'
-				                    },{
-			                      path: '/apps/audio/' + this.props.match.params.audioSlug,
-			                      label: audioSummary.name
-			                    }
-			                  ]}/>
-			                </div>
-			              </div>
-			              <div class="clearfix"></div>
-			            </div>
+			          <div class="clearfix"></div>
+			      </div>
 			            
 						<div className="main-content">
 						<div className="row">
