@@ -3,7 +3,7 @@ import store from "../../store";
 import {connect} from "react-redux";
 import {Pagination} from "react-bootstrap";
 import {getAppsModelList,updateModelSlug,updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,
-    storeAppsModelSortElements,getAppDetails,refreshAppsModelList,getAllModelList,storeAppsModelFilterElement, clearAppsAlgoList} from "../../actions/appActions";
+    storeAppsModelSortElements,getAppDetails,refreshAppsModelList,getAllModelList,storeAppsModelFilterElement, clearAppsAlgoList, clearModelList} from "../../actions/appActions";
 import {paginationFlag, updateSelectedVariablesAction} from "../../actions/dataActions";
 import {SEARCHCHARLIMIT} from  "../../helpers/helper"
 import {STATIC_URL} from "../../helpers/env.js";
@@ -29,6 +29,7 @@ import {LatestModels} from "./LatestModels";
             this.handleSelect = this.handleSelect.bind(this);
         }
         componentWillMount() {
+            this.props.dispatch(clearModelList());
             var pageNo = 1;
             if(this.props.history.location.search!=""){
                 let urlParams = new URLSearchParams(this.props.history.location.search);
