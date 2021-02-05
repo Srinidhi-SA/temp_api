@@ -11,7 +11,6 @@ import {emptyAlgoAnalysis} from "../../actions/signalActions";
 import { DeployPopup } from "./DeployPopup";
 import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,handleAlgoClone,getAppDetails,getAllProjectList,getDeployPreview,createDeploy} from "../../actions/appActions";
 
-var dateFormat = require('dateformat');
 @connect((store) => {
   return {
     algoList: store.apps.algoList,
@@ -180,6 +179,12 @@ export class ModelManagement extends React.Component {
     this.props.dispatch(getDeployPreview(eventKey,this.selectedData));
   }
 
+ setDateFormat(created_at){
+    let date = new Date( Date.parse(created_at) );
+    let fomattedDate=date.toLocaleString('default', { month: 'short' })+" "+date.getDate()+","+date.getFullYear()
+   return fomattedDate
+   }
+
   render(){
     if(isEmpty(this.props.algoList)|| isEmpty(this.props.allProjects)){
       return (
@@ -243,7 +248,7 @@ export class ModelManagement extends React.Component {
             <td class="text-left"><div class="ellipse-text" title={item.project_name}> {item.project_name}</div></td>
             <td className="text-left"> {item.algorithm}</td>
             <td > {item.accuracy}</td>
-            <td> {dateFormat( item.created_at, " mmm d,yyyy")}</td>
+            <td> {this.setDateFormat( item.created_at)}</td>
             <td> {item.deployment}</td>
             <td> {item.total_deployment}</td>
             <td> {item.runtime}</td>

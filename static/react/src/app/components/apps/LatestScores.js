@@ -7,7 +7,6 @@ import {ScoreCard}  from "./ScoreCard";
         latestScores: store.apps.latestScores};
 })
 
-//var selectedData = null;
 export class LatestScores extends React.Component {
     constructor(props) {
         super(props);

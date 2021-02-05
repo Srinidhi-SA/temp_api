@@ -1,21 +1,15 @@
 import React from "react";
-import {MainHeader} from "../common/MainHeader";
-import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
-import {Link, Redirect} from "react-router-dom";
+import {Pagination} from "react-bootstrap";
+import {Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
-import {APPID4,APPNAME4} from "../../helpers/helper.js";
-import {AudioFileUpload} from "./AudioFileUpload";
 import {AppsLoader} from "../common/AppsLoader";
 import {getAudioFile,getAudioFileList,storeAudioSearchElement,handleAudioDelete,handleAudioRename} from "../../actions/appActions";
 import {STATIC_URL} from "../../helpers/env.js"
-import {isEmpty,SEARCHCHARLIMIT,getUserDetailsOrRestart} from "../../helpers/helper";
-import {DetailOverlay} from "../common/DetailOverlay";
+import {SEARCHCHARLIMIT} from "../../helpers/helper";
 import Dialog from 'react-bootstrap-dialog'
-import Breadcrumb from 'react-breadcrumb';
 import {AudioFileCard} from "./AudioFileCard";
 import {LatestAudioFile} from "./LatestAudioFiles";
-var dateFormat = require('dateformat');
 
 @connect((store) => {
 	return {login_response: store.login.login_response,
@@ -95,10 +89,6 @@ export class AudioFileList extends React.Component {
 				<div className="main-content">
 
 					<div className="row">
-					{/* <div className="col-md-8">
-                     
-                    <h3 className="xs-mt-0 text-capitalize">Media Files</h3>
-                    </div>*/}
 					  
 						<div className="col-md-12">
 							

@@ -1,12 +1,10 @@
 import React from "react";
 import {connect} from "react-redux";
-import {getUserDetailsOrRestart,SUCCESS,INPROGRESS,FAILED, statusMessages} from "../../helpers/helper.js"
+import {getUserDetailsOrRestart,SUCCESS,INPROGRESS,FAILED, statusMessages, setDateFormatHelper} from "../../helpers/helper.js"
 import {getStockAnalysis,updateStockSlug,handleStockDelete,handleStockModelRename,openAppsLoader,callStockAnalysisApi, showCreateModalPopup} from "../../actions/appActions";
 import Dialog from 'react-bootstrap-dialog'
 import {STATIC_URL} from "../../helpers/env.js";
 import {DetailOverlay} from "../common/DetailOverlay";
-
-var dateFormat = require('dateformat');
 
 @connect((store) => {
     return {
@@ -82,7 +80,7 @@ export class StocksCard extends React.Component {
                         <div className="card-footer">
                         <div className="left_div">
                         <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
-                        <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
+                        <span className="footerTitle">{setDateFormatHelper(data.created_at)}</span>
                         </div>
 
 						{

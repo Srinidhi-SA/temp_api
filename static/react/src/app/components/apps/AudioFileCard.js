@@ -4,11 +4,10 @@ import {Link} from "react-router-dom";
 import {connect} from "react-redux";
 import {getAudioFile,handleAudioDelete,handleAudioRename} from "../../actions/appActions";
 import {STATIC_URL} from "../../helpers/env.js"
-import {getUserDetailsOrRestart} from "../../helpers/helper";
+import {getUserDetailsOrRestart,setDateFormatHelper} from "../../helpers/helper";
 import {DetailOverlay} from "../common/DetailOverlay";
 import Dialog from 'react-bootstrap-dialog'
 
-var dateFormat = require('dateformat');
 
 @connect((store) => {
     return {
@@ -82,10 +81,6 @@ export class AudioFileCard extends React.Component {
                     
                     <div className="clearfix"></div>
                         
-                        {/* <div class="inProgressIcon">
-                            <i class="fa fa-circle"></i>
-                            <span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span>
-                            </div> */}
                             
                     {/*<!-- Popover Content link -->*/}
                      <OverlayTrigger trigger="click" rootClose  placement="left" overlay={<Popover id="popover-trigger-focus"><DetailOverlay details={data}/></Popover>}><a  className="pover cursor">
@@ -104,7 +99,7 @@ export class AudioFileCard extends React.Component {
                     <div className="card-footer">
                     <div className="left_div">
                     <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
-                    <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
+                    <span className="footerTitle">{setDateFormatHelper(data.created_at)}</span>
                     </div>
 
                      

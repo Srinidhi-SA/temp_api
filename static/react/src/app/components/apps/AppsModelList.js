@@ -160,7 +160,6 @@ import {LatestModels} from "./LatestModels";
                         <div className="btn-toolbar pull-right">
                         <div className="input-group">
                         
-                        {/*<input type="text" name="model_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control" placeholder="Search Model insights..."/>*/}
                         
                         <div className="search-wrapper">
                         <input type="text" name="model_insights" defaultValue={this.props.model_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control search-box" placeholder="Search Model insights..." required />
@@ -170,9 +169,6 @@ import {LatestModels} from "./LatestModels";
                         
                         </div>
                         <div className="btn-group">
-                        {/*<button type="button" className="btn btn-default" title="Select All Card">
-											<i className="fa fa-address-card-o fa-lg"></i>
-										</button>*/}
                         <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false">
                         <i className="zmdi zmdi-hc-lg zmdi-sort-asc"></i>
                         </button>

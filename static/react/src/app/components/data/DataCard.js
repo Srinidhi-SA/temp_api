@@ -6,12 +6,10 @@ import { getDataSetPreview, storeSignalMeta, handleDelete, handleRename,resetSub
 import { openDULoaderPopup, updateDatasetName,openShareModalAction} from "../../actions/dataActions";
 import {triggerDataUploadAnalysis} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
-import {getUserDetailsOrRestart,SUCCESS,INPROGRESS,HANA,MYSQL,MSSQL,HDFS, FAILED, statusMessages} from  "../../helpers/helper"
+import {getUserDetailsOrRestart,SUCCESS,INPROGRESS,HANA,MYSQL,MSSQL,HDFS, FAILED, statusMessages, setDateFormatHelper} from  "../../helpers/helper"
 import Dialog from 'react-bootstrap-dialog'
 import {clearDataPreview} from "../../actions/dataUploadActions";
 import store from "../../store"
-
-var dateFormat = require('dateformat');
 
 @connect((store) => {
     return {
@@ -74,7 +72,7 @@ export class DataCard extends React.Component {
         this.props.dispatch(updateDatasetName(slug));
         this.props.dispatch(triggerDataUploadAnalysis(dataUpload, percentage, message));
     }
-    
+   
     render() { 
         const dataSets = this.props.data;
         const dataList=this.props.dataList;
@@ -142,7 +140,7 @@ export class DataCard extends React.Component {
                                  <Link id={data.slug} to={data.status == INPROGRESS?"#":dataSetLink} onClick={data.status == INPROGRESS?this.openDataLoaderScreen.bind(this,data.slug,data.completed_percentage,data.completed_message):this.getPreviewData.bind(this,data.status,data.slug)}>
                                 <div className="left_div">
                                 <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
-                                <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
+                                <span className="footerTitle">{setDateFormatHelper(data.created_at)}</span>
                                 </div>
                                 </Link>
 								
