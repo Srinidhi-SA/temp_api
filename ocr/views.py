@@ -1494,16 +1494,27 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['get'])
     def get_task_id(self, request, *args, **kwargs):
         slug = self.request.query_params.get('slug')
-        instance = OCRImage.objects.get(slug=slug)
+        pdfinstance = OCRImage.objects.get(slug=slug)
 
-        if instance is None:
+        if pdfinstance is None:
             return retrieve_failed_exception("File Doesn't exist.")
-        reviewObject = ReviewRequest.objects.get(ocr_image_id=instance.id)
-        taskObject = Task.objects.get(
-            object_id=reviewObject.id,
-            assigned_user=self.request.user
-        )
-        return JsonResponse(TaskSerializer(taskObject).data)
+        else:
+            task_id = []
+            ocrQueryset = OCRImage.objects.get(
+                idetifier = pdfinstance.identifier,
+                doctype = 'pdf_page'
+            )
+            for object in ocrQueryset:
+                task = Task.objects.get(
+                    object_id = object.id,
+                    is_closed = False,
+                    assigned_user=self.request.user
+                )
+                task_id.append(task.id)
+            return JsonResponse({
+                "message": "SUCCESS",
+                "task_ids": task_id
+            })
 
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
