@@ -890,7 +890,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     django_file = File(open(os.path.join(s3_dir, file), 'rb'), name=file)
                     img_data['imagefile'] = django_file
                     img_data['doctype'] = file.split('.')[-1]
-                    img_data['identifier'] = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+                    img_data['identifier'] = ''.join(
+                        random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
                     img_data['projectslug'] = data['projectslug']
                     img_data['imageset'] = OCRImageset.objects.filter(id=imageset_id)
                     if file is None:
@@ -1410,7 +1411,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 if isinstance(result, JsonResponse):
                     return result
                 response = HttpResponse(response, content_type=content_type)
-                response['Content-Disposition'] = 'attachment; filename={}.{}'.format(image_queryset.name, data["format"])
+                response['Content-Disposition'] = 'attachment; filename={}.{}'.format(image_queryset.name,
+                                                                                      data["format"])
                 return response
         except Exception as e:
             return JsonResponse({'message': 'Failed to export data!', 'error': str(e)})
@@ -1494,16 +1496,27 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['get'])
     def get_task_id(self, request, *args, **kwargs):
         slug = self.request.query_params.get('slug')
-        instance = OCRImage.objects.get(slug=slug)
+        pdfinstance = OCRImage.objects.get(slug=slug)
 
-        if instance is None:
+        if pdfinstance is None:
             return retrieve_failed_exception("File Doesn't exist.")
-        reviewObject = ReviewRequest.objects.get(ocr_image_id=instance.id)
-        taskObject = Task.objects.get(
-            object_id=reviewObject.id,
-            assigned_user=self.request.user
-        )
-        return JsonResponse(TaskSerializer(taskObject).data)
+        else:
+            task_id = []
+            ocrQueryset = OCRImage.objects.filter(
+                identifier=pdfinstance.identifier,
+                doctype='pdf_page'
+            )
+            for object in ocrQueryset:
+                task = Task.objects.get(
+                    object_id=object.id,
+                    is_closed=False,
+                    assigned_user=self.request.user
+                )
+                task_id.append(task.id)
+            return JsonResponse({
+                "message": "SUCCESS",
+                "task_ids": task_id
+            })
 
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
