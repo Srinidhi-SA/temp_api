@@ -8,11 +8,8 @@ import ReactTooltip from 'react-tooltip';
 
 @connect((store) => {
 	return {
-		login_response: store.login.login_response,
-		dataList: store.datasets.dataList,
 		dataPreview: store.datasets.dataPreview,
 		dataTransformSettings:store.datasets.dataTransformSettings,
-		selectedColSlug:store.datasets.selectedColSlug,
 	};
 })
 

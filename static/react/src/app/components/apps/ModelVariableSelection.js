@@ -1,32 +1,30 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import store from "../../store";
 import { Button, Form, FormGroup } from "react-bootstrap";
 import { DataVariableSelection } from "../data/DataVariableSelection";
 import { updateTrainAndTest, createModel, updateSelectedVariable, showLevelCountsForTarget, updateTargetLevel, saveSelectedValuesForModel, updateRegressionTechnique, updateCrossValidationValue, getAppDetails, reSetRegressionVariables, selectMetricAction } from "../../actions/appActions";
 import { AppsLoader } from "../common/AppsLoader";
-import { getDataSetPreview, showAllVariables,updateVariableSelectionArray,variableSlectionBack,saveLevelCountVal, getValueOfFromParam } from "../../actions/dataActions";
+import { getDataSetPreview, showAllVariables,updateVariableSelectionArray,variableSlectionBack,getValueOfFromParam } from "../../actions/dataActions";
 import { hideTargetVariable } from "../../actions/signalActions";
 import { statusMessages,isEmpty } from "../../helpers/helper";
-import {  EMR, STATIC_URL } from "../../helpers/env";
+import {  STATIC_URL } from "../../helpers/env";
 import { removeDuplicateObservationsAction } from "../../actions/dataCleansingActions";
 import {saveTopLevelValuesAction} from "../../actions/featureEngineeringActions";
 
 
 @connect((store) => {
     return {
-        login_response: store.login.login_response, dataPreview: store.datasets.dataPreview,
-        trainValue: store.apps.trainValue, testValue: store.apps.testValue,
+        dataPreview: store.datasets.dataPreview,
+        trainValue: store.apps.trainValue, 
+        testValue: store.apps.testValue,
         modelSummaryFlag: store.apps.modelSummaryFlag,
         modelSlug: store.apps.modelSlug,
         targetLevelCounts: store.apps.targetLevelCounts,
         currentAppDetails: store.apps.currentAppDetails,
         regression_selectedTechnique: store.apps.regression_selectedTechnique,
-        regression_crossvalidationvalue: store.apps.regression_crossvalidationvalue,
-        metricSelected: store.apps.metricSelected,
         allModelList: store.apps.allModelList,
-        editmodelModelSlug:store.datasets.editmodelModelSlug,
         modelEditconfig:store.datasets.modelEditconfig,
         apps_regression_targetType:store.apps.apps_regression_targetType,
         editmodelFlag:store.datasets.editmodelFlag
@@ -248,12 +246,12 @@ export class ModelVariableSelection extends React.Component {
                     renderSelectBox = <select className="form-control" onChange={this.setPossibleList.bind(this)} disabled={this.props.editmodelFlag} defaultValue={store.getState().apps.apps_regression_targetType?store.getState().apps.apps_regression_targetType:"select"} id="createModelAnalysisList">
                         <option value="select" disabled>--Select--</option>
                         {store.getState().apps.currentAppDetails.app_type == "REGRESSION" ?
-                            sortedMetaData.map((metaItem, metaIndex) => {
+                            sortedMetaData.map((metaItem) => {
                                 if (metaItem.columnType == "measure" && !metaItem.dateSuggestionFlag && !metaItem.uidCol) {
                                     return (<option key={metaItem.slug} name={metaItem.slug} value={metaItem.name}>{metaItem.name}</option>)
                                 }
                             }) :
-                            sortedMetaData.map((metaItem, metaIndex) => {
+                            sortedMetaData.map((metaItem) => {
                                 if (metaItem.columnType != "measure" && metaItem.columnType != "datetime" && !metaItem.dateSuggestionFlag && !metaItem.uidCol) {
                                     return (<option key={metaItem.slug} name={metaItem.slug} value={metaItem.name}>{metaItem.name}</option>)
                                 }
@@ -268,8 +266,8 @@ export class ModelVariableSelection extends React.Component {
                     renderLevelCountSelectBox = <select className="form-control" id="createModelLevelCount" defaultValue={store.getState().apps.apps_regression_levelCount}>
                         <option value="">--Select--</option>
                         {(this.props.editmodelFlag && targetLvlCountfromState != "")?
-                            targetLvlCountfromState.sort().map((item,i)=>{ return (<option key={item} name={item} value={item}>{item}</option>) }):
-                            this.props.targetLevelCounts.sort().map((item, index) => { return (<option key={item} name={item} value={item}>{item}</option>) })
+                            targetLvlCountfromState.sort().map((item)=>{ return (<option key={item} name={item} value={item}>{item}</option>) }):
+                            this.props.targetLevelCounts.sort().map((item) => { return (<option key={item} name={item} value={item}>{item}</option>) })
                         }
                     </select>
                 }
@@ -323,7 +321,7 @@ export class ModelVariableSelection extends React.Component {
             if (metric) {
                 metricValues = <select className="form-control" onChange={this.setEvaluationMetric.bind(this)} defaultValue={store.getState().apps.metricSelected.name} id="selectEvaluation" >
                     <option value="" disabled>--Select--</option>
-                    {metric.map((mItem, mIndex) => {
+                    {metric.map((mItem) => {
                         return (<option key={mItem.name} name={mItem.displayName} value={mItem.name}>{mItem.displayName}</option>)
                     })}
                 </select>

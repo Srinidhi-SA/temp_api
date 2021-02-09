@@ -1,6 +1,5 @@
 import React from "react";
 import {connect} from "react-redux";
-import store from "../../store";
 import {STATIC_URL} from "../../helpers/env.js";
 import { Scrollbars } from 'react-custom-scrollbars';
 import {getScoreSummaryInCSV,getAppDetails,fetchScoreSummaryCSVSuccess} from "../../actions/appActions";
@@ -102,12 +101,10 @@ export class DataPreviewLeftPanel extends React.Component {
             );
 		}else{
 		    return ( 
-	                 <div className="side-body">
-	                      <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
-	                  </div>
-	                );
+                <div className="side-body">
+                    <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
+                </div>
+            );
 		}
-
-
-		}
+    }
 }
