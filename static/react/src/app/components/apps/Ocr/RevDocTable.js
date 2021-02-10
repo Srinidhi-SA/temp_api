@@ -1,7 +1,7 @@
 //Reviewers document table contains list of documents belongs to particular reviewer
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { getRevrDocsList, saveImagePageFlag,saveImageDetails,saveSelectedImageName,saveRevDocumentPageFlag,ocrRdFilterDetails,resetRdFilterSearchDetails,clearImageDetails,storeSearchInRevElem,rDocTablePagesize,pdfPagination} from '../../../actions/ocrActions';
+import { getRevrDocsList, saveImagePageFlag,saveImageDetails,saveSelectedImageName,saveRevDocumentPageFlag,ocrRdFilterDetails,resetRdFilterSearchDetails,clearImageDetails,storeSearchInRevElem,rDocTablePagesize,pdfPagination,savePdfFlag,saveTaskId} from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { Pagination } from "react-bootstrap";
 import { STATIC_URL } from '../../../helpers/env';
@@ -55,8 +55,21 @@ export class RevDocTable extends React.Component {
     this.getImage(slug,doctype)
     this.props.dispatch(saveSelectedImageName(name));
     this.props.dispatch(saveImagePageFlag(true));
+    this.fetchTask(slug,doctype);
   }
 
+  fetchTask = (slug, doctype) => {
+    return fetch(API + '/ocr/ocrimage/get_task_id/?slug=' + slug, {
+      method: 'get',
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+    }).then(response => response.json())
+      .then(data => {
+        if (data.message == "SUCCESS") {
+          this.props.dispatch(saveTaskId(data))
+        }
+      })
+  }
+  
   getImage = (slug,doctype) => {
     if (doctype == "pdf") {
       return fetch(API + '/ocr/ocrimage/retrieve_pdf/?slug=' + slug + '&page_size=1&page_number=1', {
@@ -65,6 +78,7 @@ export class RevDocTable extends React.Component {
       }).then((response) => response.json())
         .then(json => {
           this.props.dispatch(saveImageDetails(json.data[0]));
+          this.props.dispatch(savePdfFlag(slug));
           this.props.dispatch(pdfPagination(json));
         })
     }
@@ -184,6 +198,9 @@ export class RevDocTable extends React.Component {
       this.props.OcrRevwrDocsList != '' ? (this.props.OcrRevwrDocsList.data.length != 0 ? this.props.OcrRevwrDocsList.data.map((item, index) => {
         return (
           <tr key={index} id={index}>
+             <td>
+              <i style={{ color: '#414f50', fontSize: 14 }} className={item.ocrImageData.doctype == "pdf" ? "fa fa-file-pdf-o" : "fa fa-file-image-o"}></i>
+            </td>
             <td><Link to={`/apps/ocr-mq44ewz7bp/reviewer/${item.ocrImageData.name}`}onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug,item.ocrImageData.name,item.ocrImageData.doctype) }} title={item.ocrImageData.name}>{item.ocrImageData.name}</Link></td>
             <td>{item.status}</td>
             <td>{item.ocrImageData.classification}</td>
@@ -236,6 +253,7 @@ export class RevDocTable extends React.Component {
             <table id="reviewDocumentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
              <thead>
               <tr>
+              <th><i className="fa fa-file-text-o"></i></th>
                 <th>NAME</th>
                 <th className="dropdown" >
                   <a href="#" data-toggle="dropdown"  className="dropdown-toggle cursor" title="Status" aria-expanded="true">
