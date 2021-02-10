@@ -1,31 +1,20 @@
 import React from "react";
 import store from "../../store";
 import {connect} from "react-redux";
-import {Link, Redirect} from "react-router-dom";
-import {push} from "react-router-redux";
-
-import {MainHeader} from "../common/MainHeader";
-import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
-import {AppsCreateModel} from "./AppsCreateModel";
-import {getAppsModelList,updateModelSlug,
-    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsModelList,getAllModelList,storeAppsModelFilterElement, clearAppsAlgoList} from "../../actions/appActions";
+import {Pagination} from "react-bootstrap";
+import {getAppsModelList,updateModelSlug,updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,
+    storeAppsModelSortElements,getAppDetails,refreshAppsModelList,getAllModelList,storeAppsModelFilterElement, clearAppsAlgoList} from "../../actions/appActions";
 import {paginationFlag, updateSelectedVariablesAction} from "../../actions/dataActions";
-import {DetailOverlay} from "../common/DetailOverlay";
-import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
+import {SEARCHCHARLIMIT} from  "../../helpers/helper"
 import {STATIC_URL} from "../../helpers/env.js";
 import Dialog from 'react-bootstrap-dialog'
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import {ModelsCard} from "./ModelsCard";
-import {LatestModels} from "./LatestModels";
-var dateFormat = require('dateformat');
-    
-    
+import {LatestModels} from "./LatestModels";  
     @connect((store) => {
-        return {login_response: store.login.login_response,
+        return {
             modelList: store.apps.modelList,
             algoList: store.apps.algoList,
-            modelSummaryFlag:store.apps.modelSummaryFlag,
-            modelSlug:store.apps.modelSlug,
             currentAppId:store.apps.currentAppId,
             model_search_element: store.apps.model_search_element,
             apps_model_sorton:store.apps.apps_model_sorton,
@@ -79,29 +68,26 @@ var dateFormat = require('dateformat');
             this.props.dispatch(handleModelRename(slug,this.refs.dialog,name));
         }
         _handleKeyPress = (e) => {
-            var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
             if (e.key === 'Enter') {
                 if (e.target.value != "" && e.target.value != null)
-                    this.props.history.push('/apps/'+this.props.match.params.AppId+modeSelected+'/models?search=' + e.target.value + '')
+                    this.props.history.push(this.props.match.url+'?search=' + e.target.value + '')
                     this.props.dispatch(storeModelSearchElement(e.target.value));
                 this.props.dispatch(getAppsModelList(1));
                 
             }
         }
         onChangeOfSearchBox(e){
-            var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
-
             if(e.target.value==""||e.target.value==null){
                 this.props.dispatch(storeModelSearchElement(""));
-                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models'+'')
+                this.props.history.push(this.props.match.url)
                 this.props.dispatch(getAppsModelList(1));
                 
             }else if (e.target.value.length > SEARCHCHARLIMIT) {
                 if($(".mode_filter").val()!=""&& $(".mode_filter").val()!=null && this.props.mode_filter_by != null){
-                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?mode='+$(".mode_filter").val()+'/&search=' + e.target.value + '')
+                this.props.history.push(this.props.match.url+'?mode='+$(".mode_filter").val()+'/&search=' + e.target.value + '')
                 }
                 else{
-                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?search=' + e.target.value + '')
+                this.props.history.push(this.props.match.url+'?search=' + e.target.value + '')
 
                 }
                 this.props.dispatch(storeModelSearchElement(e.target.value));
@@ -114,32 +100,28 @@ var dateFormat = require('dateformat');
         
         doSorting(sortOn, type){
             this.props.dispatch(storeModelSearchElement(""));
-            var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
             if($(".mode_filter").val()!=""&& $(".mode_filter").val()!=null && this.props.mode_filter_by != null){
-                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models?mode=' + $(".mode_filter").val() + '/models?sort=' + sortOn + '&type='+type);
+                this.props.history.push(this.props.match.url+'?mode=' + $(".mode_filter").val() + '/models?sort=' + sortOn + '&type='+type);
             }
              else{
-            this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models?sort=' + sortOn + '&type='+type);
+            this.props.history.push(this.props.match.url+'?sort=' + sortOn + '&type='+type);
             }
             this.props.dispatch(storeAppsModelSortElements(sortOn,type));
             this.props.dispatch(getAppsModelList(1));
         }
         filterByMode(){
-
-            var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
-            
             this.props.dispatch(storeAppsModelFilterElement($(".mode_filter").val()));
             if(this.props.model_search_element && $(".mode_filter").val()!="" && $(".mode_filter").val()!=null &&this.props.mode_filter_by != null){
-                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?mode=' + $(".mode_filter").val() +'/models?search=' + this.props.model_search_element + '')
+                this.props.history.push(this.props.match.url+'?mode=' + $(".mode_filter").val() +'/models?search=' + this.props.model_search_element + '')
             }
             else if($(".mode_filter").val()!="" && $(".mode_filter").val()!=null && this.props.mode_filter_by != null){
-            this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models?mode=' + $(".mode_filter").val());
+            this.props.history.push(this.props.match.url+'?mode=' + $(".mode_filter").val());
             }
             else if($(".mode_filter").val()==""&& this.props.model_search_element){
-                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models?search=' + this.props.model_search_element + '');
+                this.props.history.push(this.props.match.url+'?search=' + this.props.model_search_element + '');
             }
             else{
-            this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models');
+            this.props.history.push(this.props.match.url);
             }
             this.props.dispatch(getAppsModelList(1));    
         }
@@ -177,7 +159,6 @@ var dateFormat = require('dateformat');
                         <div className="btn-toolbar pull-right">
                         <div className="input-group">
                         
-                        {/*<input type="text" name="model_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control" placeholder="Search Model insights..."/>*/}
                         
                         <div className="search-wrapper">
                         <input type="text" name="model_insights" defaultValue={this.props.model_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control search-box" placeholder="Search Model insights..." required />
@@ -187,9 +168,6 @@ var dateFormat = require('dateformat');
                         
                         </div>
                         <div className="btn-group">
-                        {/*<button type="button" className="btn btn-default" title="Select All Card">
-											<i className="fa fa-address-card-o fa-lg"></i>
-										</button>*/}
                         <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false">
                         <i className="zmdi zmdi-hc-lg zmdi-sort-asc"></i>
                         </button>
@@ -249,22 +227,21 @@ var dateFormat = require('dateformat');
         }
         handleSelect(eventKey) {
             this.props.dispatch(paginationFlag(true))
-            var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
             if (this.props.model_search_element) {
-                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?search=' + this.props.model_search_element+'&page='+eventKey+'')
+                this.props.history.push(this.props.match.url+'?search=' + this.props.model_search_element+'&page='+eventKey+'')
             }  else if(this.props.apps_model_sorton){
-                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?sort=' + this.props.apps_model_sorton +'&type='+this.props.apps_model_sorttype+'&page=' + eventKey + '');
+                this.props.history.push(this.props.match.url+'?sort=' + this.props.apps_model_sorton +'&type='+this.props.apps_model_sorttype+'&page=' + eventKey + '');
             }else if(this.props.mode_filter_by!="" && this.props.mode_filter_by!=null){
-                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?filllter=' + this.props.mode_filter_by +'&type='+this.props.apps_model_sorttype+'&page=' + eventKey + '');
+                this.props.history.push(this.props.match.url+'?filllter=' + this.props.mode_filter_by +'&type='+this.props.apps_model_sorttype+'&page=' + eventKey + '');
             }else
-                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?page='+eventKey+'')
+                this.props.history.push(this.props.match.url+'?page='+eventKey+'')
                 this.props.dispatch(getAppsModelList(eventKey));
         }
         clearSearchElement(e){
             this.props.dispatch(storeModelSearchElement(""));
             this.props.dispatch(storeAppsModelSortElements("",""));
 
-            var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
+            var modeSelected= window.location.pathname.includes("autoML")?'/autoML':'/analyst'
             if(this.props.mode_filter_by!="" && this.props.mode_filter_by!=null)
             this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?mode='+ this.props.mode_filter_by);
             else if(this.props.apps_model_sorton)

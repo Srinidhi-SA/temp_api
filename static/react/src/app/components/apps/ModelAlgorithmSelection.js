@@ -290,8 +290,8 @@ export class ModelAlgorithmSelection extends React.Component {
       }
 
     render() {
-        if(store.getState().apps.modelSummaryFlag){ 
-            var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
+        if(store.getState().apps.modelSummaryFlag){
+            var modeSelected= window.location.pathname.includes("autoML")?'/autoML':'/analyst'
             let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+modeSelected+'/models/'+store.getState().apps.modelSlug;
             return(<Redirect to={_link}/>);
         }

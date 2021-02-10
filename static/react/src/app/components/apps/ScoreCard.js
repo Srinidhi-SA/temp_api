@@ -13,11 +13,9 @@ import {
 } from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
-import {getUserDetailsOrRestart,SUCCESS,INPROGRESS, FAILED, statusMessages} from  "../../helpers/helper"
+import {getUserDetailsOrRestart,SUCCESS,INPROGRESS, FAILED, statusMessages,setDateFormatHelper} from  "../../helpers/helper"
 import Dialog from 'react-bootstrap-dialog'
 import {openShareModalAction} from "../../actions/dataActions";
-
-var dateFormat = require('dateformat');
 
 @connect((store) => {
   return {
@@ -58,15 +56,14 @@ export class ScoreCard extends React.Component {
   openShareModal(shareItem,slug,itemType) {
     this.props.dispatch(openShareModalAction(shareItem,slug,itemType));
   }
-  
+
   render() {
     var scoreList = this.props.data;
     const appsScoreList = scoreList.map((data, i) => {
-      var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
       if(data.status==FAILED){
-        var scoreLink = "/apps/" + this.props.match.params.AppId + modeSelected + "/scores/";
+        var scoreLink = window.location.pathname.slice(0, window.location.pathname.lastIndexOf('/')) + "/scores/";
       }else{
-        var scoreLink = "/apps/" + this.props.match.params.AppId + modeSelected + "/scores/" + data.slug;
+        var scoreLink = window.location.pathname.slice(0, window.location.pathname.lastIndexOf('/')) + "/scores/" + data.slug;
       }
       
       var percentageDetails = "";
@@ -106,7 +103,7 @@ export class ScoreCard extends React.Component {
               <Link id={data.slug} to={data.status == INPROGRESS?"#":scoreLink} onClick={data.status == INPROGRESS?this.openDataLoaderScreen.bind(this,data):this.getScoreSummary.bind(this, data.slug,data.status,data.shared_slug)}>
                 <div className="left_div">
                   <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
-                  <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
+                  <span className="footerTitle">{setDateFormatHelper(data.created_at)}</span>
                 </div>
               </Link>
               {isDropDown == true ?

@@ -1,8 +1,6 @@
 import React from "react";
 import CircularProgressbar from 'react-circular-progressbar';
-import {Redirect} from 'react-router';
 import {handleDecisionTreeTable} from "../actions/signalActions";
-import renderHTML from 'react-render-html';
 import {API, STATIC_URL} from "./env";
 import {showLoading, hideLoading} from 'react-redux-loading-bar';
 import { renderToString } from 'react-dom/server'
@@ -472,7 +470,7 @@ export function renderC3ChartInfo(info) {
   if (!isEmpty(info)) {
 
     var listOfData = "";
-    info.map((item, index) => {
+    info.map((item) => {
       listOfData += "<p>" + item + "</p>";
     });
     bootbox.dialog({
@@ -506,7 +504,6 @@ export function downloadSVGAsPNG(chartClassId) {
 
   var line_graph = Array.from(nodeList);
   var x_and_y = Array.from(nodeList2);
-  var labels = Array.from(nodeList3);
   var titles = Array.from(nodeList4);
 
   line_graph.forEach(function(element) {
@@ -675,3 +672,9 @@ export function FocusInputErrorFields(){
    }
    return inputsError
 }
+
+export function setDateFormatHelper(created_at){
+  let date = new Date( Date.parse(created_at) );
+  let fomattedDate=date.toLocaleString('default', { month: 'short' })+" "+date.getDate()+","+date.getFullYear()+" "+(date.getHours() < 10 ? '0' : '')+date.getHours()+':'+(date.getMinutes() < 10 ? '0' : '')+date.getMinutes()
+ return fomattedDate
+ }

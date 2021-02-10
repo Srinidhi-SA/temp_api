@@ -1,8 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
-import store from "../../store"
 import {getDeploymentList} from "../../actions/appActions";
-var dateFormat = require('dateformat');
 import {STATIC_URL} from "../../helpers/env.js"
 import {openDeployModalAction, closeDeployModalAction} from "../../actions/modelManagementActions"
 import {isEmpty,getUserDetailsOrRestart} from "../../helpers/helper";

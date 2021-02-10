@@ -1,36 +1,27 @@
 import React from "react";
 import {connect} from "react-redux";
-import {Redirect} from "react-router";
-import store from "../../store";
-import {getSignalAnalysis, pickToggleValue} from "../../actions/signalActions";
+import {pickToggleValue} from "../../actions/signalActions";
 import {HighChart} from "../HighChart"
 import {DecisionTree} from "../decisionTree";
 import {CardHtml} from "./CardHtml";
 import {CardTable} from "../common/CardTable";
 import {PredictionDropDown} from "../common/predictionDropdown";
-//import Tree from 'react-d3-tree';
-//import {ReactD3} from "../reactD3";
 import { Scrollbars } from 'react-custom-scrollbars';
-//import Tree from 'react-tree-graph';
 import {GaugeMeter} from "../common/GaugeMeter";
 import {DataBox} from "../common/DataBox";
 import {WordCloud} from "../common/WordCloud";
 import $ from "jquery";
-import {handleSignalToggleButton,predictionLabelClick} from "../../helpers/helper";
 import {ModelSummeryButton} from "../common/ModelSummeryButton";
 import {D3ParallelChartt} from "../D3ParallelChartt";
 import { C3ChartNew } from "../C3ChartNew";
 import { STATIC_URL } from "../../helpers/env";
 import { setLoaderFlagAction } from "../../actions/appActions";
 
-var data = null,
-yformat = null,
-cardData = {};
+var cardData = {};
 
 @connect((store) => {
-    return {login_response: store.login.login_response,
+    return {
         signal: store.signals.signalAnalysis,
-        chartObject: store.chartObject.chartObj,
         currentAppDetails: store.apps.currentAppDetails,
         toggleValues: store.signals.toggleValues,
         chartLoaderFlag:store.apps.chartLoaderFlag
@@ -229,7 +220,7 @@ export class Card extends React.Component {
 		    stockClassName = "stockClassName";
         let cardWidth = this.props.cardWidth;
         const cardElements = this.renderCardData(cardData,'',cardWidth);
-        var isHideData = $.grep(cardData,function(val,key){
+        var isHideData = $.grep(cardData,function(val){
             return(val.dataType == "html" && val.classTag == "hidden");
         });
         return (

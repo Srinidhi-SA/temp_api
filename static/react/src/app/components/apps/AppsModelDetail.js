@@ -88,6 +88,8 @@ export class AppsModelDetail extends React.Component {
 				  algorithmName = "EN"
 				else if(algoNam === "ADABOOST")
 					algorithmName = "ADAB"
+				else if(algoNam === "LIGHTGBM")
+					algorithmName = "LGBM"
 				else if(regAlgoName ==="Gradient Boosted Tree RegressionSummary")
 		      algorithmName = "GB"
 				else if(regAlgoName==="Random Forest RegressionSummary")

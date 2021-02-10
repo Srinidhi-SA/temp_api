@@ -180,7 +180,7 @@ export class OverViewPage extends React.Component {
         if(params.l1.includes("prediction_maxdepth") && this.props.signal.listOfNodes.filter(i=>i.name==="Prediction")[0]["Depth Of Tree 3"]!=undefined){
           this.l1Name = "Prediction"
           let cardLink = "";
-          let predNodes = this.props.signal.listOfNodes.filter(i=>i.name==="Prediction")[0];
+          let predNodes =  JSON.parse(JSON.stringify(this.props.signal.listOfNodes.filter(i=>i.name==="Prediction")[0]))
           var settings = { dots: false, infinite: false,speed: 5,slidesToShow: 6,slidesToScroll: 1,className:"predictionSlider"};
           varList = Object.values(predNodes).map((maxNode,key)=>{
             if(maxNode.name!=undefined && maxNode.name.includes("Depth Of Tree")){
@@ -207,6 +207,9 @@ export class OverViewPage extends React.Component {
           }else {
             let selectedMaxNode = Object.values(predNodes).filter(i=>i.slug===params.l2)[0];
             card = fetchMaxDepthCard(selectedMaxNode);
+            if(!card.cardData[0].data.includes("style")){
+              card.cardData[0].data = "<h3 style=text-align:left;padding-bottom:15px>" + /<h3>(.*?)<\/h3>/g.exec(card.cardData[0].data)[1] + "</h3>"
+            } 
             card.cardData.filter(i=>i.data.tableType==="popupDecisionTreeTable")[0].data["name"] = selectedMaxNode.name;
             card.cardData.filter(i=>i.dataType==="dropdown")[0]["dropdownName"] = selectedMaxNode.name;
             cardLink = that.urlPrefix + "/" + params.slug + "/" + params.l1 + "/" + params.l2;
