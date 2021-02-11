@@ -81,7 +81,7 @@ export default function reducer(state = {
   iRFlag : true,
   sRFlag : true,
   tabActive:'backlog',
-  imageTaskId: "",
+  docTaskId: [],
   projectTabLoaderFlag:false,
   dashboardMetrics: {},
   is_closed: "",
@@ -103,6 +103,7 @@ export default function reducer(state = {
   pdfSize:1,
   pdfNumber:1,
   pdfDoc: false,
+  pdfSlug: "",
 
 }, action) {
   switch (action.type) {
@@ -280,7 +281,6 @@ export default function reducer(state = {
     break;
     case "SAVE_IMAGE_DETAILS":
       {
-        let taskId = action.data.tasks === null ? "" : action.data.tasks.id;
         let close= action.data.tasks === null ? "" : action.data.tasks.is_closed;
         let templateVal = action.data.values === undefined || action.data.values === null ? "" : action.data.values;
         let classificationVal = action.data.classification === undefined || action.data.classification === null  ? "" : action.data.classification;
@@ -290,7 +290,6 @@ export default function reducer(state = {
           ocrImgPath: action.data.generated_image,
           customImgPath: action.data.generated_image,
           imageSlug: action.data.slug,
-          imageTaskId: taskId,
           is_closed: close,
           template: templateVal,
           classification: classificationVal,
@@ -311,6 +310,21 @@ export default function reducer(state = {
         }
         }
       break;
+      case "SAVE_PDF_SLUG":
+        {
+          return{
+            ...state,
+            pdfSlug: action.data,
+          }
+        }
+        case "TASK_ID":
+          {
+          let taskId = action.data.task_ids === null ? [] : action.data.task_ids;
+            return{
+            ...state,
+            docTaskId: taskId,
+            }
+          }
       case "CLOSE_FLAG":
         {
           return{
@@ -334,7 +348,7 @@ export default function reducer(state = {
             originalImgPath: "" ,
             ocrImgPath: "",
             imageSlug: "",
-            imageTaskId: "",
+            docTaskId: [],
             is_closed:"",
             template: [],
             classification: "",
