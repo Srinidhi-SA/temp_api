@@ -7,11 +7,7 @@ import {STATIC_URL} from "../../helpers/env.js"
 @connect((store) => {
 	return {
 		dataPreview: store.datasets.dataPreview,
-		customerDataset_slug:store.apps.customerDataset_slug,
-		historialDataset_slug:store.apps.historialDataset_slug,
-		externalDataset_slug:store.apps.externalDataset_slug,
-		roboUploadTabId:store.apps.roboUploadTabId
-		};
+	};
 })
 
 
@@ -20,19 +16,18 @@ export class RoboDUTabsContent extends React.Component {
 		super(props);
   }
   render() {
-     let dataPreview = store.getState().datasets.dataPreview;
-    		if(dataPreview){
-    			return (   <div className="apps_tabs_content">
-    	            <DataPreview history={this.props.history} match={this.props.match}/>
-    	        </div>
-    	        );
-    		}else{
-    			return (
- 					   <div>
- 			            <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif"} />
- 			          </div>
+		if(store.getState().datasets.dataPreview){
+			return (
+				<div className="apps_tabs_content">
+					<DataPreview history={this.props.history} match={this.props.match}/>
+				</div>
+			);
+		}else{
+			return (
+				<div>
+					<img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif"} />
+				</div>
  			);
-    		}
-      
+		}  
   }
 }

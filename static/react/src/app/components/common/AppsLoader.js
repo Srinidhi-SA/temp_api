@@ -129,9 +129,9 @@ export class AppsLoader extends React.Component {
 				let	appURL = "/"+store.getState().apps.currentAppDetails.app_url;
 				let mURL;
 				if(window.location.href.includes("analyst")){
-					mURL = appURL.replace("models","analyst/models/")
+					mURL = appURL.replace("models","analyst/models")
 				}else{
-					mURL = appURL.replace("models","autoML/models/")
+					mURL = appURL.replace("models","autoML/models")
 				}
 				store.getState().apps.currentAppDetails != null ? hideUrl = mURL:hideUrl = "/apps/"+store.getState().apps.currentAppId+"/analyst/models";
 			} else if((this.props.match.url).includes("/apps-stock-advisor-analyze"))

@@ -16,13 +16,7 @@ import { Scrollbars } from "react-custom-scrollbars";
 
 @connect((store) => {
   return {
-    login_response: store.login.login_response,
-  algoList: store.apps.algoList,
-    currentAppId: store.apps.currentAppId,
-  algoAnalysis:store.signals.algoAnalysis,
-  dataPreview: store.datasets.dataPreview,
-  currentAppDetails:store.apps.currentAppDetails,
-  deploymentList:store.apps.deploymentList
+    algoAnalysis:store.signals.algoAnalysis,
   };
 })
 
@@ -313,7 +307,3 @@ export class ModelSummary extends React.Component {
     this.props.dispatch(closeDeployModalAction());
   }
 }
-
-
-// 194
-// AS478112

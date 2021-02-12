@@ -12,13 +12,12 @@ import {AudioFileCard} from "./AudioFileCard";
 import {LatestAudioFile} from "./LatestAudioFiles";
 
 @connect((store) => {
-	return {login_response: store.login.login_response,
-        currentAppId:store.apps.currentAppId,
-        audioFileSummaryFlag:store.apps.audioFileSummaryFlag,
-        audioFileSlug:store.apps.audioFileSlug,
-        audioList:store.apps.audioList,
-        audio_search_element:store.apps.audio_search_element
-		};
+	return {
+		audioFileSummaryFlag:store.apps.audioFileSummaryFlag,
+		audioFileSlug:store.apps.audioFileSlug,
+		audioList:store.apps.audioList,
+		audio_search_element:store.apps.audio_search_element
+	};
 })
 
 

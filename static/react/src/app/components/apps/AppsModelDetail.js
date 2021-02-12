@@ -4,7 +4,7 @@ import store from "../../store";
 import {Button} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails,updateModelSummaryFlag, getAppsAlgoList, clearAppsAlgoList, clearModelSummary} from "../../actions/appActions";
+import {getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails,updateModelSummaryFlag, getAppsAlgoList, clearAppsAlgoList} from "../../actions/appActions";
 import {storeSignalMeta} from "../../actions/dataActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import {isEmpty} from "../../helpers/helper";
@@ -13,12 +13,12 @@ import {ExportAsPMML} from "./ExportAsPMML";
 import {AppsModelHyperDetail} from "./AppsModelHyperDetail"
 
 @connect((store) => {
-	return {login_response: store.login.login_response,
-		modelList:store.apps.modelList,modelSummary:store.apps.modelSummary,
+	return {
+		modelList:store.apps.modelList,
+		modelSummary:store.apps.modelSummary,
 		modelSlug:store.apps.modelSlug,
 		currentAppId:store.apps.currentAppId,
 		currentAppDetails:store.apps.currentAppDetails,
-		algoList: store.apps.algoList
 	};
 })
 
@@ -33,7 +33,7 @@ export class AppsModelDetail extends React.Component {
   componentWillMount() {
 		this.props.dispatch(storeSignalMeta(null,this.props.match.url));
 		if(this.props.currentAppDetails == null)
-		this.props.dispatch(getAppDetails(this.props.match.params.AppId));
+			this.props.dispatch(getAppDetails(this.props.match.params.AppId));
 		//It will trigger when refresh happens on url
 		if(isEmpty(this.props.modelSummary)){
 			this.props.dispatch(getAppsModelSummary(this.props.match.params.slug));
@@ -118,18 +118,16 @@ export class AppsModelDetail extends React.Component {
 					}
 				}
 			}
-
-
 	}
 
   componentDidUpdate(){
-      $(".chart-data-icon").next("div").next("div").removeClass("col-md-7 col-md-offset-2").addClass("col-md-10")
+		$(".chart-data-icon").next("div").next("div").removeClass("col-md-7 col-md-offset-2").addClass("col-md-10")
   }
   handleExportAsPMMLModal(flag){
-      this.props.dispatch(handleExportAsPMMLModal(flag))
+		this.props.dispatch(handleExportAsPMMLModal(flag))
   }
   updateModelSummaryFlag(flag){
-      this.props.dispatch(updateModelSummaryFlag(flag))
+		this.props.dispatch(updateModelSummaryFlag(flag))
   }
 	gotoHyperparameterSummary(){
 		this.setState({showHyperparameterSummary:true})
@@ -138,8 +136,8 @@ export class AppsModelDetail extends React.Component {
 		if(document.querySelector(".sm-pb-10")!= null ){
 			let FE = document.querySelector(".sm-pb-10")
 			if(FE.innerText==="Feature Importance") {
-			FE.style.display = "none";
-			document.querySelector(".chart-area").style.display = "none";
+				FE.style.display = "none";
+				document.querySelector(".chart-area").style.display = "none";
 			}
 		}
 		if(this.state.showHyperparameterSummary)

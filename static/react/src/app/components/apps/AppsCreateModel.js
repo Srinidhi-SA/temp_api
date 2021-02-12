@@ -15,7 +15,6 @@ import Link from "react-router-dom/Link";
 	return {
 		appsModelShowModal: store.apps.appsModelShowModal,
 		dataPreview: store.datasets.dataPreview,
-		dataPreviewFlag:store.datasets.dataPreviewFlag,
 		currentAppId:store.apps.currentAppId,
 		selectedDataSrcType:store.dataSource.selectedDataSrcType,
 		currentAppDetails:store.apps.currentAppDetails,

@@ -9,9 +9,7 @@ import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from
 
 @connect((store) => {
 	return {
-		dataPreview: store.datasets.dataPreview,
 		appsScoreShowModal:store.apps.appsScoreShowModal,
-		dataPreviewFlag:store.datasets.dataPreviewFlag,
 		selectedDataSet:store.datasets.selectedDataSet,
 	};
 })

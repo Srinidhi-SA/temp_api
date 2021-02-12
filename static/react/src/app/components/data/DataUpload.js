@@ -9,6 +9,9 @@ import { DataSourceList} from "./DataSourceList";
 
 @connect((store) => {
   return {
+    showModal: store.dataUpload.dataUploadShowModal,
+    fileDataUpload: store.dataUpload.fileUpload,
+    selectedDataset: store.datasets.selectedDataSet,
     dataList: store.datasets.dataList};
 })
 

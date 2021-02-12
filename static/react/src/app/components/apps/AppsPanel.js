@@ -21,20 +21,12 @@ import {
 } from "../../actions/appActions";
 import {STATIC_URL,APPS_ALLOWED} from "../../helpers/env.js"
 import { API } from "../../helpers/env";;
-import {
-  SEARCHCHARLIMIT,
-  getUserDetailsOrRestart,
-} from "../../helpers/helper.js"
+import { SEARCHCHARLIMIT,getUserDetailsOrRestart} from "../../helpers/helper.js"
 import {cookieObj} from '../../helpers/cookiesHandler';
 import { dashboardMetrics,selectedProjectDetails,saveDocumentPageFlag } from '../../actions/ocrActions';
 
 @connect((store) => {
   return {
-    login_response: store.login.login_response,
-    modelList: store.apps.modelList,
-    modelSummaryFlag: store.apps.modelSummaryFlag,
-    modelSlug: store.apps.modelSlug,
-    currentAppId: store.apps.currentAppId,
     appsList: store.apps.appsList,
     storeAppsSearchElement: store.apps.storeAppsSearchElement,
     storeAppsSortByElement: store.apps.storeAppsSortByElement,
@@ -46,8 +38,6 @@ import { dashboardMetrics,selectedProjectDetails,saveDocumentPageFlag } from '..
 export class AppsPanel extends React.Component {
   constructor(props) {
     super(props);
-    this.handleSelect = this.handleSelect.bind(this);
-
   }
   componentWillMount() {
     var pageNo = 1;
@@ -159,8 +149,7 @@ export class AppsPanel extends React.Component {
           this.props.dispatch(dashboardMetrics(data));
         }
       })
-
-}  
+  }  
   handleSelect(eventKey) {
     if (this.props.app_filtered_keywords.length == this.props.appsList.data[0].tag_keywords.length) {
       this.props.history.push('/apps?page=' + eventKey + '');
@@ -193,7 +182,7 @@ export class AppsPanel extends React.Component {
   render() {
     if(APPS_ALLOWED==false){
       if(getUserDetailsOrRestart.get().view_signal_permission=="true")
-      return (<Redirect to="/signals"/>)
+        return (<Redirect to="/signals"/>)
       else if (getUserDetailsOrRestart.get().view_data_permission=="true") {
         return (<Redirect to="/data"/>)
       }else{
@@ -224,62 +213,58 @@ export class AppsPanel extends React.Component {
       const current_page = this.props.appsList.current_page;
       filteredKeywords = appsLists[0].tag_keywords
 
-      if (pages > 1) {
-        paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
-      }
-      appListTemplate = appsLists.map((data, index) => {
-        var imageLink = STATIC_URL + "assets/images/" + data.iconName;
-        var tagsList = data.tags.map((tagsList, i) => {
-          return (
-            <li key={i}>
-              <a href="#">
-                <i className="fa fa-tag"></i>&nbsp;{tagsList.displayName}</a>
-            </li>
-          )
-        });
+    if (pages > 1) {
+      paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect.bind(this)} first last next prev boundaryLinks items={pages} activePage={current_page}/>
+    }
+    appListTemplate = appsLists.map((data, index) => {
+      var imageLink = STATIC_URL + "assets/images/" + data.iconName;
+      var tagsList = data.tags.map((tagsList, i) => {
         return (
-          <div key={index} class="col-md-4 xs-mb-20">
-           <div>
-             <div className="app-block">
-               <Link className="app-link" id={data.name} onClick={this.gotoAppsList.bind(this, data.app_id, data.name,data)} to= 
+          <li key={i}>
+            <a href="#">
+            <i className="fa fa-tag"></i>&nbsp;{tagsList.displayName}</a>
+          </li>
+        )
+      });
+      return (
+        <div key={index} class="col-md-4 xs-mb-20">
+          <div>
+            <div className="app-block">
+              <Link className="app-link" id={data.name} onClick={this.gotoAppsList.bind(this, data.app_id, data.name,data)} to= 
                {(data.app_id == 2 || data.app_id == 13) ? 
                 data.app_url.replace("/models","") +"/modeSelection": 
-               (data.displayName== "ITE" && (getUserDetailsOrRestart.get().userRole == "Admin" || getUserDetailsOrRestart.get().userRole ==  "Superuser"))?
-               data.app_url.concat("project"):
-               ((data.displayName== "ITE" && (getUserDetailsOrRestart.get().userRole == "ReviewerL1" || getUserDetailsOrRestart.get().userRole ==  "ReviewerL2"))?         
-               data.app_url.concat("reviewer"):
-               data.app_url.replace("/models","") + "/" 
-               )
-               }>
-
-                  <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
-                    <img src={imageLink} className="img-responsive"/>
-                  </div>
-                  <div className="col-md-8 col-sm-9 col-xs-7">
-                    <h4>
-                      {data.displayName}
-                    </h4>
-                    <p>
-                      {data.description}
-                    </p>
-                  </div>
-                  <div class="clearfix"></div>
-                </Link>
-
-                <div className="card-footer">
-                  <ul className="app_labels">
-                    {tagsList}
-                  </ul>
-
-                  <div id="myPopover" className="pop_box hide">
-                    <p>Info</p>
-                  </div>
+                (data.displayName== "ITE" && (getUserDetailsOrRestart.get().userRole == "Admin" || getUserDetailsOrRestart.get().userRole ==  "Superuser"))?
+                data.app_url.concat("project"):
+                ((data.displayName== "ITE" && (getUserDetailsOrRestart.get().userRole == "ReviewerL1" || getUserDetailsOrRestart.get().userRole ==  "ReviewerL2"))?         
+                data.app_url.concat("reviewer"):
+                data.app_url.replace("/models","") + "/" 
+                )
+                }>
+                <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
+                  <img src={imageLink} className="img-responsive"/>
+                </div>
+                <div className="col-md-8 col-sm-9 col-xs-7">
+                  <h4>
+                    {data.displayName}
+                  </h4>
+                  <p>
+                    {data.description}
+                  </p>
+                </div>
+                <div class="clearfix"></div>
+              </Link>
+              <div className="card-footer">
+                <ul className="app_labels">
+                  {tagsList}
+                </ul>
+                <div id="myPopover" className="pop_box hide">
+                  <p>Info</p>
                 </div>
               </div>
-
             </div>
-            <div className="clearfix"></div>
           </div>
+          <div className="clearfix"></div>
+        </div>
         )
       });
       filterListTemplate = appsLists[0].tag_keywords.map((tag, i) => {
@@ -289,14 +274,12 @@ export class AppsPanel extends React.Component {
           checked = true
         return (
           <li key={i} className="xs-pl-10">
-
             <div key={i} className="ma-checkbox inline">
               <input id={dId} type="checkbox" name={tag} checked={checked} onClick={this.handleCheckboxChange.bind(this)}/>
               <label htmlFor={dId}>{tag}</label>
             </div>
           </li>
         )
-
       });
     }
     else{
@@ -306,30 +289,29 @@ export class AppsPanel extends React.Component {
             const dId = "chk_mes1_" + i;
             let checked = false
             if (this.props.app_filtered_keywords.indexOf(tag) > -1)
-            checked = true
+              checked = true
             return (
               <li key={i} className="xs-pl-10">
-              <div key={i} className="ma-checkbox inline">
-              <input id={dId} type="checkbox" name={tag} checked={checked} onClick={this.handleCheckboxChange.bind(this)}/>
-              <label htmlFor={dId}>{tag}</label>
-              </div>
+                <div key={i} className="ma-checkbox inline">
+                  <input id={dId} type="checkbox" name={tag} checked={checked} onClick={this.handleCheckboxChange.bind(this)}/>
+                  <label htmlFor={dId}>{tag}</label>
+                </div>
               </li>
             )
           });
         }
         appListTemplate =  <div><br/><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>
-
       }else{
-        return(<div className="side-body">
-        <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
-      </div>)
+        return(
+          <div className="side-body">
+            <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
+          </div>
+        )
       }
     }
     return (
       <div className="side-body">
-
         <div class="page-head">
-
           <div class="row">
             <div class="col-md-7">
               <h3 className="xs-mt-0 nText">Apps</h3>
@@ -375,7 +357,6 @@ export class AppsPanel extends React.Component {
             </div>
           </div>
         </div>
-
         <div className="main-content">
           <div className="row">
             {appListTemplate}
@@ -387,9 +368,7 @@ export class AppsPanel extends React.Component {
             </div>
           </div>
         </div>
-
       </div>
     );
-
   }
 }

@@ -8,7 +8,7 @@ import {Card} from "../signals/Card";
 import {Link} from "react-router-dom";
 
 @connect((store) => {
-	return {login_response: store.login.login_response,
+	return {
 		audioFileSummary:store.apps.audioFileSummary,
 	};
 })

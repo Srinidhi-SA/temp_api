@@ -4,9 +4,6 @@ import { saveEncodingValuesAction } from "../../actions/featureEngineeringAction
 
 @connect(store => {
   return {
-    login_response: store.login.login_response,
-    dataPreview: store.datasets.dataPreview,
-    selectedItem: store.datasets.selectedItem,
     deployData: store.apps.deployData,
     deployItem: store.apps.deployItem
   };
@@ -54,7 +51,6 @@ export class DeployPopup extends React.Component {
       <div class="modal-body">
         <form>
           <div class="xs-m-20" />
-
           <div class="row form-group">
             <label for="dname" class="col-sm-4 control-label">
               Deployment name

@@ -6,21 +6,19 @@ import {handleExportAsPMMLModal,updateSelectedAlg} from "../../actions/appAction
 import {getUserDetailsOrRestart} from "../../helpers/helper";
 import {API} from "../../helpers/env";
 
-
 @connect((store) => {
     return {
         algorithmsList:store.apps.algorithmsList,
         exportAsPMMLModal:store.apps.exportAsPMMLModal,
         modelSlug:store.apps. modelSlug,
         selectedAlg:store.apps.selectedAlg,
-       };
+    };
 })
 
 //var selectedData = null;
 export class ExportAsPMML extends React.Component {
     constructor(props) {
         super(props);
-        this.selectedAlgorithm
     }
 
     componentDidUpdate(){
@@ -47,30 +45,24 @@ export class ExportAsPMML extends React.Component {
             algorithmNames = "No Algorithms"
         }
         return (
-
-                <div id="exportAsPMML"  role="dialog" className="modal fade modal-colored-header">
+            <div id="exportAsPMML"  role="dialog" className="modal fade modal-colored-header">
                 <Modal show={store.getState().apps.exportAsPMMLModal} onHide={this.openCloseModal.bind(this,false)} dialogClassName="modal-colored-header">
-                <Modal.Header closeButton>
-                <h3 className="modal-title">Export As PMML</h3>
-                </Modal.Header>
-                <Modal.Body>
-                <div class="form-group">
-                <label>Select a Model</label>
-
-                {algorithmNames}
-
-                </div>
-                </Modal.Body>
-                <Modal.Footer>
-
-                <Button  onClick={this.openCloseModal.bind(this,false)}>Close</Button>
-                {/* <Button bsStyle="primary" onClick={this.openCloseModal.bind(this)}>Download</Button> */}
-                <a  href={API+"/api/get_xml/"+store.getState().apps.modelSlug+"/"+store.getState().apps.selectedAlg+"/?token="+getUserDetailsOrRestart.get().userToken} id="exportAsPMML" className="btn btn-primary" download>Download</a>
-                </Modal.Footer>
+                    <Modal.Header closeButton>
+                        <h3 className="modal-title">Export As PMML</h3>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div class="form-group">
+                            <label>Select a Model</label>
+                            {algorithmNames}
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={this.openCloseModal.bind(this,false)}>Close</Button>
+                        {/* <Button bsStyle="primary" onClick={this.openCloseModal.bind(this)}>Download</Button> */}
+                        <a href={API+"/api/get_xml/"+store.getState().apps.modelSlug+"/"+store.getState().apps.selectedAlg+"/?token="+getUserDetailsOrRestart.get().userToken} id="exportAsPMML" className="btn btn-primary" download>Download</a>
+                    </Modal.Footer>
                 </Modal>
-                </div>
-
+            </div>
         )
     }
-
 }

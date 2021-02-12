@@ -20,9 +20,6 @@ import {statusMessages} from "../../helpers/helper";
 export class AlgorithmSelection extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            showParameterTuning:false
-        };
     }
     componentWillMount() {
         if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){

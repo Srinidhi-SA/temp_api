@@ -1,12 +1,12 @@
 import React from "react";
-import store from "../../store";
 import {connect} from "react-redux";
 import {AppsCreateModel} from "./AppsCreateModel";
 import {ModelsCard} from "./ModelsCard";
  
 @connect((store) => {
-    return {login_response: store.login.login_response,
-        latestModels: store.apps.latestModels,};
+    return {
+        latestModels: store.apps.latestModels
+    };
 })
 
 export class LatestModels extends React.Component {
