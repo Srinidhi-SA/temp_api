@@ -6104,15 +6104,17 @@ def get_algorithm_config_list(request):
         elif app_type == "REGRESSION" and mode == 'autoML':
             algorithm_config_list = copy.deepcopy(settings.AUTOML_ALGORITHM_LIST_REGRESSION)
         elif app_type == "CLASSIFICATION" and mode == 'analyst':
-            if dataset_filesize < 128000000:
-                algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
-            else:
-                algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION_PYSPARK)
+            # if dataset_filesize < 128000000:
+            #     algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
+            algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
+            # else:
+                # algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION_PYSPARK)
         elif app_type == "REGRESSION" and mode == 'analyst':
-            if dataset_filesize < 128000000:
-                algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION)
-            else:
-                algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION_PYSPARK)
+            # if dataset_filesize < 128000000:
+            #     algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION)
+            algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION)
+            # else:
+            #     algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION_PYSPARK)
         else:
             algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
 

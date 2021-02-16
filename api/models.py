@@ -396,7 +396,8 @@ class Dataset(models.Model):
     def copy_file_to_hdfs(self):
         file_size = os.stat(self.input_file.path).st_size
         try:
-            if file_size > 128000000:
+            if False:
+            #if file_size > 128000000:
                 hadoop.hadoop_put(self.input_file.path, self.get_hdfs_relative_path())
         except:
             raise Exception("Failed to copy file to HDFS.")
@@ -432,7 +433,8 @@ class Dataset(models.Model):
                 return "file://{}".format(self.input_file.path)
             elif type == 'hdfs':
                 file_size = os.stat(self.input_file.path).st_size
-                if file_size < 128000000:
+                # if file_size < 128000000:
+                if True:
                     if settings.USE_HTTPS:
                         protocol = 'https'
                     else:
