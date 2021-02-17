@@ -131,11 +131,11 @@ export class DataSourceList extends React.Component {
             } else {
               return (
                 <div  key={j} class="tab-pane active cont fade in">
-                  <h4>
+                  <h4 className="lg-mb-30">
                     File Upload
-                    <div class="pull-right">
+                    {/* <div class="pull-right">
                       <div class="db_images db_file_upload"></div>
-                    </div>
+                    </div> */}
                   </h4>
                   <div className="clearfix"></div>
                   <div className="dropzone ">

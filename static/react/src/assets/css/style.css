@@ -19175,12 +19175,12 @@ progress {
 .modal-body .tab-content h3 {
   margin-top: 0;
 }
-.db_images {
+/* .db_images {
   width: 113px;
   height: 49px;
   background: url(../../assets/images/db_images.png) no-repeat 0 0;
   background-size: 360px;
-}
+} */
 .db_images.db_file_upload {
   background-position: -240px -120px;
 }

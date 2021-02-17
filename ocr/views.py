@@ -1507,10 +1507,11 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 doctype='pdf_page'
             )
             for object in ocrQueryset:
+                reviewObject = ReviewRequest.objects.get(ocr_image_id=object.id)
                 task = Task.objects.get(
-                    object_id=object.id,
+                    object_id=reviewObject.id,
                     is_closed=False,
-                    assigned_user=self.request.user
+                    assigned_user_id=self.request.user.id
                 )
                 task_id.append(task.id)
             return JsonResponse({
