@@ -62,6 +62,7 @@ export class AppsCreateScore extends React.Component {
 		let algorithmNames = null;
 		if(dataSets){
 			renderSelectBox = <select id="score_Dataset" name="selectbasic" onChange={this.updateDataset.bind(this)}  class="form-control">
+			<option value="">--Select dataset--</option>
 			{dataSets.map(dataSet =>
 			<option key={dataSet.slug} value={dataSet.slug}>{dataSet.name}</option>
 			)}
