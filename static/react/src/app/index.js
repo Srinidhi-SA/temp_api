@@ -6,11 +6,9 @@ import store from "./store"
 import {Main} from "./components/Main";
 import {Home} from "./components/Home";
 import {Login} from "./components/Login";
-import {Settings} from "./components/settings/Settings";
 import {Apps} from "./components/apps/Apps";
 import {Data} from "./components/data/Data";
 import {DataPreview} from "./components/data/DataPreview";
-import {Stories} from "./components/stories/Stories";
 import {Signals} from "./components/signals/Signals";
 import {Signal} from "./components/signals/Signal";
 import {SignalDocumentMode} from "./components/signals/SignalDocumentMode";
@@ -360,8 +358,6 @@ class App extends React.Component {
             <Route exact path="/signals/:slug/:l1/:l2" render={signals}/>
             <Route path="/variableselection" component={VariableSelection}/>
             <Route path="/signaldocumentMode/:slug" render={signals}/>
-            <Route path="/settings" component={Settings}/>
-            <Route path="/stories" component={Stories}/>
             <Route exact path="/data" render={data}/>
             <Route exact path="/data/:slug" render={data}/>
             <Route exact path="/apps" component={AppsPanel}/>

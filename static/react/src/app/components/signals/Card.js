@@ -2,7 +2,6 @@ import React from "react";
 import {connect} from "react-redux";
 import {pickToggleValue} from "../../actions/signalActions";
 import {HighChart} from "../HighChart"
-import {DecisionTree} from "../decisionTree";
 import {CardHtml} from "./CardHtml";
 import {CardTable} from "../common/CardTable";
 import {PredictionDropDown} from "../common/predictionDropdown";
@@ -115,9 +114,6 @@ export class Card extends React.Component {
                 }else{
                     return ""
                 }
-                break;
-            case "tree":
-                return ( <DecisionTree key={randomNum} treeData={story.data}/>);
                 break;
             case "table":
                 if(!story.tableWidth)story.tableWidth = 100;
