@@ -1373,7 +1373,7 @@ textarea.input-lg {
 }
 .form-control-feedback {
   position: absolute;
-  top: 9px;
+  top: 0px;
   right: 0;
   z-index: 2;
   display: block;
