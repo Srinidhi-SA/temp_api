@@ -12,7 +12,10 @@ import {openImg, closeImg, uploadImg, getUserProfile, saveProfileImage} from "..
 import { C3ChartNew } from "../C3ChartNew";
 
 @connect((store) => {
-  return {login_response: store.login.login_response, profileInfo: store.login.profileInfo, fileUpload: store.dataSource.fileUpload, showModal: store.dataUpload.imgUploadShowModal, profileImgURL: store.login.profileImgURL};
+  return {
+    profileInfo: store.login.profileInfo, 
+    fileUpload: store.dataSource.fileUpload, 
+    profileImgURL: store.login.profileImgURL};
 })
 
 export class Profile extends React.Component {
@@ -22,11 +25,9 @@ export class Profile extends React.Component {
   componentWillMount() {
       this.props.dispatch(getUserProfile(getUserDetailsOrRestart.get().userToken))
       this.props.dispatch(saveProfileImage(getUserDetailsOrRestart.get().image_url))
-      //clear dataSource variable as it is common in data upload
       this.props.dispatch(clearDataUploadFile())
 
   }
-
 
   popupMsg() {
     $("#fileErrorMsg").removeClass("visibilityHidden");
@@ -81,18 +82,18 @@ resetPassword=()=>{
     document.getElementById("resetMsg").innerText="password must contain at least 8 characters and can't be entirely numeric."
   }
   else{
-  var oldPassword= $(".oldPass").val();
-  var newPassword= $(".confirmPass").val();
-  this.resetAPI(oldPassword,newPassword).then(([response, json]) =>{
-    if(response.status === 200){
-      $("#resetModal").modal('hide');
-        bootbox.alert(`Password changed successfully.`)
-    }
-    else{
-      document.getElementById("resetMsg").innerText="old password is wrong"
-    }
-})
-}
+    var oldPassword= $(".oldPass").val();
+    var newPassword= $(".confirmPass").val();
+    this.resetAPI(oldPassword,newPassword).then(([response, json]) =>{
+      if(response.status === 200){
+        $("#resetModal").modal('hide');
+          bootbox.alert(`Password changed successfully.`)
+      }
+      else{
+        document.getElementById("resetMsg").innerText="old password is wrong"
+      }
+    })
+  }
 }
 getHeader=(token)=>{
   return {

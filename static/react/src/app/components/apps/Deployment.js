@@ -10,10 +10,6 @@ import {openDeployModalAction, closeDeployModalAction,saveDeployValueAction,clos
 
 @connect((store) => {
   return {
-    login_response: store.login.login_response,
-    dataPreview: store.datasets.dataPreview,
-    selectedItem: store.datasets.selectedItem,
-    featureEngineering:store.datasets.featureEngineering,
     deploymentList:store.apps.deploymentList,
 		algoAnalysis:store.signals.algoAnalysis,
     deployShowModal: store.apps.deployShowModal,

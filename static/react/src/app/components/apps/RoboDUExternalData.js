@@ -7,12 +7,8 @@ import {STATIC_URL} from "../../helpers/env.js"
 @connect((store) => {
 	return {
 		dataPreview: store.datasets.dataPreview,
-		customerDataset_slug:store.apps.customerDataset_slug,
-		historialDataset_slug:store.apps.historialDataset_slug,
-		externalDataset_slug:store.apps.externalDataset_slug,
 		};
 })
-
 
 export class RoboDUExternalData extends React.Component {
   constructor(props) {
@@ -22,8 +18,9 @@ export class RoboDUExternalData extends React.Component {
   render() {
      let dataPreview = store.getState().datasets.dataPreview;
     		if(dataPreview){
-    			return (   <div className="apps_tabs_content">
-    	            <DataPreview />
+    			return (   
+						<div className="apps_tabs_content">
+							<DataPreview />
     	        </div>
     	        );
     		}else{

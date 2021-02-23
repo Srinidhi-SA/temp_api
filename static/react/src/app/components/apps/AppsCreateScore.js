@@ -9,9 +9,7 @@ import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from
 
 @connect((store) => {
 	return {
-		dataPreview: store.datasets.dataPreview,
 		appsScoreShowModal:store.apps.appsScoreShowModal,
-		dataPreviewFlag:store.datasets.dataPreviewFlag,
 		selectedDataSet:store.datasets.selectedDataSet,
 	};
 })
@@ -64,6 +62,7 @@ export class AppsCreateScore extends React.Component {
 		let algorithmNames = null;
 		if(dataSets){
 			renderSelectBox = <select id="score_Dataset" name="selectbasic" onChange={this.updateDataset.bind(this)}  class="form-control">
+			<option value="">--Select dataset--</option>
 			{dataSets.map(dataSet =>
 			<option key={dataSet.slug} value={dataSet.slug}>{dataSet.name}</option>
 			)}

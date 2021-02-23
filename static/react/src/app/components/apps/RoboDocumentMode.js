@@ -10,9 +10,7 @@ import {STATIC_URL} from "../../helpers/env.js"
 import {isEmpty} from "../../helpers/helper";
 
 @connect((store) => {
-	return {login_response: store.login.login_response, 
-		currentAppId:store.apps.currentAppId,
-		roboUploadTabId:store.apps.roboUploadTabId,
+	return {
 		signal: store.signals.signalAnalysis,
 		roboDatasetSlug:store.apps.roboDatasetSlug,
 		};

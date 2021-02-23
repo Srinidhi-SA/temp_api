@@ -23,7 +23,6 @@ import {
 @connect((store) => {
   return {
     dataPreview: store.datasets.dataPreview,
-    currentAppId: store.apps.currentAppId,
     apps_regression_modelName: store.apps.apps_regression_modelName,
     currentAppDetails: store.apps.currentAppDetails,
     datasets: store.datasets,

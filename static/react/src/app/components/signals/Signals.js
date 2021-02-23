@@ -27,7 +27,6 @@ import {clearDataPreview} from "../../actions/appActions";
 @connect((store) => {
   return {
     signalList: store.signals.signalList.data,
-    selectedSignal: store.signals.signalAnalysis,
     signal_search_element: store.signals.signal_search_element,
     signal_sorton: store.signals.signal_sorton,
     signal_sorttype: store.signals.signal_sorttype,

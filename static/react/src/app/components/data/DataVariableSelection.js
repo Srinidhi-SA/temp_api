@@ -17,7 +17,8 @@ import {
   getTotalVariablesSelected,
   selectAllAnalysisList,
   setDefaultTimeDimensionVariable,
-  getValueOfFromParam
+  getValueOfFromParam,
+  updateSelectedVariablesFromEdit
 } from "../../actions/dataActions";
 import {resetSelectedTargetVariable} from "../../actions/signalActions";
 @connect(( store ) => {
@@ -101,7 +102,7 @@ export class DataVariableSelection extends React.Component {
             if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
                 this.props.dispatch(resetSelectedVariables(true));
             }else if(this.props.editmodelFlag){ //In edit mode dispatch updateDatasetVariables directly, if not all variables are resetting and getting checked
-                ""; 
+                this.props.dispatch(updateSelectedVariablesFromEdit())
             }else if(store.getState().datasets.varibleSelectionBackFlag){
             }else{  
                 this.props.dispatch( resetSelectedVariables(true));

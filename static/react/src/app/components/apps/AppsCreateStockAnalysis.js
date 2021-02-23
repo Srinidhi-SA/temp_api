@@ -16,8 +16,6 @@ import { MultiSelect } from 'primereact/multiselect';
 export class AppsCreateStockAnalysis extends React.Component {
 	constructor(props) {
 		super(props);
-		this.selectedData = "";
-		this._link = "";
 		this.state={ 
 			domain:[],
 			company:[],
@@ -147,33 +145,32 @@ export class AppsCreateStockAnalysis extends React.Component {
 			]
 		let stockSymbolsList = this.props.appsStockSymbolsInputs;
 		const templateTextBoxes = stockSymbolsList.map((data, id) => {
-			return (<div className="row"><div className="form-group" id={data.id}>
-				<label for="fl1" className="col-sm-2 control-label"><b>{id + 1}.</b></label>
-				<div className="col-sm-7">
-					<input id={data.id} type="text" name={data.name} onChange={this.handleInputChange.bind(this)} value={data.value} className="form-control" />
-				</div>
-				<div className="col-sm-1 cursor" onClick={this.removeStockSymbolsComponents.bind(this, data)}><i className="fa fa-minus-square-o text-muted"></i></div>
-			</div></div>);
-		});
+			return (
+				<div className="row">
+					<div className="form-group" id={data.id}>
+						<label for="fl1" className="col-sm-2 control-label"><b>{id + 1}.</b></label>
+						<div className="col-sm-7">
+							<input id={data.id} type="text" name={data.name} onChange={this.handleInputChange.bind(this)} value={data.value} className="form-control" />
+						</div>
+						<div className="col-sm-1 cursor" onClick={this.removeStockSymbolsComponents.bind(this, data)}><i className="fa fa-minus-square-o text-muted"></i></div>
+					</div>
+				</div>);
+			}
+		);
 		return (
 			<div class="col-md-3 top20 list-boxes" onClick={this.updateCreateStockPopup.bind(this, true)}>
 				<div class="newCardStyle firstCard">
 					<div class="card-header"></div>
 					<div class="card-center newStoryCard">
-
 						<div class="col-xs-3 col-xs-offset-2 xs-pr-0"><i class="fa fa-file-text-o fa-4x"></i></div>
 						<div class="col-xs-6 xs-m-0 xs-pl-0"><small>Analyze</small></div>
-
 					</div>
 				</div>
-
 				<div id="newCreateStock" role="dialog" className="modal fade modal-colored-header">
 					<Modal class="stockExtractModel" show={store.getState().apps.appsCreateStockModal} onHide={this.updateCreateStockPopup.bind(this, false)} dialogClassName="modal-colored-header">
 						<Modal.Header closeButton>
 							<h3 className="modal-title">Input - Stocks and Data </h3>
 						</Modal.Header>
-
-
 						<Modal.Body>
 							<form role="form" className="form-horizontal">
 								<div className="form-group">
@@ -190,7 +187,6 @@ export class AppsCreateStockAnalysis extends React.Component {
 										<MultiSelect className="comapanyMultiselect" value={this.state.company} options={companyList.sort((a, b) => (a.label > b.label) ? 1 : -1)} onChange={e => this.setState({ company: e.value })}
                      style={{"width": "100%"}}  filter={true} placeholder="Choose Company" />
                   </div>
-
 								</div>
 								<div className="xs-pb-25 clearfix"></div>
 								<div class="form-group">
@@ -199,24 +195,20 @@ export class AppsCreateStockAnalysis extends React.Component {
 										<input type="text" name="createStockAnalysisName" id="createStockAnalysisName" required={true} className="form-control input-sm" placeholder="Enter Analysis Name"/>
 									</div>
 								</div>
-
 								<div className="clearfix"></div>
 							</form>
 							<div className="clearfix"></div>
 						</Modal.Body>
 						<Modal.Footer>
-						<div id="resetMsg"></div>
+							<div id="resetMsg"></div>
 							<Button className="btn btn-primary md-close" onClick={this.updateCreateStockPopup.bind(this, false)}>Close</Button>
 							<Button bsStyle="primary" id='extractData' onClick={this.crawlDataForAnalysis.bind(this,companyList)}>Extract Data</Button>
 						</Modal.Footer>
 					</Modal>
 				</div>
 			</div>
-
-
 		)
 	}
-
 }	  
 	
 	

@@ -1,6 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
-import {Link, Redirect} from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import store from "../../store";
 import {Button,Tabs,Tab,FormGroup} from "react-bootstrap";
 import {createModel,setDefaultAutomatic,updateAlgorithmData,saveParameterTuning,changeHyperParameterType, pytorchValidateFlag, setPyTorchSubParams,updateTensorFlowArray, modifyActiveAlgorithmTab} from "../../actions/appActions";

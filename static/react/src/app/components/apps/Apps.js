@@ -1,25 +1,14 @@
 import React from "react";
-import {MainHeader} from "../common/MainHeader";
 import {Tabs, Tab} from "react-bootstrap";
 import {AppsModelList} from "./AppsModelList";
 import {AppsScoreList} from "./AppsScoreList";
-import {Link, Redirect} from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import store from "../../store";
-import {Button, Dropdown, Menu, MenuItem} from "react-bootstrap";
+import {Button} from "react-bootstrap";
 import {Share} from "../common/Share"
 import {saveTopLevelValuesAction} from "../../actions/featureEngineeringActions";
-
-
 import {connect} from "react-redux";
-import {
-  APPID1,
-  APPID2,
-  APPID3,
-  APPNAME1,
-  APPNAME2,
-  APPNAME3,
-  getUserDetailsOrRestart
-} from "../../helpers/helper.js"
+import {getUserDetailsOrRestart} from "../../helpers/helper.js"
 import {
   activateModelScoreTabs,
   storeModelSearchElement,
@@ -35,21 +24,15 @@ import {
   selectMetricAction,
   clearDataPreview,
   clearPyTorchValues,
-
 } from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
-import {getAllUsersList,getDataSetPreview,setEditModelValues,fetchModelEditAPISuccess,variableSlectionBack} from "../../actions/dataActions";
+import {getAllUsersList,setEditModelValues,fetchModelEditAPISuccess,variableSlectionBack} from "../../actions/dataActions";
 
 
 @connect((store) => {
   return {
-    login_response: store.login.login_response,
     userList:store.datasets.allUserList,
-    modelList: store.apps.modelList,
-    algolist:store.algoList,
     currentAppId: store.apps.currentAppId,
-    scoreList: store.apps.scoreList,
-    activateModelScoreTabs: store.apps.activateModelScoreTabs,
     appsSelectedTabId: store.apps.appsSelectedTabId,
     scoreSummaryFlag: store.apps.scoreSummaryFlag,
     modelSummaryFlag: store.apps.modelSummaryFlag
@@ -108,7 +91,7 @@ export class Apps extends React.Component {
     }
    }
 
-  proceedToModelManagement(tabId){
+  proceedToModelManagement(){
     var modeSelected= window.location.pathname.includes("autoML")?'/autoML':'/analyst'
     this.props.dispatch(getAppsAlgoList(1));
     this.props.dispatch(refreshAppsAlgoList(this.props));

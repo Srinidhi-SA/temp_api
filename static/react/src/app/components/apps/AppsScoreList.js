@@ -10,7 +10,8 @@ import {
     storeScoreSearchElement,
     storeAppsScoreSortElements,
     getAppDetails,
-    refreshAppsScoreList
+    refreshAppsScoreList,
+    clearScoreList
 } from "../../actions/appActions";
 import { STATIC_URL } from "../../helpers/env.js"
 import { SEARCHCHARLIMIT } from  "../../helpers/helper"
@@ -34,6 +35,7 @@ export class AppsScoreList extends React.Component {
   }
 
   componentWillMount() {
+    this.props.dispatch(clearScoreList())
     var pageNo = 1;
     if(this.props.history.location.search!=""){
       let urlParams = new URLSearchParams(this.props.history.location.search);

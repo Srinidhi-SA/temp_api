@@ -9,8 +9,8 @@ import {APPS_ALLOWED,ENABLE_KYLO_UI} from "../../helpers/env.js";
 import ReactNotifications from 'react-browser-notifications';
 
 @connect((store) => {
-  return {dataPreviewFlag: store.datasets.dataPreviewFlag,
-          apps_regression_modelName: store.apps.apps_regression_modelName,
+  return {
+    apps_regression_modelName: store.apps.apps_regression_modelName,
   };
 })
 

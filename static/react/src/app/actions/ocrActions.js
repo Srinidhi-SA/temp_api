@@ -50,7 +50,18 @@ export function pdfPagination(data) {
 		data
 	}
 }
-
+export function savePdfFlag(data){
+	return{
+		type: "SAVE_PDF_SLUG",
+		data
+	}
+}
+export function saveTaskId(data){
+	return{
+		type:"TASK_ID",
+		data
+	}
+}
 export function clearImageDetails() {
 	return {
 		type: "CLEAR_IMAGE_DETAILS",

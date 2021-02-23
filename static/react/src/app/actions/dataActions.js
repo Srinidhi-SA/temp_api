@@ -801,6 +801,24 @@ export function setDefaultTimeDimensionVariable(item){
         dispatch(updateVariablesCount(count));
     }
 }
+export function updateSelectedVariablesFromEdit(){
+    return(dispatch) =>{
+        var dataSetMeasures = store.getState().datasets.CopyOfMeasures.slice();
+        var dataSetDimensions = store.getState().datasets.CopyOfDimension.slice();
+        var dataSetTimeDimensions = store.getState().datasets.CopyTimeDimension.slice();
+        
+        var dimFlag =  store.getState().datasets.dimensionAllChecked;
+        var meaFlag = store.getState().datasets.measureAllChecked;
+        var count = store.getState().datasets.selectedVariablesCount;
+        
+        dimFlag = getIsAllSelected(dataSetDimensions);
+        meaFlag = getIsAllSelected(dataSetMeasures);
+        count = getTotalVariablesSelected();
+        dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
+        dispatch(updateVariablesCount(count));
+    }
+
+}
 export function updateSelectedVariables(evt){
     return (dispatch) => {
         var varSlug = evt.target.id;

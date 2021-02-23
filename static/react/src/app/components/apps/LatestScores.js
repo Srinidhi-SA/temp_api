@@ -4,7 +4,8 @@ import {connect} from "react-redux";
 import {ScoreCard}  from "./ScoreCard";
 @connect((store) => {
     return {
-        latestScores: store.apps.latestScores};
+        latestScores: store.apps.latestScores
+    };
 })
 
 export class LatestScores extends React.Component {

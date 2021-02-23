@@ -1,7 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
 import {Redirect} from "react-router-dom";
-import {push} from "react-router-redux";
 import {Button,Form,FormGroup} from "react-bootstrap";
 import store from "../../store";
 import {selectedAnalysisList,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings,checkAllAnalysisSelected,showAllVariables,disableAdvancedAnalysisElements,variableSlectionBack} from "../../actions/dataActions";
@@ -113,7 +112,7 @@ export class VariableSelection extends React.Component {
         this.signalFlag = false;
         this.props.dispatch(updateCsLoaderValue(-1))
         this.props.dispatch(openCsLoaderModal());
-        let analysisList =[],config={}, postData={};
+        let config={}, postData={};
 
 
         config['variableSelection'] = store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
@@ -167,7 +166,6 @@ export class VariableSelection extends React.Component {
                     $("#idCategoricalVar")[0].checked = true
             $("#createSname")[0].value = this.props.setSigName;
         }
-        var that = this;
         this.props.dispatch(getAllSignalList());
     }
 
@@ -185,10 +183,10 @@ export class VariableSelection extends React.Component {
         var that = this;
         let dataPrev = this.props.dataPreview;
         if(window.location.href.includes("/createSignal") && !$.isEmptyObject(dataPrev)){
-            let measureArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
+            let measureArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val){
                 return(val.columnType == "measure" && val.selected == true && val.targetColumn == false);
             });
-            let dimensionArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
+            let dimensionArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val){
                 return(val.columnType == "dimension"  && val.selected == true && val.targetColumn == false);
             });
             if(that.props.getVarType == "dimension"){
@@ -298,7 +296,7 @@ export class VariableSelection extends React.Component {
         if(dataPrev){
             const metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
             if(metaData){
-                renderSelectBox = metaData.map((metaItem,metaIndex) =>{
+                renderSelectBox = metaData.map((metaItem) =>{
                     if(metaItem.columnType !="datetime" && !metaItem.dateSuggestionFlag && !metaItem.uidCol){
                         return(
                             <option key={metaItem.slug}  data-dataType={metaItem.columnType} name={metaItem.slug}   value={metaItem.name}>{metaItem.name}</option>

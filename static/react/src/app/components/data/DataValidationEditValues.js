@@ -9,13 +9,9 @@ import {REPLACE,REMOVE,	CURRENTVALUE,NEWVALUE} from "../../helpers/helper.js"
 
 
 @connect((store) => {
-	return {login_response: store.login.login_response,
-		dataList: store.datasets.dataList,
-		dataPreview: store.datasets.dataPreview,
+	return {
 		variableTypeListModal:store.datasets.variableTypeListModal,
-		dataTransformSettings:store.datasets.dataTransformSettings,
 		selectedColSlug:store.datasets.selectedColSlug,
-		editSelectedSlug:store.datasets.editSelectedSlug,
 		dataSetColumnRemoveValues:store.datasets.dataSetColumnRemoveValues,
 		dataSetColumnReplaceValues:store.datasets.dataSetColumnReplaceValues,
 		dataTransformSettings:store.datasets.dataTransformSettings,
