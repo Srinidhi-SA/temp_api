@@ -246,6 +246,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
         }
     }else if(getStatus == "INPROGRESS"){
         dispatch(dispatchDataPreviewLoadingMsg(dataPreview));
+        dispatch(getDataList(1))
         if(Object.keys(dataPreview.initial_messages).length != 0){
             dispatch(setDataLoadedText(dataPreview.initial_messages));
             if(dataPreview.message[0].globalCompletionPercentage!=undefined && dataPreview.message[0].globalCompletionPercentage !=-1 && store.getState().datasets.metaDataLoaderidxVal!=0){

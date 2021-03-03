@@ -23285,3 +23285,10 @@ body .p-multiselect.regParamFocus:hover {
   display:inline-block !important;
    width:101px !important
 }
+.mmLoader{
+  display:"flex";
+  height:"200px";
+  width:"90%";
+  position:"absolute";
+  margin:"50px"
+}
