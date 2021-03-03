@@ -155,7 +155,7 @@ export class DataVariableSelection extends React.Component {
         let timeSuggestionToolTip = (
             <div className="col-md-2"><OverlayTrigger trigger={['hover', 'focus']}  rootClose placement="top" overlay={popoverLeft}>
                 <a className="pover cursor">
-                    <i className="pe-7s-info pe-2x"></i>
+                    <i class="fa fa-info-circle pe-2x"></i>
                 </a>
                 </OverlayTrigger>
             </div>
@@ -316,7 +316,7 @@ export class DataVariableSelection extends React.Component {
                         </div>
                         <div className="col-md-4">
                             <div className="panel panel-primary-p2 cst-panel-shadow">
-                                <div className="panel-heading"><i className="mAd_icons ic_perf "></i> Dimensions</div>
+                                <div className="panel-heading"><i style={{marginBottom:3}}className="mAd_icons ic_perf "></i> Dimensions</div>
                                 <div className="panel-body">
                                     <div className="row">
                                         <div className="col-md-12 col-sm-12 xs-pr-0">
@@ -357,7 +357,9 @@ export class DataVariableSelection extends React.Component {
                         </div>
                         <div className="col-md-4">
                             <div className="panel panel-primary-p3 cst-panel-shadow">
-                                <div className="panel-heading"><i className="pe-7s-date"></i> Dates</div>
+                                <div className="panel-heading">
+                                <i style={{marginRight:4}}class="zmdi zmdi-calendar"></i>
+                                 Dates</div>
                                 <div className="panel-body">
                                     <div className="row">
                                         <div className="col-md-12 col-sm-12 xs-pr-0">
