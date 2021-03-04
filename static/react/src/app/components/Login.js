@@ -1,17 +1,11 @@
 import React from "react";
-import ReactTooltip from 'react-tooltip'
 import {connect} from "react-redux";
 import {Redirect} from 'react-router';
-// import {authenticateFunc,getList,storyList} from "../../services/ajax.js";
 import {authenticateFunc} from "../actions/loginActions";
-import store from "../store";
 import {STATIC_URL, API} from "../helpers/env";
-import {isEmpty,getUserDetailsOrRestart,USERDETAILS,removeChatbotOnLogout,hidechatbot} from "../helpers/helper";
-import {sessionObject} from '../helpers/manageSessionStorage';
-// import $ from "jquery";
-
+import {removeChatbotOnLogout,hidechatbot} from "../helpers/helper";
 @connect((store) => {
-  return {login_response: store.login.login_response, errmsg:store.login.errmsg};
+  return {errmsg:store.login.errmsg};
 })
 
 export class Login extends React.Component {

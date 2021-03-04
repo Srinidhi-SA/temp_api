@@ -63,7 +63,6 @@ export class Card extends React.Component {
             $(".toggleOn").removeClass("hidden");
             $(".toggleOff").addClass("hidden")
           }
-        // handleSignalToggleButton();
     }
     calculateWidth(width){
         let colWidth  = parseInt((width/100)*12)

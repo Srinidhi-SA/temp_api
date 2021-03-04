@@ -70,7 +70,7 @@ export class DataVariableSelection extends React.Component {
         }else if(this.props.fromVariableSelectionPage){
             
         }
-        else if(this.props.editmodelFlag){ //removed from === 'editModel'
+        else if(this.props.editmodelFlag){
 
         }
         else if(store.getState().datasets.varibleSelectionBackFlag){
@@ -101,7 +101,7 @@ export class DataVariableSelection extends React.Component {
         if( (this.props.isUpdate && this.props.createScoreShowVariables && this.props.match.path.includes("/createScore")) || (this.props.isUpdate && !this.props.match.path.includes("/createScore"))) {
             if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
                 this.props.dispatch(resetSelectedVariables(true));
-            }else if(this.props.editmodelFlag){ //In edit mode dispatch updateDatasetVariables directly, if not all variables are resetting and getting checked
+            }else if(this.props.editmodelFlag){
                 this.props.dispatch(updateSelectedVariablesFromEdit())
             }else if(store.getState().datasets.varibleSelectionBackFlag){
             }else{  
@@ -145,7 +145,6 @@ export class DataVariableSelection extends React.Component {
         var variableSelectionMsg = <label>Including the following variables:</label>;
         let dataPrev = store.getState().datasets.dataPreview;
         let modelSummary = this.props.modelSummary;
-        var that = this;
         const popoverLeft = (
             <Popover id="popover-trigger-hover-focus">
                 <p>mAdvisor has identified this as date suggestion.This could be used for trend analysis. </p>
@@ -170,7 +169,7 @@ export class DataVariableSelection extends React.Component {
             this.dimensions = [];
             this.datetime = [];
             this.dimensionDateTime =[];
-            metaData.map(( metaItem, metaIndex ) => {
+            metaData.map(metaItem => {
                 if ( (this.props.isUpdate && this.props.createScoreShowVariables && this.props.match.path.includes("/createScore")) || (this.props.isUpdate && !this.props.match.path.includes("/createScore"))) {
                     switch ( metaItem.columnType ) {
                         case "measure":
@@ -200,7 +199,7 @@ export class DataVariableSelection extends React.Component {
                     $(".measureAll").prop("disabled",true);
                     var measureTemplate = <label id="noMeasures">No measure variable present</label>
                 }else{
-                    var measureTemplate = store.getState().datasets.dataSetMeasures.map(( mItem, mIndex ) => {
+                    var measureTemplate = store.getState().datasets.dataSetMeasures.map(mItem => {
                     if(mItem.targetColumn || mItem.uidCol)varCls="hidden";
                     else varCls = "";
                         return (
@@ -218,7 +217,7 @@ export class DataVariableSelection extends React.Component {
                     $(".dimensionAll").prop("disabled",true);
                     var dimensionTemplate = <label id="noDimensions" >No dimension variable present</label>
                 }else{
-                    var dimensionTemplate = store.getState().datasets.dataSetDimensions.map(( dItem, dIndex ) => {
+                    var dimensionTemplate = store.getState().datasets.dataSetDimensions.map(dItem => {
 
                         if(dItem.targetColumn ||  dItem.uidCol)varCls="hidden";
                         else varCls = "";
@@ -234,7 +233,7 @@ export class DataVariableSelection extends React.Component {
             }
 
             if ( store.getState().datasets.dataSetTimeDimensions.length > 0 ) {
-                var datetimeTemplate = store.getState().datasets.dataSetTimeDimensions.map(( dtItem, dtIndex ) => {
+                var datetimeTemplate = store.getState().datasets.dataSetTimeDimensions.map(dtItem => {
                     if(dtItem.uidCol)varCls="hidden";
                     else varCls = "";
                     if(dtItem.columnType != "dimension"){

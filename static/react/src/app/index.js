@@ -1,6 +1,6 @@
 import React from "react";
 import {render} from "react-dom";
-import {BrowserRouter, Route, Switch, IndexRoute} from "react-router-dom";
+import {BrowserRouter, Route, Switch} from "react-router-dom";
 import {Provider} from "react-redux"
 import store from "./store"
 import {Main} from "./components/Main";
@@ -309,31 +309,6 @@ class App extends React.Component {
 
 
 
-    const modelmanagement = (props) => {
-      if (this.hasScoreRoutePermission()) {
-        switch (props.match.path) {
-          case "/apps/" + props.match.params.AppId + "/analyst/modelManagement/:slug":
-            {
-              return (<ModelSummary {...props}/>)
-            }
-            break;
-            case "/apps/" + props.match.params.AppId + "/analyst/modelManagement":
-            {
-              return (<ModelManagement {...props}/>)
-            }
-            break;
-            
-        }
-
-      } else if (this.hasTrainerRoutePermission()) {
-        let model_url = "/apps"
-        if (props.match.params.AppId)
-          model_url = "/apps/" + props.match.params.AppId + "/analyst/modelManagement"
-        return (<Redirect to={model_url}/>)
-      } else {
-        return (<Redirect to="/apps"/>)
-      }
-    }
 
 
     return (

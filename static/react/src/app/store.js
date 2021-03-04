@@ -6,8 +6,7 @@ import promise from "redux-promise-middleware"
 
 import reducer from "./reducers"
 import {cookieObj} from './helpers/cookiesHandler';
-import {redirectToLogin} from './helpers/helper';
-const err = (store) => (next) => (action) => {
+const err = () => (next) => (action) => {
   try {
     next(action);
   } catch (e) {
