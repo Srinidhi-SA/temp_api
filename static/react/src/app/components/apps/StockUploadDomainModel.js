@@ -18,16 +18,12 @@ export class StockUploadDomainModel extends React.Component {
 
   constructor(props) {
     super(props);
-    this.onDrop = this.onDrop.bind(this);
   }
 
   updateUploadStockPopup(flag) {
     this.props.dispatch(updateUploadStockPopup(flag))
   }
-  onDrop(files) {
-    this.props.dispatch(uploadStockFiles(files))
-  }
-
+  
 	triggerStockAnalysis(){
 			this.props.dispatch(uploadStockFile(store.getState().apps.stockSlug))
 		}

@@ -53,8 +53,7 @@ export class ScoreVariableSelection extends React.Component {
   render() {
     if(this.props.scoreSummaryFlag){
       let mod = window.location.pathname.includes("analyst")?"/analyst":"/autoML"
-      let _link = "/apps/"+this.props.match.params.AppId+mod+'/scores/'+store.getState().apps.scoreSlug;
-      return(<Redirect to={_link}/>);
+      return(<Redirect to={`/apps/${this.props.match.params.AppId}${mod}/scores/${store.getState().apps.scoreSlug}`}/>);
     }
     let dataPrev = store.getState().datasets.dataPreview;
     let renderSelectBox = null;

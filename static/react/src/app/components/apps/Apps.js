@@ -47,23 +47,20 @@ export class Apps extends React.Component {
     if(store.getState().datasets.editmodelFlag){
      this.props.dispatch(clearDataPreview());
     }
-       this.props.dispatch(updateModelSummaryFlag(false));
-       this.props.dispatch(updateScoreSummaryFlag(false));
-       this.props.dispatch(getAllUsersList());
-       this.props.dispatch(parameterTuningVisited(false))
-       this.props.dispatch(clearTensorFlowArray());
-       this.props.dispatch(clearPyTorchValues());
-       this.props.dispatch(variableSlectionBack(false));
+    this.props.dispatch(updateModelSummaryFlag(false));
+    this.props.dispatch(updateScoreSummaryFlag(false));
+    this.props.dispatch(getAllUsersList());
+    this.props.dispatch(parameterTuningVisited(false))
+    this.props.dispatch(clearTensorFlowArray());
+    this.props.dispatch(clearPyTorchValues());
+    this.props.dispatch(variableSlectionBack(false));
       
-       //have to recheck next 3actions needed or not
-      this.props.dispatch(setEditModelValues("","",false));
-       this.props.dispatch(fetchModelEditAPISuccess(""))
-      this.props.dispatch(selectMetricAction("", "", ""));
-      this.props.dispatch(saveTopLevelValuesAction("false",""))
+    //have to recheck next 3actions needed or not
+    this.props.dispatch(setEditModelValues("","",false));
+    this.props.dispatch(fetchModelEditAPISuccess(""))
+    this.props.dispatch(selectMetricAction("", "", ""));
+    this.props.dispatch(saveTopLevelValuesAction("false",""))
 
-
-
-    //checking for score and model tab
     if (this.props.match.url.indexOf("model") != -1) {
       this.props.dispatch(activateModelScoreTabs("model"));
     } else if (this.props.match.url.indexOf("score") != -1) {
@@ -79,15 +76,11 @@ export class Apps extends React.Component {
     this.props.dispatch(storeScoreSearchElement(""));
     this.props.dispatch(getAppsScoreList(1));
     this.props.dispatch(getAppsAlgoList(1));
+    let modelLink= window.location.href.includes("autoML") ? "/autoML" : "/analyst"
     if (tabId == "score") {
-      let modelLink= window.location.href.includes("autoML") ? "/autoML/scores" : "/analyst/scores"
-      this.props.history.push('/apps/' + this.props.match.params.AppId + modelLink )
-    } 
-    
-    else{
-      
-      let modelLink= window.location.href.includes("autoML") ? "/autoML/models" : "/analyst/models"
-      this.props.history.push('/apps/' + this.props.match.params.AppId + modelLink)
+      this.props.history.push('/apps/' + this.props.match.params.AppId + modelLink +"/scores" )
+    }else{
+      this.props.history.push('/apps/' + this.props.match.params.AppId + modelLink + "/models")
     }
    }
 
@@ -100,30 +93,25 @@ export class Apps extends React.Component {
 
 
   render() {
-    var appId = this.props.currentAppId;
-    
-    if (store.getState().apps.modelSummaryFlag) {
+    let modelLink = this.props.location.pathname.includes("autoML") ? "/autoML" : "/analyst";
+    if(store.getState().apps.modelSummaryFlag) {
       if(!store.getState().apps.modelSummary.viewed){  
-      let modelLink = this.props.location.pathname.includes("autoML") ? "/autoML/models/" : "/analyst/models/";
-      let _link = "/apps/" + this.props.match.params.AppId + modelLink + store.getState().apps.modelSlug;
-      return (<Redirect to={_link}/>);
+        let _link = "/apps/" + this.props.match.params.AppId + modelLink + "/models/" + store.getState().apps.modelSlug;
+        return (<Redirect to={_link}/>);
       }
     }
      if (store.getState().apps.scoreSummaryFlag) {
       if(!store.getState().apps.scoreSummary.viewed){  
-      let modelLink= this.props.location.pathname.includes("autoML") ? "/autoML/scores/" : "/analyst/scores/"
-      let _link1 = "/apps/" + this.props.match.params.AppId + modelLink + store.getState().apps.scoreSlug;
+      let _link1 = "/apps/" + this.props.match.params.AppId + modelLink + "/scores/" + store.getState().apps.scoreSlug;
       return (<Redirect to={_link1}/>);
       }
     }
     let models = <AppsModelList history={this.props.history} match={this.props.match}/>
-
     let scores = <AppsScoreList history={this.props.history} match={this.props.match}/>
-
     let modelManagement = ""
 
-    if(appId==2 || appId == 13){
-      modelManagement = <Button  onClick={this.proceedToModelManagement.bind(this)} bsStyle="primary">Manage Models</Button>
+    if(this.props.currentAppId==2 || this.props.currentAppId == 13){
+      modelManagement = <Button onClick={this.proceedToModelManagement.bind(this)} bsStyle="primary">Manage Models</Button>
     }else{
       modelManagement = "";
     }
@@ -131,9 +119,9 @@ export class Apps extends React.Component {
     return (
       <div className="side-body">
         <div className="main-content">
-        <div class="buttonRow pull-right">
-        {modelManagement}
-        </div>
+          <div class="buttonRow pull-right">
+            {modelManagement}
+          </div>
           <Tabs id="apps_tab" defaultActiveKey="score" activeKey={store.getState().apps.appsSelectedTabId} onSelect={this.modifyUrl.bind(this)} className="apps_list">
             {(getUserDetailsOrRestart.get().view_trainer_permission == "true")
               ? <Tab eventKey="model"  title="Models">{models}</Tab>
@@ -144,7 +132,6 @@ export class Apps extends React.Component {
           </Tabs>
           <AppsLoader match={this.props.match}/>
           <Share usersList={this.props.userList}/>
-
         </div>
       </div>
     );

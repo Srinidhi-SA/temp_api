@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { Pagination } from "react-bootstrap";
 import {
     getAppsScoreList,
-    updateScoreSlug,
     handleScoreRename,
     handleScoreDelete,
     storeScoreSearchElement,
@@ -57,9 +56,6 @@ export class AppsScoreList extends React.Component {
   }
   componentDidMount(){
     this.props.dispatch(refreshAppsScoreList(this.props));
-  }
-  getScoreSummary(slug) {
-    this.props.dispatch(updateScoreSlug(slug))
   }
   handleScoreDelete(slug) {
     this.props.dispatch(handleScoreDelete(slug, this.refs.dialog));
