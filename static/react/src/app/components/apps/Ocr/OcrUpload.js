@@ -271,7 +271,7 @@ export class OcrUpload extends React.Component {
         </span>
       </li>
     ))
-      : <div className="xs-pl-20" style={{textAlign:"center"}}>No files chosen.<br/>Please select file to proceed.</div>
+      : <div className="xs-pl-20 text-center">No files chosen.<br/>Please select file to proceed.</div>
     let optionsTemp = [];
     for(var i=0; i<this.props.s3FileList.length; i++){
       optionsTemp.push({"value":this.props.s3FileList[i],"label":this.props.s3FileList[i]});
@@ -290,15 +290,15 @@ export class OcrUpload extends React.Component {
               <h3 className="modal-title">Upload Data</h3>
             </Modal.Header>
 
-            <Modal.Body style={{ padding:"0px"}} >
+            <Modal.Body className="xs-p-0">
               <div className="tab-container ocrFileTab">
                   <ul className="ocrUploadTabs nav-tab" onClick={this.getTabContent.bind(this)}>
                     <li className="active"><a className="nav-link" data-toggle="tab" href="#ocrImage" id="ocrImageTab">Upload Local File</a></li>
                     <li><a className="nav-link" data-toggle="tab" href="#ocrS3" id="ocrS3Tab">Amazon S3 Bucket</a></li>
                   </ul>
               </div>
-              <div className="tab-content" style={{padding:"0px"}}>
-                <div id="ocrImage" className="tab-pane active row" style={{margin:"0px"}}>
+              <div className="tab-content xs-p-0">
+                <div id="ocrImage" className="tab-pane active row xs-m-0">
                   {!this.state.uploaded &&
                     <div>
                       <div className="col-md-5 ocrUploadHeight">

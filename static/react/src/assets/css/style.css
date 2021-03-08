@@ -16036,3 +16036,26 @@ font-size: 12px;
   content: "\f002";
 font-size: 12px;
 } 
+/* new styles which were inline */
+.dashboard_acc{
+  color: #777;
+  font-size: 16px 
+}
+.dashboard_percnt{
+  color: #000;
+  font-size: 16px 
+}
+
+.add-editUserLoader{
+  background: rgba(0,0,0,0.1);
+  height: 100%;
+  width:100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.userSaved{
+  padding-top: 10px; 
+  color: rgb(50, 132, 121); 
+  display: block 
+}

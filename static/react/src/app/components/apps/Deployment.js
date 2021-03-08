@@ -204,7 +204,7 @@ export class Deployment extends React.Component {
      }
 
       if(deploymentList.data.length == 0){
-        deploymentTable = <h4 style={{textAlign:"center"}}>No Deployments Available</h4>
+        deploymentTable = <h4 className="text-center">No Deployments Available</h4>
         return(
           <div id="deployment" class="tab-pane">
           {deployPopup} {viewPopup}
