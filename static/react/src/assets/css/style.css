@@ -7,36 +7,6 @@
   background: url(../images/mAd_image.png) no-repeat;
 }
 
-@font-face {
-  font-family: "Roboto";
-  src: url("../fonts/Roboto-Regular.eot");
-  src: url("../fonts/Roboto-Regular.eot?#iefix") format("embedded-opentype"),
-    url("../fonts/Roboto-Regular.woff") format("woff"),
-    url(../fonts/"Roboto-Regular.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Segoe UI";
-  src: url("../fonts/SegoeUI.eot");
-  src: url("../fonts/SegoeUI.eot?#iefix") format("embedded-opentype"),
-    url("../fonts/SegoeUI.woff") format("woff"),
-    url("../fonts/SegoeUI.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Quicksand";
-  src: url("../fonts/Quicksand-Regular.eot");
-  src: url("../fonts/Quicksand-Regular.eot?#iefix") format("embedded-opentype"),
-    url("../fonts/Quicksand-Regular.woff") format("woff"),
-    url("../fonts/Quicksand-Regular.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-
 .label,
 sub,
 sup {
