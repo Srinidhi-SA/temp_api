@@ -160,7 +160,7 @@ resetAPI=(oldPassword,newPassword) =>{
       let statsList = this.props.profileInfo.info.map((analysis, i) => {
         return (
           <div key={i} className="col-md-2 co-sm-4 col-xs-6">
-            <h2 className="text-center text-primary" style={{paddingBottom:"0px"}}>{analysis.count}<br/>
+            <h2 className="text-center text-primary xs-pb-0">{analysis.count}<br/>
               <small>{analysis.displayName}
               </small>
             </h2>

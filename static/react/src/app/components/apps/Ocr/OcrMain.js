@@ -200,10 +200,10 @@ export class OcrMain extends React.Component {
                 <div className="widget widget-pie">
                   <div className="row chart-container">
                     <div className="col-md-12 text-center">
-                      <div className="chart" id="widget-top-1" style={{ padding: 0, position: 'relative' }}>
+                      <div className="chart" id="widget-top-1">
                         <div className="semi-donut margin" style={{ '--percentage': `${this.props.dashboardMetrics.projectMetrics.Project.accuracy}`, '--fill': '#ff1888' }}>
-                          <span style={{ color: '#000', fontSize: 16 }}>{this.props.dashboardMetrics.projectMetrics.Project.accuracy}% </span><br></br>
-                          <span style={{ color: '#777', fontSize: 16 }}>Accuracy</span>
+                          <span className="dashboard_percnt">{this.props.dashboardMetrics.projectMetrics.Project.accuracy}% </span><br></br>
+                          <span className="dashboard_acc" >Accuracy</span>
                         </div>
                       </div>
                     </div>
@@ -220,10 +220,10 @@ export class OcrMain extends React.Component {
                 <div className="widget widget-pie">
                   <div className="row chart-container">
                     <div className="col-md-12 text-center">
-                      <div className="chart" id="widget-top-1" style={{ padding: 0, position: 'relative' }}>
+                      <div className="chart" id="widget-top-1">
                         <div className="semi-donut margin" style={{ '--percentage': `${this.props.dashboardMetrics.projectMetrics.Pages.accuracy}`, '--fill': '#ef27c0' }}>
-                          <span style={{ color: '#000', fontSize: 16 }}>{this.props.dashboardMetrics.projectMetrics.Pages.accuracy}% </span><br></br>
-                          <span style={{ color: '#777', fontSize: 16 }}>Accuracy</span>
+                          <span className="dashboard_percnt">{this.props.dashboardMetrics.projectMetrics.Pages.accuracy}% </span><br></br>
+                          <span className="dashboard_acc">Accuracy</span>
                         </div>
                       </div>
                     </div>
@@ -240,10 +240,10 @@ export class OcrMain extends React.Component {
                 <div className="widget widget-pie">
                   <div className="row chart-container">
                     <div className="col-md-12 text-center">
-                      <div className="chart" id="widget-top-1" style={{ padding: 0, position: 'relative' }}>
+                      <div className="chart" id="widget-top-1">
                         <div className="semi-donut margin" style={{ '--percentage': `${this.props.dashboardMetrics.projectMetrics.TotalTexts.accuracy}`, '--fill': '#8458be' }}>
-                          <span style={{ color: '#000', fontSize: 16 }}>{this.props.dashboardMetrics.projectMetrics.TotalTexts.accuracy}% </span><br></br>
-                          <span style={{ color: '#777', fontSize: 16 }}>Accuracy</span>
+                          <span className="dashboard_percnt">{this.props.dashboardMetrics.projectMetrics.TotalTexts.accuracy}% </span><br></br>
+                          <span className="dashboard_acc">Accuracy</span>
                         </div>
                       </div>
                     </div>
@@ -262,10 +262,10 @@ export class OcrMain extends React.Component {
                 <div className="widget widget-pie">
                   <div className="row chart-container">
                     <div className="col-md-12 text-center">
-                      <div className="chart" id="widget-top-1" style={{ padding: 0, position: 'relative' }}>
+                      <div className="chart" id="widget-top-1">
                         <div className="semi-donut margin" style={{ '--percentage': `${this.props.dashboardMetrics.projectMetrics.TypedTexts.accuracy}`, '--fill': '#c1556c' }}>
-                          <span style={{ color: '#000', fontSize: 16 }}>{this.props.dashboardMetrics.projectMetrics.TypedTexts.accuracy}% </span><br></br>
-                          <span style={{ color: '#777', fontSize: 16 }}>Accuracy</span>
+                          <span className="dashboard_percnt">{this.props.dashboardMetrics.projectMetrics.TypedTexts.accuracy}% </span><br></br>
+                          <span className="dashboard_acc">Accuracy</span>
                         </div>
                       </div>
                     </div>
@@ -284,10 +284,10 @@ export class OcrMain extends React.Component {
                 <div className="widget widget-pie">
                   <div className="row chart-container">
                     <div className="col-md-12 text-center">
-                      <div className="chart" id="widget-top-1" style={{ padding: 0, position: 'relative' }}>
+                      <div className="chart" id="widget-top-1">
                         <div className="semi-donut margin" style={{ '--percentage': `${this.props.dashboardMetrics.projectMetrics.HandPrintedTexts.accuracy}`, '--fill': '#93c155' }}>
-                          <span style={{ color: '#000', fontSize: 16 }}>{this.props.dashboardMetrics.projectMetrics.HandPrintedTexts.accuracy}% </span><br></br>
-                          <span style={{ color: '#777', fontSize: 16 }}>Accuracy</span>
+                          <span className="dashboard_percnt">{this.props.dashboardMetrics.projectMetrics.HandPrintedTexts.accuracy}% </span><br></br>
+                          <span className="dashboard_acc">Accuracy</span>
                         </div>
                       </div>
                     </div>
@@ -306,10 +306,10 @@ export class OcrMain extends React.Component {
                 <div className="widget widget-pie">
                   <div className="row chart-container">
                     <div className="col-md-12 text-center">
-                      <div className="chart" id="widget-top-1" style={{ padding: 0, position: 'relative' }}>
+                      <div className="chart" id="widget-top-1">
                         <div className="semi-donut margin" style={{ '--percentage': `${this.props.dashboardMetrics.projectMetrics.HandWrittenTexts.accuracy}`, '--fill': '#58beae' }}>
-                          <span style={{ color: '#000', fontSize: 16 }}>{this.props.dashboardMetrics.projectMetrics.HandWrittenTexts.accuracy}%</span><br></br>
-                          <span style={{ color: '#777', fontSize: 16 }}>Accuracy</span>
+                          <span className="dashboard_percnt">{this.props.dashboardMetrics.projectMetrics.HandWrittenTexts.accuracy}%</span><br></br>
+                          <span className="dashboard_acc">Accuracy</span>
                         </div>
                       </div>
                     </div>

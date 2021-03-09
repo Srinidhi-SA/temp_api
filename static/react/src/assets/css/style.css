@@ -7,36 +7,6 @@
   background: url(../images/mAd_image.png) no-repeat;
 }
 
-@font-face {
-  font-family: "Roboto";
-  src: url("../fonts/Roboto-Regular.eot");
-  src: url("../fonts/Roboto-Regular.eot?#iefix") format("embedded-opentype"),
-    url("../fonts/Roboto-Regular.woff") format("woff"),
-    url(../fonts/"Roboto-Regular.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Segoe UI";
-  src: url("../fonts/SegoeUI.eot");
-  src: url("../fonts/SegoeUI.eot?#iefix") format("embedded-opentype"),
-    url("../fonts/SegoeUI.woff") format("woff"),
-    url("../fonts/SegoeUI.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Quicksand";
-  src: url("../fonts/Quicksand-Regular.eot");
-  src: url("../fonts/Quicksand-Regular.eot?#iefix") format("embedded-opentype"),
-    url("../fonts/Quicksand-Regular.woff") format("woff"),
-    url("../fonts/Quicksand-Regular.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-
 .label,
 sub,
 sup {
@@ -16036,3 +16006,26 @@ font-size: 12px;
   content: "\f002";
 font-size: 12px;
 } 
+/* new styles which were inline */
+.dashboard_acc{
+  color: #777;
+  font-size: 16px 
+}
+.dashboard_percnt{
+  color: #000;
+  font-size: 16px 
+}
+
+.add-editUserLoader{
+  background: rgba(0,0,0,0.1);
+  height: 100%;
+  width:100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.userSaved{
+  padding-top: 10px; 
+  color: rgb(50, 132, 121); 
+  display: block 
+}

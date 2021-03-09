@@ -242,7 +242,7 @@ export class TensorFlow extends React.Component {
                 <div className="col-md-6">
                   {this.getOptions(this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0])}
                 </div>
-                <div className="col-md-6" style={{textAlign:'center'}}>
+                <div className="col-md-6 text-center">
                   <div style={{cursor:'pointer',display:'inline-block'}} onClick={this.handleClick.bind(this,)}>
                     <span className="addLayer"> <i className="fa fa-plus" style={{color: '#fff'}}></i></span>
                     <span className="addLayerTxt">Add layer</span>

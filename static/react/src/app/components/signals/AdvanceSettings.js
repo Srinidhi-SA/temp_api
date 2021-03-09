@@ -191,9 +191,9 @@ export class AdvanceSettings extends React.Component {
 
 				    binTemplate = metaItem.binSetting.map((binItem,binIndex)=>{
 				        if(!binItem.hasOwnProperty("defaultValue")){
-				            return (<label style={{paddingLeft:"20px"}} key={binIndex}><b>{binItem.displayName}</b></label>)
+				            return (<label className=" xs-pl-20" key={binIndex}><b>{binItem.displayName}</b></label>)
 				        }else{
-				            return (<div key={binIndex} className="form-group md-pt-15" id={binIndex}><label for="fl1" className="col-sm-7" style={{paddingLeft:"20px"}} >{binItem.displayName}</label>
+				            return (<div key={binIndex} className="form-group md-pt-15" id={binIndex}><label for="fl1" className="col-sm-7 xs-pl-20">{binItem.displayName}</label>
 				            <div className="col-sm-5" style={{padding:"0px 0px 20px 0px"}}>
 	                        <input id={binIndex} type="number" name={metaItem.name}  className="form-control" min={binItem.min} max={binItem.max} placeholder={binItem.defaultValue} defaultValue={binItem.value} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault()}   onChange={this.handleBinningInput.bind(this)} disabled={disableElement}/>
 													<div className="error_pt "></div>
