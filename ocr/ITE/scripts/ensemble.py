@@ -65,10 +65,11 @@ def check_update_paras_conf(final_json, cord, conf, style):
 
 
 def check_update_tables_conf(final_json, cord, conf, style):
+    update = True
     p = Point(cord)
 
     for i in range(len(final_json['tables'])):
-        # CURRENTLY ONLY 4 SIDED TABLES 
+        # CURRENTLY ONLY 4 SIDED TABLES
 
         # str table number********* when saved
         p1, p3 = final_json['table_coordinates'][i + 1][:2], \
@@ -86,16 +87,14 @@ def check_update_tables_conf(final_json, cord, conf, style):
                     words_bb = final_json['tables'][i + 1][cell]['words']
 
                     for j, bb in enumerate([el['boundingBox'] for el in words_bb]):
-                        if cord[0] in range(min(bb['p1'][0], bb['p3'][0])
-                                , max(bb['p1'][0], bb['p3'][0])) and \
-                                cord[1] in range(min(bb['p1'][1], bb['p3'][1]),
-                                                 max(bb['p1'][1], bb['p3'][1])):
+                        if cord[0] in range(min(bb['p1'][0], bb['p3'][0]), max(bb['p1'][0], bb['p3'][0])) and \
+                                cord[1] in range(min(bb['p1'][1], bb['p3'][1]), max(bb['p1'][1], bb['p3'][1])):
 
                             final_json['tables'][i + 1][cell]['words'][j]['azure_conf'] = conf
                             final_json['tables'][i + 1][cell]['words'][j]['style'] = style
-                            #                            print("ij", i, j)
-                            # self.update_history(history_json,inp,bb)
-                            return True, final_json
+
+                            update = True
+                        #                            return True, final_json
 
                         else:
                             pass
@@ -103,7 +102,11 @@ def check_update_tables_conf(final_json, cord, conf, style):
                     pass
         else:
             pass
-    return False, final_json
+
+    if not update:
+        return False, final_json
+    else:
+        return True, final_json
 
 
 def manual_fill_flags_az(final_json):
