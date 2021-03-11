@@ -56,21 +56,18 @@ class App extends React.Component {
       return false
   }
   hasDataRoutePermission() {
-    //alert("working!!!")
     if (getUserDetailsOrRestart.get().view_data_permission == "true")
       return true
     else
       return false
   }
   hasTrainerRoutePermission() {
-    //check for apps exposure also
     if (getUserDetailsOrRestart.get().view_trainer_permission == "true"&&APPS_ALLOWED==true)
       return true
     else
       return false
   }
   hasScoreRoutePermission() {
-    //alert("working!!!")
     if (getUserDetailsOrRestart.get().view_score_permission == "true"&&APPS_ALLOWED==true)
       return true
     else
@@ -78,7 +75,7 @@ class App extends React.Component {
   }
   render() {
     sessionStorage.url = window.location.pathname;
-    //we need to do like this as BrowserRouter dont pass history and props if we call components directly
+    //we need to do this as BrowserRouter dont pass history and props if we call components directly
     //signal related routing permissions
     const signals = (props) => {
       if (this.hasSignalRoutePermission()) {
@@ -306,10 +303,6 @@ class App extends React.Component {
         return (<Redirect to="/apps"/>)
       }
     }
-
-
-
-
 
     return (
       <BrowserRouter>
