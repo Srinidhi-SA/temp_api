@@ -263,9 +263,7 @@ export class DataCleansing extends React.Component {
   }
 
   handleBack=()=>{
-    const appId = this.props.match.params.AppId;
-    const slug = this.props.match.params.slug;
-    this.props.history.replace(`/apps/${appId}/analyst/models/data/${slug}/createModel?from=data_cleansing`);
+    this.props.history.replace(`/apps/${this.props.match.params.AppId}/analyst/models/data/${this.props.match.params.slug}/createModel?from=data_cleansing`);
   }
 
   getMissingValueTreatmentOptions(dataType, colName, colSlug,outnum,missingnum) {

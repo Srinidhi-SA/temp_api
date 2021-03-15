@@ -78,7 +78,7 @@ export class DataValidation extends React.Component {
 		if(dataPrev){
 			 let transformationSettings = store.getState().datasets.dataTransformSettings;
 			 if(transformationSettings != undefined){
-				 transformationSettings.map((columnData,columnIndex) =>{
+				 transformationSettings.map((columnData) =>{
 		              if(that.props.slug == columnData.slug){
 		            	settingsTemplate = that.renderDropdownList(columnData.slug,columnData.name,columnData.columnSetting)
 		              }
