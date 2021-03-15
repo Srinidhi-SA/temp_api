@@ -63,7 +63,7 @@ export class AudioFileCard extends React.Component {
                     <div class="btn-toolbar pull-right">
                     {/*<!-- Rename and Delete BLock  -->*/}
                     <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-                    <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
+                    <i className="ci glyphicon glyphicon-option-vertical"></i>
                     </a>
                     <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <li onClick={this.handleAudioRename.bind(this,data.slug,data.name)}>

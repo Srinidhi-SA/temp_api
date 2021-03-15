@@ -175,33 +175,33 @@ export class Signals extends React.Component {
                   <div class="input-group">
                     <div className="search-wrapper">
                       <input type="text" value={this.props.signal_search_element} name="search_signals" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Signals" id="search_signals" className="form-control search-box" placeholder="Search signals..." required/>
-                        <span className="zmdi zmdi-search form-control-feedback"></span>
+                        <span className="fa fa-search form-control-feedback"></span>
                         <button className="close-icon" onClick={this.clearSearchElement.bind(this)} type="reset"></button>
                     </div>
                   </div>
                   <div class="btn-group">
                     <button type="button" title="Sorting" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                      <i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i>
+                      <i class="glyphicon glyphicon-sort"></i>
                     </button>
                     <ul role="menu" class="dropdown-menu dropdown-menu-right">
                       <li>
                         <a href="#" onClick={this.doSorting.bind(this, 'name', 'asc')}>
-                          <i class="zmdi zmdi-sort-amount-asc"></i>&nbsp;&nbsp;Name Ascending
+                          <i class="fa fa-sort-alpha-asc"></i>&nbsp;&nbsp;Name Ascending
                         </a>
                       </li>
                       <li>
                         <a href="#" onClick={this.doSorting.bind(this, 'name', 'desc')}>
-                          <i class="zmdi zmdi-sort-amount-desc"></i>&nbsp;&nbsp;Name Descending
+                          <i class="fa fa-sort-alpha-desc"></i>&nbsp;&nbsp;Name Descending
                         </a>
                       </li>
                       <li>
                         <a href="#" onClick={this.doSorting.bind(this, 'created_at', 'asc')}>
-                          <i class="zmdi zmdi-calendar-alt"></i>&nbsp;&nbsp;Date Ascending
+                        <i class="fa fa-long-arrow-down arrIcon"></i><i style={{fontSize:12}} class="fa fa-calendar-check-o"></i>&nbsp;Date Ascending
                         </a>
                       </li>
                       <li>
                         <a href="#" onClick={this.doSorting.bind(this, 'created_at', 'desc')}>
-                          <i class="zmdi zmdi-calendar"></i>&nbsp;&nbsp;Date Descending
+                        <i class="fa fa-long-arrow-up arrIcon"></i><i style={{fontSize:12}} class="fa fa-calendar-check-o"></i>&nbsp;Date Descending
                         </a>
                       </li>
                     </ul>

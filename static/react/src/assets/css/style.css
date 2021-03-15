@@ -1,5 +1,4 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700&subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese");
-@import "material-design-iconic-font.min.css";
 @import "prime_theme.css";
 @import "prime_layout.css";
 
@@ -7,6 +6,7 @@
   background: url(../images/mAd_image.png) no-repeat;
 }
 
+<<<<<<< HEAD
 @font-face {
   font-family: "Roboto";
   src: url("../fonts/Roboto-Regular.eot");
@@ -37,6 +37,8 @@
   font-style: normal;
 }
 
+=======
+>>>>>>> 70a7c29e5958106fa390647d43a568152d3c972e
 .label,
 sub,
 sup {
@@ -9639,6 +9641,7 @@ form.dropzone .icon {
 .form-control-feedback {
   font-size: 18px;
   color: #718989;
+  margin-top: 10px;
 }
 .nano > .nano-pane {
   width: 6px;
@@ -11537,7 +11540,7 @@ a.app-link p {
 .card-footer .pover,
 .card-footer .more_button {
   display: inline-block;
-  width: 36px;
+  width: 34px;
   text-align: center;
   border-radius: 50%;
 }
@@ -13103,6 +13106,7 @@ div.pred_disp_block p,
 a.more_button {
   color: #b3b3b3;
   cursor: pointer;
+  margin-top: 7px
 }
 
 .card-center-tile .pull-right > .dropdown-menu {
@@ -15994,6 +15998,7 @@ body .p-multiselect.regParamFocus:hover {
   display:inline-block !important;
    width:101px !important
 }
+<<<<<<< HEAD
 .mmLoader{
   display:"flex";
   height:"200px";
@@ -16008,12 +16013,10 @@ body .p-multiselect.regParamFocus:hover {
   vertical-align: -15%;
   opacity: 0.5;
 }
+=======
+>>>>>>> 70a7c29e5958106fa390647d43a568152d3c972e
 .pe-2x {
   font-size: 2em;
-}
-
-.pe-border {
-  border: solid 0.08em #eaeaea;
 }
 /* prime mutli-select specific styles */
 .pi {
@@ -16041,3 +16044,38 @@ font-size: 12px;
   content: "\f002";
 font-size: 12px;
 } 
+<<<<<<< HEAD
+=======
+/* new styles which were inline */
+.dashboard_acc{
+  color: #777;
+  font-size: 16px 
+}
+.dashboard_percnt{
+  color: #000;
+  font-size: 16px 
+}
+
+.add-editUserLoader{
+  background: rgba(0,0,0,0.1);
+  height: 100%;
+  width:100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.userSaved{
+  padding-top: 10px; 
+  color: rgb(50, 132, 121); 
+  display: block 
+}
+
+
+.timeDimIcon{
+  color: #adadad;
+  font-size: 15px !important;
+}
+.arrIcon{
+margin-right:2px;
+}
+>>>>>>> 70a7c29e5958106fa390647d43a568152d3c972e

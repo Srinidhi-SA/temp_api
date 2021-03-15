@@ -311,24 +311,24 @@ export class AppsPanel extends React.Component {
                   <div className="search-wrapper">
                     <form>
                       <input defaultValue={store.getState().apps.storeAppsSearchElement} type="text" name="search_apps" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeAppsSearchBox.bind(this)} title="Search Apps..." id="search_apps" className="form-control search-box" placeholder="Search Apps..." required/>
-                      <span className="zmdi zmdi-search form-control-feedback"></span>
+                      <span className="fa fa-search form-control-feedback"></span>
                       <button className="close-icon" type="reset" onClick={this.handleSearchReset.bind(this)}></button>
                     </form>
                   </div>
                 </div>
                 <div class="btn-group">
                   <button type="button" title="Sorting" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    <i className="zmdi zmdi-hc-lg zmdi-sort-asc"></i>
+                    <i className="glyphicon glyphicon-sort"></i>
                   </button>
                   <ul role="menu" class="dropdown-menu dropdown-menu-right">
                     <li>
                       <a href="#" onClick={this.handleSorting.bind(this, 'name', 'asc')}>
-                        <i class="zmdi zmdi-sort-amount-asc"></i>
+                        <i class="fa fa-sort-alpha-asc"></i>
                         &nbsp;Name Ascending</a>
                     </li>
                     <li>
                       <a href="#" onClick={this.handleSorting.bind(this, 'name', '-')}>
-                        <i class="zmdi zmdi-sort-amount-desc"></i>
+                        <i class="fa fa-sort-alpha-desc"></i>
                         &nbsp;Name Descending</a>
                     </li>
                   </ul>
@@ -336,7 +336,7 @@ export class AppsPanel extends React.Component {
                     
                 <div class={this.props.app_filtered_keywords.length>0? "btn-group selected":"btn-group"}>
                   <button type="button" title="Filter" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    <i class="zmdi zmdi-hc-lg zmdi-filter-list"></i>
+                    <i class="fa fa-filter fa-lg"></i>
                   </button>
                   <ul role="menu" class="dropdown-menu dropdown-menu-right">
                     {filterListTemplate}

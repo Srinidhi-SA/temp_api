@@ -76,20 +76,22 @@ export class AppsStockDocumentMode extends React.Component {
                         <button className="btn btn-default" type="button" onClick={this.print.bind(this)} title="Print Document">
                           <i class="fa fa-print" aria-hidden="true"></i>
                         </button>
-                        <Link className="tabs-control right grp_legends_green continue" to={`/apps-stock-advisor/${this.props.match.params.slug}/${this.props.signal.listOfNodes[0].slug}`}>
-                          <button type="button" className="btn btn-default" title="Card mode">
-                            <i class="zmdi zmdi-hc-lg zmdi-view-carousel"></i>
-                          </button>
-                        </Link>
-                        <button type="button" className="btn btn-default" disabled="true" title="Document Mode">
-                          <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
-                        </button>
-                        <button type="button" className="btn btn-default" onClick = {this.closeDocumentMode.bind(this)}>
-                          <i class="zmdi zmdi-hc-lg zmdi-close"></i>
-                        </button>
-                      </div>
-                    </div>
-      						</h3>
+                            <Link className="tabs-control right grp_legends_green continue" to={cardModeLink}>
+                              <button type="button" className="btn btn-default" title="Card mode">
+                                <i class="fa fa-columns"></i>
+                              </button>
+                            </Link>
+                            <button type="button" className="btn btn-default" disabled="true" title="Document Mode">
+                              <i style={{fontSize:16}}class="fa fa-file-text-o fa-2x"></i>
+                            </button>
+                           <button type="button" className="btn btn-default" onClick = {this.closeDocumentMode.bind(this)}>
+                                <i class="fa fa-close"></i>
+                              </button>
+                          </div>
+                        </div>
+
+
+						</h3>
 			      			<div className="clearfix"></div>
                   <div className="panel panel-mAd box-shadow">
                     <div className="panel-body no-border documentModeSpacing">

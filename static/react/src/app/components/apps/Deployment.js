@@ -199,7 +199,7 @@ export class Deployment extends React.Component {
       }
 
       if(deploymentList.data.length == 0){
-        deploymentTable = <h4 style={{textAlign:"center"}}>No Deployments Available</h4>
+        deploymentTable = <h4 className="text-center">No Deployments Available</h4>
         return(
           <div id="deployment" class="tab-pane">
           {deployPopup}
@@ -227,9 +227,9 @@ export class Deployment extends React.Component {
             <td > {deploy.name}</td>
             <td>
               <div class="pos-relative">
-                <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-                  <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
-                </a>    
+              <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
+                <i class="ci glyphicon glyphicon-option-vertical"></i>
+              </a>    
                 <ul class="dropdown-menu dropdown-menu-right">
                   <li><a bsStyle="cst_button" onClick={this.handleViewClicked.bind(this,deploy.slug)}>View</a></li>
                   <li><a onClick={this.handleDeploymentDelete.bind(this,deploy.slug)}  >Delete</a></li>       

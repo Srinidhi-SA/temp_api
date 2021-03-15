@@ -147,7 +147,7 @@ export class Levels extends React.Component {
           </div>
           <div className="row form-group">
             <div className="col-sm-12 text-center">
-              <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{paddingTop:'15px'}}></div>
+              <div className="text-danger visibilityHidden xs-pt-15" id="fileErrorMsg"></div>
             </div>
           </div>
         </Tab.Pane>
@@ -187,7 +187,7 @@ export class Levels extends React.Component {
           </div>
           <div className="row form-group">
             <div className="col-sm-12 text-center">
-              <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{paddingTop:'15px'}}></div>
+              <div className="text-danger visibilityHidden xs-pt-15" id="fileErrorMsg"></div>
             </div>
           </div>
         </Tab.Pane>

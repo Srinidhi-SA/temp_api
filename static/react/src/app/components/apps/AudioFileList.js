@@ -97,7 +97,7 @@ export class AudioFileList extends React.Component {
 				<div className="search-wrapper">
 					<form>
 					<input type="text" name="audio_file" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Media Files" id="audio_file" className="form-control search-box" placeholder="Search Audio files..." required />
-					<span className="zmdi zmdi-search form-control-feedback"></span>
+					<span className="fa fa-search form-control-feedback"></span>
 					<button className="close-icon" type="reset"></button>
 					</form>
 				</div>
@@ -105,20 +105,20 @@ export class AudioFileList extends React.Component {
 				</div>
                   <div class="btn-group hidden">
                     <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false">
-                      <i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i>
+                      <i class="glyphicon glyphicon-sort"></i>
                     </button>
                     <ul role="menu" class="dropdown-menu dropdown-menu-right">
                         <li>
-                          <a href="#" ><i class="zmdi zmdi-sort-amount-asc"></i>&nbsp;&nbsp;Name Ascending</a>
+                          <a href="#" ><i class="fa fa-sort-alpha-asc"></i>&nbsp;&nbsp;Name Ascending</a>
                         </li>
                         <li>
-                          <a href="#" ><i class="zmdi zmdi-sort-amount-desc"></i>&nbsp;&nbsp;Name Descending</a>
+                          <a href="#" ><i class="fa fa-sort-alpha-desc"></i>&nbsp;&nbsp;Name Descending</a>
                         </li>
                         <li>
-                          <a href="#" ><i class="zmdi zmdi-calendar-alt"></i>&nbsp;&nbsp;Date Ascending</a>
+                          <a href="#" ><i class="fa fa-long-arrow-down arrIcon"></i><i style={{fontSize:12}} class="fa fa-calendar-check-o"></i>&nbsp;&nbsp;Date Ascending</a>
                         </li>
                         <li>
-                          <a href="#" ><i class="zmdi zmdi-calendar"></i>&nbsp;&nbsp;Date Descending</a>
+                          <a href="#" ><i class="fa fa-long-arrow-up arrIcon"></i><i style={{fontSize:12}} class="fa fa-calendar-check-o"></i>&nbsp;&nbsp;Date Descending</a>
                         </li>
                     </ul>
                   </div>

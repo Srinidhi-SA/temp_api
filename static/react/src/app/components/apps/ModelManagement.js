@@ -257,7 +257,7 @@ export class ModelManagement extends React.Component {
             <td>
               <div class="pos-relative">
                 <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More...">
-                  <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
+                  <i class="ci glyphicon glyphicon-option-vertical"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right">
                   <li><a onClick={this.handleAlgoClone.bind(this, item.slug)}>Clone</a></li>

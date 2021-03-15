@@ -352,10 +352,10 @@ export class OverViewPage extends React.Component {
                         </div>
                         {(this.props.match.url.indexOf('/apps-stock-advisor') >= 0) &&
                           <button type="button" className="btn btn-default" onClick={this.showStockSenceDataPreview.bind(this)} title="Show Data Preview">
-                            <i class="zmdi zmdi-hc-lg zmdi-grid"></i>
+                            <i class="fa fa-th"></i>
                         </button>}
                         <button type="button" className="btn btn-default" disabled="true" title="Card mode">
-                          <i class="zmdi zmdi-hc-lg zmdi-view-carousel"></i>
+                          <i class="fa fa-columns"></i>
                         </button>
                         <Link className="btn btn-default continue" to={{
                           pathname: documentModeLink,
@@ -363,10 +363,10 @@ export class OverViewPage extends React.Component {
                               lastVar: lastcard.slug
                             }
                           }} title="Document mode">
-                          <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
+                          <i style={{fontSize:16}} class="fa fa-file-text-o"></i>
                         </Link>
                         <button type="button" className="btn btn-default" onClick={this.closeDocumentMode.bind(this)}>
-                          <i class="zmdi zmdi-hc-lg zmdi-close"></i>
+                          <i class="fa fa-times"></i>
                         </button>
                       </div>
                     </div>
@@ -388,7 +388,7 @@ export class OverViewPage extends React.Component {
                               <div className="tab-content">
                                 { varList!=null &&
                                 <div className="sb_navigation">
-                                  <div id="subTab" style={{paddingTop:"15px"}}>
+                                  <div id="subTab" className="xs-pt-15">
                                     <Slider ref='slider' {...settings}>{varList}</Slider>
                                   </div>
                                   <div className="clearfix"></div>
