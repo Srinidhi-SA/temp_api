@@ -283,15 +283,15 @@ export class DataVariableSelection extends React.Component {
     											<div class="input-group">
 	        										<div className="search-wrapper">
 			            								<input type="text" name="measure" onChange={this.handleDVSearch.bind(this)} title="Search Measures" id="measureSearch" className="form-control search-box" placeholder="Search measures..."  />
-                                                        <span className="zmdi zmdi-search form-control-feedback"></span>
+                                                        <span className="fa fa-search form-control-feedback"></span>
                                                         <button className="close-icon" name="measure" onClick={this.handleDVSearch.bind(this)}  type="reset"></button>
                                                     </div>
                                                 </div>
                                                 <div class="btn-group">
-                                                    <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i></button>
+                                                    <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i class="glyphicon glyphicon-sort"></i></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
-                                                        <li onClick={this.handelSort.bind(this,"measure","ASC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-asc"></i> Ascending</a></li>
-                                                        <li onClick={this.handelSort.bind(this,"measure","DESC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-desc"></i> Descending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"measure","ASC")} className="cursor"><a><i class="fa fa-sort-alpha-asc"></i> Ascending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"measure","DESC")} className="cursor"><a><i class="fa fa-sort-alpha-desc"></i> Descending</a></li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -324,15 +324,15 @@ export class DataVariableSelection extends React.Component {
 												<div class="input-group">
     												<div className="search-wrapper">
         												<input type="text" name="dimension" onChange={this.handleDVSearch.bind(this)} title="Search Dimension" id="dimensionSearch" className="form-control search-box" placeholder="Search dimension..."  />
-                                                        <span className="zmdi zmdi-search form-control-feedback"></span>
+                                                        <span className="fa fa-search form-control-feedback"></span>
                                                         <button className="close-icon"  name="dimension"  onClick={this.handleDVSearch.bind(this)}  type="reset"></button>
                                                     </div>
                                                 </div>
                                                 <div class="btn-group">
-                                                    <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i></button>
+                                                    <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i class="glyphicon glyphicon-sort"></i></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
-                                                        <li onClick={this.handelSort.bind(this,"dimension","ASC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-asc"></i> Ascending</a></li>
-                                                        <li onClick={this.handelSort.bind(this,"dimension","DESC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-desc"></i> Descending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"dimension","ASC")} className="cursor"><a><i class="fa fa-sort-alpha-asc"></i> Ascending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"dimension","DESC")} className="cursor"><a><i class="fa fa-sort-alpha-desc"></i> Descending</a></li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -358,7 +358,7 @@ export class DataVariableSelection extends React.Component {
                         <div className="col-md-4">
                             <div className="panel panel-primary-p3 cst-panel-shadow">
                                 <div className="panel-heading">
-                                <i style={{marginRight:4}}class="zmdi zmdi-calendar"></i>
+                                <i style={{marginRight:4}}class="fa fa-calendar-check-o"></i>
                                  Dates</div>
                                 <div className="panel-body">
                                     <div className="row">
@@ -367,15 +367,15 @@ export class DataVariableSelection extends React.Component {
                                             <div class="input-group">
 												<div className="search-wrapper">
     												<input type="text" name="datetime" onChange={this.handleDVSearch.bind(this)} title="Search Time Dimensions" id="datetimeSearch" className="form-control search-box" placeholder="Search time dimensions..."/>
-	    											<span className="zmdi zmdi-search form-control-feedback"></span>
+	    											<span className="fa fa-search form-control-feedback"></span>
 		    										<button className="close-icon" name="datetime" onClick={this.handleDVSearch.bind(this)} type="reset"></button>
 												</div>
                                             </div>
                                             <div class="btn-group">
-                                                <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i></button>
+                                                <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i class="glyphicon glyphicon-sort"></i></button>
                                                 <ul role="menu" className="dropdown-menu dropdown-menu-right">
-                                                    <li onClick={this.handelSort.bind(this,"datetime","ASC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-asc"></i> Ascending</a></li>
-                                                    <li onClick={this.handelSort.bind(this,"datetime","DESC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-desc"></i> Descending</a></li>
+                                                    <li onClick={this.handelSort.bind(this,"datetime","ASC")} className="cursor"><a><i class="fa fa-sort-alpha-asc"></i> Ascending</a></li>
+                                                    <li onClick={this.handelSort.bind(this,"datetime","DESC")} className="cursor"><a><i class="fa fa-sort-alpha-desc"></i> Descending</a></li>
                                                 </ul>
                                             </div>
                                         </div>

@@ -398,7 +398,7 @@ export class DataPreview extends React.Component {
               iconCls = "mAd_icons ic_dime_s";
               break;
             case "datetime":
-              iconCls = "zmdi zmdi-time-countdown pe-lg";
+              iconCls = "timeDimIcon fa fa-clock-o";
               break;
           }
           if(isDataValidationAllowed){

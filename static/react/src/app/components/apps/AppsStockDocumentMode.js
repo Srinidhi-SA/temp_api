@@ -88,14 +88,14 @@ export class AppsStockDocumentMode extends React.Component {
                           </button>
                             <Link className="tabs-control right grp_legends_green continue" to={cardModeLink}>
                               <button type="button" className="btn btn-default" title="Card mode">
-                                <i class="zmdi zmdi-hc-lg zmdi-view-carousel"></i>
+                                <i class="fa fa-columns"></i>
                               </button>
                             </Link>
                             <button type="button" className="btn btn-default" disabled="true" title="Document Mode">
-                              <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
+                              <i style={{fontSize:16}}class="fa fa-file-text-o fa-2x"></i>
                             </button>
                            <button type="button" className="btn btn-default" onClick = {this.closeDocumentMode.bind(this)}>
-                                <i class="zmdi zmdi-hc-lg zmdi-close"></i>
+                                <i class="fa fa-close"></i>
                               </button>
                           </div>
                         </div>

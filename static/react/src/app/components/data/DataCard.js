@@ -127,7 +127,7 @@ export class DataCard extends React.Component {
                             </Link>
                             {isDropDown == true ?<div class="btn-toolbar pull-right">
                                 <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-                                    <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
+                                    <i className="ci glyphicon glyphicon-option-vertical"></i>
                                 </a>
                                 <ul className="dropdown-menu dropdown-menu-right drp_cst_width" aria-labelledby="dropdownMenuButton">
 							        <li className="xs-pl-20 xs-pr-20 xs-pt-10 xs-pb-10"><DetailOverlay details={data}/> </li>

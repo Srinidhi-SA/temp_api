@@ -204,10 +204,10 @@ export class AppsModelDetail extends React.Component {
 										<div className="btn-group summaryIcons">
 											<button type="button" className="btn btn-default" onClick={this.print.bind(this)} title="Print Document"><i className="fa fa-print"></i></button>
 											<button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
-												<i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
+												<i class="fa fa-columns"></i>
 											</button>
 											<Link className="btn btn-default continue btn-close" to={modelLink} onClick={this.updateModelSummaryFlag.bind(this,false)}>
-												<i class="zmdi zmdi-hc-lg zmdi-close"></i>
+												<i class="fa fa-times"></i>
 											</Link>
 										</div>
 									</div>
@@ -224,7 +224,7 @@ export class AppsModelDetail extends React.Component {
 										<div className="col-md-12 text-right xs-mt-30">
 											{!$.isEmptyObject(hyperParameterData)?
 												<span>
-													<Button bsStyle="primary" onClick={this.gotoHyperparameterSummary.bind(this,true)}><i className="zmdi zmdi-hc-lg zmdi-undo"></i> Back</Button>
+													<Button bsStyle="primary" onClick={this.gotoHyperparameterSummary.bind(this,true)}><i className="fa fa-undo"></i> Back</Button>
 													<span className="xs-pl-10"></span>
 												</span>:""
 											}
