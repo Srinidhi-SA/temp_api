@@ -50,13 +50,23 @@ export function pdfPagination(data) {
 		data
 	}
 }
-
+export function savePdfFlag(data){
+	return{
+		type: "SAVE_PDF_SLUG",
+		data
+	}
+}
+export function saveTaskId(data){
+	return{
+		type:"TASK_ID",
+		data
+	}
+}
 export function clearImageDetails() {
 	return {
 		type: "CLEAR_IMAGE_DETAILS",
 	}
 }
-//Actions for fetching Projects list 
 export function updateOcrImage(data) {
 	return {
 		type: "UPDATE_OCR_IMAGE",
@@ -118,8 +128,7 @@ function fetchProjects(pageNo = store.getState().ocr.projectPage, token) {
 	}
 }
 
-export function fetchProjectsSuccess(doc) {
-	var data = doc;
+export function fetchProjectsSuccess(data) {
 	return {
 		type: "OCR_PROJECT_LIST",
 		data,
@@ -179,8 +188,7 @@ function fetchUploadedFiles(pageNo = store.getState().ocr.docTablePage, token) {
 	};
 }
 
-export function fetchUploadsSuccess(doc) {
-	var data = doc;
+export function fetchUploadsSuccess(data) {
 	return {
 		type: "OCR_UPLOADS_LIST",
 		data,
@@ -360,7 +368,11 @@ export function fetchRevrDocsFail(data) {
 		data,
 	}
 }
-////
+export function hideS3Modal(flag){
+	return {
+		type: "HIDE_S3_MODAL", flag
+	}
+}
 
 export function setS3Loader(flag) {
 	return {
@@ -386,10 +398,30 @@ export function getS3BucketFileList(s3BucketDetails) {
 	return (dispatch) => {
 		return fetchS3FileDetails(s3BucketDetails, getUserDetailsOrRestart.get().userToken, dispatch).then(([response, json]) => {
 			if (response.status === 200 && json.status != "FAILED") {
-				dispatch(fetchs3DetailsSuccess(json))
+				var len = (json.file_list).length;
+				let fileList = [];
+				for (var i = 0; i < len; i++) {
+					if (/\.(jpe?g|tif|png|pdf)$/i.test(json.file_list[i])) {
+						fileList.push(json.file_list[i]);
+					}
+				}
+				if(fileList.length === 0){
+					$("#bucket_name").val("")
+					$("#access_key_id").val("")
+					$("#secret_key").val("")
+					dispatch(clearS3Data());
+					dispatch(fetchs3DetailsError(true));
+					dispatch(s3FetchErrorMsg("Files of type jpg, jpeg, pdf not found"));
+				}else{
+					dispatch(fetchs3DetailsSuccess(fileList))
+				}
 			} else if (response.status === 200 && json.status === "FAILED") {
-				dispatch(fetchs3DetailsError(true));
-				dispatch(s3FetchErrorMsg(json.message));
+				if(store.getState().ocr.hideS3Modal){
+					dispatch(hideS3Modal(false))
+				}else{
+					dispatch(fetchs3DetailsError(true));
+					dispatch(s3FetchErrorMsg(json.message));
+				}
 			} else {
 				dispatch(fetchs3DetailsError(true))
 			}
@@ -405,14 +437,7 @@ function fetchS3FileDetails(s3BucketDetails, token) {
 	}).then(response => Promise.all([response, response.json()]));
 }
 
-export function fetchs3DetailsSuccess(data) {
-	var len = (data.file_list).length;
-	let fileList = [];
-	for (var i = 0; i < len; i++) {
-		if (/\.(jpe?g|tif|png|pdf)$/i.test(data.file_list[i])) {
-			fileList.push(data.file_list[i]);
-		}
-	}
+export function fetchs3DetailsSuccess(fileList) {
 	return {
 		type: "SAVE_S3_FILE_LIST", fileList
 	}
@@ -439,9 +464,21 @@ export function uploadS3Files(selectedFiles, projectSlug) {
 	return (dispatch) => {
 		return uploadS3FilesAPI(data, getUserDetailsOrRestart.get().userToken, dispatch).then(([response, json]) => {
 			if (response.status === 200 && json.message != "FAILED") {
-				dispatch(uploadS3FileSuccess(true));
+				if(store.getState().ocr.hideS3Modal){
+					dispatch(hideS3Modal(false));
+				}else{
+					dispatch(uploadS3FileSuccess(true));
+				}
 			} else if (response.status === 200 && json.message === "FAILED") {
-				dispatch(uploadS3FileError())
+				if(store.getState().ocr.hideS3Modal){
+					dispatch(hideS3Modal(false));
+				}else{
+					$("#bucket_name").val("")
+					$("#access_key_id").val("")
+					$("#secret_key").val("")
+					dispatch(clearS3Data());
+					dispatch(uploadS3FileError())
+				}
 			} else {
 				dispatch(uploadS3FileError())
 			}
@@ -472,69 +509,31 @@ export function storeOcrSortElements(ocrFilesSortOn, ocrFilesSortType) {
 		ocrFilesSortType
 	}
 }
-export function storeOcrFilterStatus(status) {
+export function storeOcrTableFilterDetails(filterOn,value){
+		 return {
+			type: `FILTER_BY_${filterOn.toUpperCase()}`,
+			value,
+		}
+	}
+export function resetOcrTableFilterValues() {
 	return {
-		type: "FILTER_BY_STATUS",
-		status,
+		type: "RESET_OCR_TABLE_FILTERS",
 	}
 }
-export function storeOcrFilterConfidence(confidence) {
+export function ocrRdFilterDetails(filterOn,value) {
 	return {
-		type: "FILTER_BY_CONFIDENCE",
-		confidence,
-	}
-}
-export function storeOcrFilterAssignee(assignee) {
-	return {
-		type: "FILTER_BY_ASSIGNEE",
-		assignee
-	}
-}
-export function storeOcrFilterTemplate(template) {
-	return {
-		type: "FILTER_BY_TEMPLATE",
-		template
-	}
-}
-export function storeOcrFilterFields(fields) {
-	return {
-		type: "FILTER_BY_FIELDS",
-		fields
-	}
-}
-export function ocrRdFilterStatus(status) {
-	return {
-		type: "FILTER_RD_BY_STATUS",
-		status,
-	}
-}
-export function ocrRdFilterConfidence(confidence) {
-	return {
-		type: "FILTER_RD_BY_CONFIDENCE",
-		confidence,
+		type: "UPDATE_FILTER_RD_DETAILS",
+		value,
+		filterOn
 	}
 }
 
-export function ocrRdFilterFields(fields) {
+export function resetRdFilterSearchDetails() {
 	return {
-		type: "FILTER_RD_BY_FIELDS",
-		fields
-	}
+		type: "RESET_RD_FILTER_SEARCH"
+		}
 }
 
-export function ocrRdFiltertemplate(template) {
-	return {
-		type: "FILTER_RD_BY_TEMPLATE",
-		template
-	}
-}
-
-export function ocrRevFilterTime(time) {
-	return {
-		type: "FILTER_REV_BY_TIME",
-		time,
-	}
-}
 
 export function ocrRevFilterAccuracy(accuracy) {
 	return {
@@ -577,10 +576,7 @@ export function fetchAllOcrUsersAction(pageNo) {
 		})
 	}
 }
-export function fetchAllOcrUsersAPI(pageNo, token) {
-	if (pageNo === undefined) {
-		pageNo = 1;
-	}
+export function fetchAllOcrUsersAPI(pageNo=1, token) {
 	let searchElement = store.getState().ocr.ocrSearchElement;
 	let userTablePagesize = store.getState().ocr.userTablePagesize;
 	if (userTablePagesize === "All") {
@@ -636,10 +632,7 @@ export function fetchOcrListByReviewerType(id, pageNo) {
 		})
 	}
 }
-function fetchOcrListByReviewerTypeAPI(id, pageNo, token) {
-	if (pageNo === undefined) {
-		pageNo = 1;
-	}
+function fetchOcrListByReviewerTypeAPI(id, pageNo=1, token) {
 	let searchElement = store.getState().ocr.ocrSearchElement;
 	let userTablePagesize = store.getState().ocr.userTablePagesize;
 

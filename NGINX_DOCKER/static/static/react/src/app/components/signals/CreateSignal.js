@@ -1,6 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
-import {Link, Redirect} from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import {Modal,Button} from "react-bootstrap";
 import store from "../../store";
 import {getAllDataList,getDataSetPreview,storeSignalMeta,showDataPreview, setCreateSignalLoaderFlag} from "../../actions/dataActions";
@@ -20,7 +20,6 @@ import {openCreateSignalModal,closeCreateSignalModal} from "../../actions/create
 export class CreateSignal extends React.Component {
 	constructor(props) {
 		super(props);
-		this.props.dispatch(closeCreateSignalModal());
 		this.selectedData = {};
 		this.flag=false;
 	}
@@ -84,7 +83,7 @@ export class CreateSignal extends React.Component {
 	            }
 	            if(dataSets){
 				        	defaultOption=dataSets.map(item=>item.slug)[0]
-	                renderSelectBox =dataSets.map((dataSet, i) => { 
+	                renderSelectBox =dataSets.map((dataSet) => { 
 	                    return(<option key={dataSet.slug}  value={dataSet.slug}>{dataSet.name}</option>);
 	                });
 	            }else if (getUserDetailsOrRestart.get().view_data_permission=="false") {

@@ -82,7 +82,7 @@ THIS_SERVER_DETAILS = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://"+env('REDIS_IP')+":"+env('REDIS_PORT1')+"/1",
+        "LOCATION": "redis://"+env('REDIS_IP')+":"+env('REDIS_PORT')+"/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
@@ -121,9 +121,9 @@ DEPLOYMENT_ENV = env('DEPLOYMENT_ENV')
 HADOOP_CONF_DIR=False
 HADOOP_USER_NAME="hduser"
 
-CELERY_BROKER_URL = "redis://"+env('REDIS_IP')+":"+env('REDIS_PORT1')+"/"
+CELERY_BROKER_URL = "redis://"+env('REDIS_IP')+":"+env('REDIS_PORT')+"/"
 # CELERY_RESULT_BACKEND = "django-db"
-CELERY_RESULT_BACKEND = "redis://"+env('REDIS_IP')+":"+env('REDIS_PORT1')+"/"
+CELERY_RESULT_BACKEND = "redis://"+env('REDIS_IP')+":"+env('REDIS_PORT')+"/"
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -159,7 +159,7 @@ KYLO_SERVER_DETAILS = {
 CELERY_ONCE_CONFIG = {
   'backend': 'celery_once.backends.Redis',
   'settings': {
-    'url': "redis://"+env('REDIS_IP')+":"+env('REDIS_PORT1')+"/",
+    'url': "redis://"+env('REDIS_IP')+":"+env('REDIS_PORT')+"/",
     'default_timeout': 60 * 60
   }
 }

@@ -180,7 +180,7 @@ function fetchDataPreview(slug,dispatch,interval) {
 //get preview data
 function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
     if(window.location.pathname != "/apps-stock-advisor/"){
-        dataPreview.meta_data.scriptMetaData.columnData != undefined && dataPreview.meta_data.scriptMetaData.columnData.forEach(column => {
+        dataPreview.meta_data.scriptMetaData!=undefined && dataPreview.meta_data.scriptMetaData.columnData != undefined && dataPreview.meta_data.scriptMetaData.columnData.forEach(column => {
             column.checked = true;
         });
     }
@@ -246,9 +246,10 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
         }
     }else if(getStatus == "INPROGRESS"){
         dispatch(dispatchDataPreviewLoadingMsg(dataPreview));
+        dispatch(getDataList(1))
         if(Object.keys(dataPreview.initial_messages).length != 0){
             dispatch(setDataLoadedText(dataPreview.initial_messages));
-            if(dataPreview.message[0].globalCompletionPercentage !=-1 && store.getState().datasets.metaDataLoaderidxVal!=0){
+            if(dataPreview.message[0].globalCompletionPercentage!=undefined && dataPreview.message[0].globalCompletionPercentage !=-1 && store.getState().datasets.metaDataLoaderidxVal!=0){
                 dispatch(updateMetaDataIndex(store.getState().datasets.metaDataLoaderidxVal))
             }
             dispatch(updateMetaDataIndexValue(dataPreview.message.length));
@@ -362,11 +363,12 @@ export function setEditModelValues(dataSlug,modelSlug,flag) {
       itemType
     }
   }
-  export function openDTModalAction(rule,path) {
+  export function openDTModalAction(rule,path,name) {
     return {
       type: "DT_MODAL_SHOW",
       rule,
       path,
+      name
     }
   }
 
@@ -799,6 +801,24 @@ export function setDefaultTimeDimensionVariable(item){
         count = getTotalVariablesSelected();
         dispatch(updateVariablesCount(count));
     }
+}
+export function updateSelectedVariablesFromEdit(){
+    return(dispatch) =>{
+        var dataSetMeasures = store.getState().datasets.CopyOfMeasures.slice();
+        var dataSetDimensions = store.getState().datasets.CopyOfDimension.slice();
+        var dataSetTimeDimensions = store.getState().datasets.CopyTimeDimension.slice();
+        
+        var dimFlag =  store.getState().datasets.dimensionAllChecked;
+        var meaFlag = store.getState().datasets.measureAllChecked;
+        var count = store.getState().datasets.selectedVariablesCount;
+        
+        dimFlag = getIsAllSelected(dataSetDimensions);
+        meaFlag = getIsAllSelected(dataSetMeasures);
+        count = getTotalVariablesSelected();
+        dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
+        dispatch(updateVariablesCount(count));
+    }
+
 }
 export function updateSelectedVariables(evt){
     return (dispatch) => {

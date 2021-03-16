@@ -45,7 +45,7 @@ export class AppsScoreDetail extends React.Component {
     let scoreDataLink = "/apps/"+this.props.match.params.AppId+ slink +"/scores/"+scoreSlugtoDownload+"/dataPreview";
     var showViewButton = true;
     var showDownloadButton = true;
-		if (!$.isEmptyObject(scoreSummary)) {
+		if (!$.isEmptyObject(scoreSummary) && (this.props.scoreSummary.slug === this.props.match.params.slug)) {
 			showViewButton = scoreSummary.permission_details.download_score;
 			showDownloadButton = scoreSummary.permission_details.download_score;
 			if(this.props.currentAppDetails != null && this.props.currentAppDetails.app_type == "REGRESSION"){
@@ -104,10 +104,10 @@ export class AppsScoreDetail extends React.Component {
 										<div className="btn-toolbar pull-right">
 											<div className="btn-group summaryIcons">
 												<button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
-													<i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
+													<i class="fa fa-columns"></i>
 												</button>
 												<Link className="continue btn btn-default" to={scoreLink} onClick={this.updateScoreSummaryFlag.bind(this,false)}>
-													<i class="zmdi zmdi-hc-lg zmdi-close"></i>
+													<i class="fa fa-times"></i>
 												</Link>
 											</div>
 										</div>

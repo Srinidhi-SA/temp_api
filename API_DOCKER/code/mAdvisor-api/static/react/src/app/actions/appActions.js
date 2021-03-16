@@ -694,7 +694,7 @@ export function getAppsModelSummary(slug, fromCreateModel) {
           }, 2000);
         }else if(json.status === SUCCESS && json.data.model_summary.listOfCards.length===0){
           bootbox.dialog({
-            message:"Unable to fetch score summary, try creating again.",
+            message:"Unable to fetch model summary, try creating again.",
             buttons: {
                 'confirm': {
                     label: 'Ok',
@@ -979,9 +979,6 @@ export function openAppsLoader(value, text) {
 }
 export function updateModelSummaryFlag(flag) {
   return { type: "UPDATE_MODEL_FLAG", flag }
-}
-export function updateAnalystModeSelectedFlag(flag) {
-  return { type: "UPDATE_MODE_SELECTION", flag }
 }
 export function updateScoreSummaryFlag(flag) {
   return { type: "UPDATE_SCORE_FLAG", flag }

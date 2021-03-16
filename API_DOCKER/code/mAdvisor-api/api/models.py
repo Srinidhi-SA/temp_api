@@ -396,8 +396,8 @@ class Dataset(models.Model):
     def copy_file_to_hdfs(self):
         file_size = os.stat(self.input_file.path).st_size
         try:
-            #if file_size > 128000000:
-            hadoop.hadoop_put(self.input_file.path, self.get_hdfs_relative_path())
+            if file_size > 128000000:
+                hadoop.hadoop_put(self.input_file.path, self.get_hdfs_relative_path())
         except:
             raise Exception("Failed to copy file to HDFS.")
 
@@ -425,32 +425,31 @@ class Dataset(models.Model):
         return "/home/marlabs" + self.get_hdfs_relative_path()
 
     def get_input_file(self):
-
+        print("File Upload")
         if self.datasource_type in ['file', 'fileUpload']:
             type = self.file_remote
             if type == 'emr_file':
                 return "file://{}".format(self.input_file.path)
             elif type == 'hdfs':
                 file_size = os.stat(self.input_file.path).st_size
-                print("------------------------Uploading file to HDFS In Container---------------------")
-                # if file_size < 128000000:
-                #     if settings.USE_HTTPS:
-                #         protocol = 'https'
-                #     else:
-                #         protocol = 'http'
-                #     dir_path = "{0}://{1}".format(protocol, THIS_SERVER_DETAILS.get('host'))
+                if file_size < 128000000:
+                    if settings.USE_HTTPS:
+                        protocol = 'https'
+                    else:
+                        protocol = 'http'
+                    dir_path = "{0}://{1}".format(protocol, THIS_SERVER_DETAILS.get('host'))
 
-                #     path = str(self.input_file)
-                #     if '/home/' in path:
-                #         file_name=path.split("/config")[-1]
-                #     else:
-                #         file_name = os.path.join('/media/', str(self.input_file))
-                # else:
-                dir_path = "hdfs://{}:{}".format(
-                    settings.HDFS.get("host"),
-                    settings.HDFS.get("hdfs_port")
-                )
-                file_name = self.get_hdfs_relative_file_path()
+                    path = str(self.input_file)
+                    if '/home/' in path:
+                        file_name=path.split("/config")[-1]
+                    else:
+                        file_name = os.path.join('/media/', str(self.input_file))
+                else:
+                    dir_path = "hdfs://{}:{}".format(
+                        settings.HDFS.get("host"),
+                        settings.HDFS.get("hdfs_port")
+                    )
+                    file_name = self.get_hdfs_relative_file_path()
                 return dir_path + file_name
 
             elif type == 'fake':
