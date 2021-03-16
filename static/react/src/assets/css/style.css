@@ -6,39 +6,6 @@
   background: url(../images/mAd_image.png) no-repeat;
 }
 
-<<<<<<< HEAD
-@font-face {
-  font-family: "Roboto";
-  src: url("../fonts/Roboto-Regular.eot");
-  src: url("../fonts/Roboto-Regular.eot?#iefix") format("embedded-opentype"),
-    url("../fonts/Roboto-Regular.woff") format("woff"),
-    url("../fonts/Roboto-Regular.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Segoe UI";
-  src: url("../fonts/SegoeUI.eot");
-  src: url("../fonts/SegoeUI.eot?#iefix") format("embedded-opentype"),
-    url("../fonts/SegoeUI.woff") format("woff"),
-    url("../fonts/SegoeUI.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Quicksand";
-  src: url("../fonts/Quicksand-Regular.eot");
-  src: url("../fonts/Quicksand-Regular.eot?#iefix") format("embedded-opentype"),
-    url("../fonts/Quicksand-Regular.woff") format("woff"),
-    url("../fonts/Quicksand-Regular.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-
-=======
->>>>>>> 70a7c29e5958106fa390647d43a568152d3c972e
 .label,
 sub,
 sup {
@@ -15998,7 +15965,6 @@ body .p-multiselect.regParamFocus:hover {
   display:inline-block !important;
    width:101px !important
 }
-<<<<<<< HEAD
 .mmLoader{
   display:"flex";
   height:"200px";
@@ -16006,15 +15972,6 @@ body .p-multiselect.regParamFocus:hover {
   position:"absolute";
   margin:"50px"
 }
-/* pe-icon-7 helper */
-.pe-lg {
-  font-size: 1.3333333333333333em;
-  line-height: 0.75em;
-  vertical-align: -15%;
-  opacity: 0.5;
-}
-=======
->>>>>>> 70a7c29e5958106fa390647d43a568152d3c972e
 .pe-2x {
   font-size: 2em;
 }
@@ -16044,8 +16001,6 @@ font-size: 12px;
   content: "\f002";
 font-size: 12px;
 } 
-<<<<<<< HEAD
-=======
 /* new styles which were inline */
 .dashboard_acc{
   color: #777;
@@ -16078,4 +16033,3 @@ font-size: 12px;
 .arrIcon{
 margin-right:2px;
 }
->>>>>>> 70a7c29e5958106fa390647d43a568152d3c972e
