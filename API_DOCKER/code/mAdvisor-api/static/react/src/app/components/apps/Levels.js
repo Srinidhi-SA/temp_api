@@ -17,8 +17,7 @@ export class Levels extends React.Component {
   constructor(props) {
     super(props);
     this.pickValue = this.pickValue.bind(this);
-    this.state = { levelsArray: this.props.levelsData,
-    }    
+    this.state = { levelsArray: this.props.levelsData }    
   }
 
   getAllOptions() {
@@ -79,7 +78,7 @@ export class Levels extends React.Component {
    
   };
 
-  handleRemoveLevel(idx, event) {
+  handleRemoveLevel(idx) {
     this.setState({
       levelsArray: this.state.levelsArray.filter((s, sidx) => idx !== sidx)
     });
@@ -99,23 +98,6 @@ export class Levels extends React.Component {
 
   pickValue(event) {
     this.props.parentPickValue("levelData", event);
-  }
-
-  onchangeInput(event) {
-    return event.target.value;
-  }
-
-  onClickCheckBox(event) {
-    var checkedValue = event.target.checked;
-    var checkedAttr = event.target.name;
-    if (checkedValue) {
-      this.state.statesArray.filter(item => item.name == checkedAttr);
-    } else {
-      var obj = { name: checkedAttr };
-      if (this.state.statesArray[checkedAttr] != undefined) {
-        this.state.statesArray.push(obj);
-      }
-    }
   }
 
   inputOnChangeHandler(idx, valueToChange, event) {
@@ -165,7 +147,7 @@ export class Levels extends React.Component {
           </div>
           <div className="row form-group">
             <div className="col-sm-12 text-center">
-              <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{paddingTop:'15px'}}></div>
+              <div className="text-danger visibilityHidden xs-pt-15" id="fileErrorMsg"></div>
             </div>
           </div>
         </Tab.Pane>
@@ -205,7 +187,7 @@ export class Levels extends React.Component {
           </div>
           <div className="row form-group">
             <div className="col-sm-12 text-center">
-              <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{paddingTop:'15px'}}></div>
+              <div className="text-danger visibilityHidden xs-pt-15" id="fileErrorMsg"></div>
             </div>
           </div>
         </Tab.Pane>

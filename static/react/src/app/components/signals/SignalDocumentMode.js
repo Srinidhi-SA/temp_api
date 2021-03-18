@@ -104,13 +104,13 @@ export class SignalDocumentMode extends React.Component {
 								<div className="btn-group summaryIcons">
 								<button type="button" className="btn btn-default" onClick={this.print.bind(this)} title="Print Document"><i className="fa fa-print"></i></button>
 								<Link className="btn btn-default continue" to={cardModeLink} title="Card mode">
-								<i class="zmdi zmdi-hc-lg zmdi-view-carousel"></i>
+								<i class="fa fa-columns"></i>
 								</Link>
 								<button type="button" className="btn btn-default" disabled="true" title="Document Mode">
-								<i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
+								<i  style={{fontSize:16}} class="fa fa-file-text-o"></i>
 								</button>
 								<button type="button" className="btn btn-default" onClick = {this.closeDocumentMode.bind(this)}>
-								<i class="zmdi zmdi-hc-lg zmdi-close"></i>
+								<i class="fa fa-times"></i>
 								</button>
 								</div>
 							</div>

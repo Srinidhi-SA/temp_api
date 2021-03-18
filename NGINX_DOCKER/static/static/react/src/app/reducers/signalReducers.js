@@ -34,7 +34,8 @@ export default function reducer(state = {
   fromVariableSelectionPage:false,
   sigLoaderidxVal:0,
   sigLoaderidx:0,
-  documentModeConfig:''
+  documentModeConfig:'',
+  selectedDepthPrediction:[],
 }, action) {
 
   switch (action.type) {
@@ -188,6 +189,15 @@ export default function reducer(state = {
         return {
           ...state,
           selectedPrediction: action.predictionSelected
+        }
+      }
+      break;
+      case "SEL_DEPTH_PREDICTION":{
+        let curSelectedDepthPrediction = state.selectedDepthPrediction;
+        curSelectedDepthPrediction[action.dropDownName] = action.predictionSelected
+        return{
+          ...state,
+          selectedDepthPrediction : curSelectedDepthPrediction
         }
       }
       break;

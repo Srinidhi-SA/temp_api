@@ -202,7 +202,7 @@ export class AppsPanel extends React.Component {
       let search_element = document.getElementById('search_apps');
       if (search_element)
         document.getElementById('search_apps').value = "";
-      }
+    }
 
     if ((this.props.location.sort !=undefined) && (this.props.location.sort == "" || this.props.location.sort == null)) {
       this.props.dispatch(appsStoreSortElements("", null));
@@ -212,12 +212,10 @@ export class AppsPanel extends React.Component {
       const pages = this.props.appsList.total_number_of_pages;
       const current_page = this.props.appsList.current_page;
       filteredKeywords = appsLists[0].tag_keywords
-
     if (pages > 1) {
       paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect.bind(this)} first last next prev boundaryLinks items={pages} activePage={current_page}/>
     }
     appListTemplate = appsLists.map((data, index) => {
-      var imageLink = STATIC_URL + "assets/images/" + data.iconName;
       var tagsList = data.tags.map((tagsList, i) => {
         return (
           <li key={i}>
@@ -228,10 +226,9 @@ export class AppsPanel extends React.Component {
       });
       return (
         <div key={index} class="col-md-4 xs-mb-20">
-          <div>
-            <div className="app-block">
-              <Link className="app-link" id={data.name} onClick={this.gotoAppsList.bind(this, data.app_id, data.name,data)} to= 
-               {(data.app_id == 2 || data.app_id == 13) ? 
+          <div className="app-block">
+            <Link className="app-link" id={data.name} onClick={this.gotoAppsList.bind(this, data.app_id, data.name,data)} to= 
+              {(data.app_id == 2 || data.app_id == 13) ? 
                 data.app_url.replace("/models","") +"/modeSelection": 
                 (data.displayName== "ITE" && (getUserDetailsOrRestart.get().userRole == "Admin" || getUserDetailsOrRestart.get().userRole ==  "Superuser"))?
                 data.app_url.concat("project"):
@@ -241,15 +238,11 @@ export class AppsPanel extends React.Component {
                 )
                 }>
                 <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
-                  <img src={imageLink} className="img-responsive"/>
+                  <img src={STATIC_URL + "assets/images/" + data.iconName} className="img-responsive"/>
                 </div>
                 <div className="col-md-8 col-sm-9 col-xs-7">
-                  <h4>
-                    {data.displayName}
-                  </h4>
-                  <p>
-                    {data.description}
-                  </p>
+                  <h4>{data.displayName}</h4>
+                  <p>{data.description}</p>
                 </div>
                 <div class="clearfix"></div>
               </Link>
@@ -262,39 +255,35 @@ export class AppsPanel extends React.Component {
                 </div>
               </div>
             </div>
-          </div>
           <div className="clearfix"></div>
         </div>
         )
       });
       filterListTemplate = appsLists[0].tag_keywords.map((tag, i) => {
-        const dId = "chk_mes1_" + i;
         let checked = false
         if (this.props.app_filtered_keywords.indexOf(tag) > -1)
           checked = true
         return (
           <li key={i} className="xs-pl-10">
             <div key={i} className="ma-checkbox inline">
-              <input id={dId} type="checkbox" name={tag} checked={checked} onClick={this.handleCheckboxChange.bind(this)}/>
-              <label htmlFor={dId}>{tag}</label>
+              <input id={`chk_mes1_ ${i}`} type="checkbox" name={tag} checked={checked} onClick={this.handleCheckboxChange.bind(this)}/>
+              <label htmlFor={`chk_mes1_ ${i}`}>{tag}</label>
             </div>
           </li>
         )
       });
-    }
-    else{
+    }else{
       if (appsLists != undefined && appsLists.length == 0) {
         if(top3.length > 0){
           filterListTemplate = top3[0].tag_keywords.map((tag, i) => {
-            const dId = "chk_mes1_" + i;
             let checked = false
             if (this.props.app_filtered_keywords.indexOf(tag) > -1)
               checked = true
             return (
               <li key={i} className="xs-pl-10">
                 <div key={i} className="ma-checkbox inline">
-                  <input id={dId} type="checkbox" name={tag} checked={checked} onClick={this.handleCheckboxChange.bind(this)}/>
-                  <label htmlFor={dId}>{tag}</label>
+                  <input id={`chk_mes1_ ${i}`} type="checkbox" name={tag} checked={checked} onClick={this.handleCheckboxChange.bind(this)}/>
+                  <label htmlFor={`chk_mes1_ ${i}`}>{tag}</label>
                 </div>
               </li>
             )
@@ -322,24 +311,24 @@ export class AppsPanel extends React.Component {
                   <div className="search-wrapper">
                     <form>
                       <input defaultValue={store.getState().apps.storeAppsSearchElement} type="text" name="search_apps" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeAppsSearchBox.bind(this)} title="Search Apps..." id="search_apps" className="form-control search-box" placeholder="Search Apps..." required/>
-                      <span className="zmdi zmdi-search form-control-feedback"></span>
+                      <span className="fa fa-search form-control-feedback"></span>
                       <button className="close-icon" type="reset" onClick={this.handleSearchReset.bind(this)}></button>
                     </form>
                   </div>
                 </div>
                 <div class="btn-group">
                   <button type="button" title="Sorting" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    <i className="zmdi zmdi-hc-lg zmdi-sort-asc"></i>
+                    <i className="glyphicon glyphicon-sort"></i>
                   </button>
                   <ul role="menu" class="dropdown-menu dropdown-menu-right">
                     <li>
                       <a href="#" onClick={this.handleSorting.bind(this, 'name', 'asc')}>
-                        <i class="zmdi zmdi-sort-amount-asc"></i>
+                        <i class="fa fa-sort-alpha-asc"></i>
                         &nbsp;Name Ascending</a>
                     </li>
                     <li>
                       <a href="#" onClick={this.handleSorting.bind(this, 'name', '-')}>
-                        <i class="zmdi zmdi-sort-amount-desc"></i>
+                        <i class="fa fa-sort-alpha-desc"></i>
                         &nbsp;Name Descending</a>
                     </li>
                   </ul>
@@ -347,7 +336,7 @@ export class AppsPanel extends React.Component {
                     
                 <div class={this.props.app_filtered_keywords.length>0? "btn-group selected":"btn-group"}>
                   <button type="button" title="Filter" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    <i class="zmdi zmdi-hc-lg zmdi-filter-list"></i>
+                    <i class="fa fa-filter fa-lg"></i>
                   </button>
                   <ul role="menu" class="dropdown-menu dropdown-menu-right">
                     {filterListTemplate}

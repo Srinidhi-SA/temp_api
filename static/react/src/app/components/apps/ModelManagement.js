@@ -28,8 +28,6 @@ export class ModelManagement extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
-    this.handleSelect = this.handleSelect.bind(this);
-    this.pickValue = this.pickValue.bind(this);
   }
 
  componentWillMount() {
@@ -37,7 +35,6 @@ export class ModelManagement extends React.Component {
     if(this.props.match.params.AppId=="automated-prediction-30vq9q5scd"){
       var appId=2;
     }else appId=13;
-
     this.props.dispatch(getAllProjectList(pageNo,appId));
     var pageNo = 1;
     if(this.props.history.location.search.indexOf("page") != -1){
@@ -68,7 +65,7 @@ export class ModelManagement extends React.Component {
     this.props.dispatch(handleAlgoClone(slug, this.refs.dialog));
   }
 
-  pickValue(actionType, event){
+  pickValue(event){
     if(this.state[this.props.deployItem] == undefined){
       this.state[this.props.deployItem] = {}
     }
@@ -148,7 +145,7 @@ export class ModelManagement extends React.Component {
     }
   }
 
-  getAlgoAnalysis(item,e) {
+  getAlgoAnalysis() {
     this.props.dispatch(emptyAlgoAnalysis());
   }
 
@@ -253,14 +250,14 @@ export class ModelManagement extends React.Component {
             <td> {item.total_deployment}</td>
             <td> {item.runtime}</td>
             <td><Button>
-              <Link to={AlgoLink} id={item.slug} onClick={this.getAlgoAnalysis.bind(this,item)} className="title">
+              <Link to={AlgoLink} id={item.slug} onClick={this.getAlgoAnalysis.bind(this)} className="title">
               Details
               </Link></Button>
             </td>
             <td>
               <div class="pos-relative">
                 <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More...">
-                  <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
+                  <i class="ci glyphicon glyphicon-option-vertical"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right">
                   <li><a onClick={this.handleAlgoClone.bind(this, item.slug)}>Clone</a></li>
@@ -302,7 +299,7 @@ export class ModelManagement extends React.Component {
                 <h3 className="modal-title">Deploy Model</h3>
               </Modal.Header>
               <Modal.Body>
-                <DeployPopup parentPickValue={this.pickValue}/>
+                <DeployPopup parentPickValue={this.pickValue.bind(this)}/>
               </Modal.Body>
               <Modal.Footer>
                 <Button onClick={this.closeDeployModal.bind(this)}>Cancel</Button>
@@ -313,13 +310,12 @@ export class ModelManagement extends React.Component {
         </div>
       )
       
-      //Pagination element
       if (algoList) {
         const pages = store.getState().apps.algoList.total_number_of_pages;
         const current_page = store.getState().apps.algoList.current_page;
         let paginationTag = null
         if(pages > 1){
-          paginationTag = <Pagination  ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
+          paginationTag = <Pagination  ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect.bind(this)} first last next prev boundaryLinks items={pages} activePage={current_page}/>
         }
         
         let appName = this.props.currentAppDetails.displayName;

@@ -16,12 +16,7 @@ export class LatestModels extends React.Component {
     }
    
     render() {
-        var data = this.props.props.modelList.data;
-        if(data.length<=3){
-            data = this.props.props.modelList.data;
-        }else if(data.length>3){
-            data = this.props.props.modelList.data.slice(0,3);
-        }
+        var data = this.props.latestModels;
         let addButton  = "";
         addButton  = <AppsCreateModel match={this.props.props.match} isEnableCreate={this.props.permissions.create_trainer}/>;
         let latestModels = "";

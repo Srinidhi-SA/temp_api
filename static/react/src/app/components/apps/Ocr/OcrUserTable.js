@@ -210,7 +210,7 @@ export class OcrUserTable extends React.Component{
                     </div>
                     <div className="col-md-4 text-right">
 					    <a className="btn btn-primary" onClick={this.openAddUserPopup.bind(this)} title="Add User">
-                            <i className ="zmdi zmdi-account-add zmdi-hc-lg">
+                            <i className ="fa fa-user-plus">
                                 <OcrAddUser/>
                             </i>
                         </a>

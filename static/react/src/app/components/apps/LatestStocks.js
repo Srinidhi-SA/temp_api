@@ -15,10 +15,6 @@ export class LatestStocks extends React.Component {
         super(props);
     }
 
-    getPreviewData(e) {
-        this.props.dispatch(updateStockSlug(e.target.id))
-        this.props.dispatch(getStockAnalysis(e.target.id))
-    }
     resetAnalyzepopup(){
         this.props.dispatch(addDefaultStockSymbolsComp());
     }

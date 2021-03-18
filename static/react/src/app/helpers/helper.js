@@ -70,7 +70,6 @@ const NORMALTABLE = "normal";
 const CONFUSIONMATRIX = "confusionMatrix";
 const HEATMAPTABLE = "heatMap";
 const CIRCULARCHARTTABLE = "circularChartTable";
-const DECISIONTREETABLE = "decisionTreeTable"
 const DULOADERPERVALUE = -1;
 const CSLOADERPERVALUE = -1;
 const APPSLOADERPERVALUE = -1;
@@ -307,33 +306,10 @@ export function showHideSideTable(colstats) {
     $("#tab_statistics #pnl_stc").removeClass("in");
     $("#tab_statistics a").addClass("collapsed");
   } else {
-
     $("#tab_statistics #pnl_stc").addClass("in");
     $("#tab_statistics a").removeClass("collapsed");
     $("#tab_statistics #pnl_stc").removeAttr("style");
-
   }
-
-}
-
-export function showHideSubsetting(colType, subsetData, dateflag) {
-
-  if (dateflag == true || (colType == "dimension" && $.isEmptyObject(subsetData))) {
-    $(function() {
-      $("#tab_subsettings #pnl_tbset").removeClass("in");
-      $("#tab_subsettings a").addClass("collapsed");
-      $("#saveSubSetting").hide();
-    });
-  } else {
-    $(function() {
-      $("#tab_subsettings #pnl_tbset").addClass("in");
-      $("#tab_subsettings a").removeClass("collapsed");
-      $("#tab_subsettings #pnl_tbset").removeAttr("style");
-      $("#saveSubSetting").show();
-    });
-
-  }
-
 }
 
 export function decimalPlaces(number) {
@@ -373,7 +349,6 @@ export {
   CONFUSIONMATRIX,
   HEATMAPTABLE,
   CIRCULARCHARTTABLE,
-  DECISIONTREETABLE,
   DULOADERPERVALUE,
   CSLOADERPERVALUE,
   LOADERMAXPERVALUE,
@@ -522,7 +497,6 @@ export function downloadSVGAsPNG(chartClassId) {
   });
 
 }
-//return status msg html string, msg_type can be error, warning,or info.mascot_type will be small_mascot,large_mascot or without_mascot
 export function statusMessages(msg_type, msg, mascot_type) {
   let imgsrc_url = ""
   let status_text = ""

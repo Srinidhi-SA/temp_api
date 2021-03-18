@@ -68,10 +68,10 @@ export class AudioFileSummary extends React.Component {
 						<div className="btn-group btn-space">
 
 						<button type="button" className="btn btn-default" disabled="true" title="Document Mode">
-                              <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
+                              <i class="fa fa-columns"></i>
                         </button>
 						<Link className="continue btn btn-default" onClick={this.updateAudioFlag.bind(this)} to="/apps/audio">						 
-						<i class="zmdi zmdi-hc-lg zmdi-close"></i>						 
+						<i class="fa fa-times"></i>						 
 						</Link>
 						</div>
 						</div>

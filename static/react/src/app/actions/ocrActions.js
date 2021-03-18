@@ -368,7 +368,11 @@ export function fetchRevrDocsFail(data) {
 		data,
 	}
 }
-////
+export function hideS3Modal(flag){
+	return {
+		type: "HIDE_S3_MODAL", flag
+	}
+}
 
 export function setS3Loader(flag) {
 	return {
@@ -394,10 +398,30 @@ export function getS3BucketFileList(s3BucketDetails) {
 	return (dispatch) => {
 		return fetchS3FileDetails(s3BucketDetails, getUserDetailsOrRestart.get().userToken, dispatch).then(([response, json]) => {
 			if (response.status === 200 && json.status != "FAILED") {
-				dispatch(fetchs3DetailsSuccess(json))
+				var len = (json.file_list).length;
+				let fileList = [];
+				for (var i = 0; i < len; i++) {
+					if (/\.(jpe?g|tif|png|pdf)$/i.test(json.file_list[i])) {
+						fileList.push(json.file_list[i]);
+					}
+				}
+				if(fileList.length === 0){
+					$("#bucket_name").val("")
+					$("#access_key_id").val("")
+					$("#secret_key").val("")
+					dispatch(clearS3Data());
+					dispatch(fetchs3DetailsError(true));
+					dispatch(s3FetchErrorMsg("Files of type jpg, jpeg, pdf not found"));
+				}else{
+					dispatch(fetchs3DetailsSuccess(fileList))
+				}
 			} else if (response.status === 200 && json.status === "FAILED") {
-				dispatch(fetchs3DetailsError(true));
-				dispatch(s3FetchErrorMsg(json.message));
+				if(store.getState().ocr.hideS3Modal){
+					dispatch(hideS3Modal(false))
+				}else{
+					dispatch(fetchs3DetailsError(true));
+					dispatch(s3FetchErrorMsg(json.message));
+				}
 			} else {
 				dispatch(fetchs3DetailsError(true))
 			}
@@ -413,14 +437,7 @@ function fetchS3FileDetails(s3BucketDetails, token) {
 	}).then(response => Promise.all([response, response.json()]));
 }
 
-export function fetchs3DetailsSuccess(data) {
-	var len = (data.file_list).length;
-	let fileList = [];
-	for (var i = 0; i < len; i++) {
-		if (/\.(jpe?g|tif|png|pdf)$/i.test(data.file_list[i])) {
-			fileList.push(data.file_list[i]);
-		}
-	}
+export function fetchs3DetailsSuccess(fileList) {
 	return {
 		type: "SAVE_S3_FILE_LIST", fileList
 	}
@@ -447,9 +464,21 @@ export function uploadS3Files(selectedFiles, projectSlug) {
 	return (dispatch) => {
 		return uploadS3FilesAPI(data, getUserDetailsOrRestart.get().userToken, dispatch).then(([response, json]) => {
 			if (response.status === 200 && json.message != "FAILED") {
-				dispatch(uploadS3FileSuccess(true));
+				if(store.getState().ocr.hideS3Modal){
+					dispatch(hideS3Modal(false));
+				}else{
+					dispatch(uploadS3FileSuccess(true));
+				}
 			} else if (response.status === 200 && json.message === "FAILED") {
-				dispatch(uploadS3FileError())
+				if(store.getState().ocr.hideS3Modal){
+					dispatch(hideS3Modal(false));
+				}else{
+					$("#bucket_name").val("")
+					$("#access_key_id").val("")
+					$("#secret_key").val("")
+					dispatch(clearS3Data());
+					dispatch(uploadS3FileError())
+				}
 			} else {
 				dispatch(uploadS3FileError())
 			}

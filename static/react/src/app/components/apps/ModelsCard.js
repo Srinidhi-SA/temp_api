@@ -3,7 +3,7 @@ import store from "../../store";
 import {connect} from "react-redux";
 import {Link} from "react-router-dom";
 import {openShareModalAction,fetchModelEdit,getDataSetPreview,setEditModelValues} from "../../actions/dataActions";
-import {updateModelSlug,handleModelDelete,handleModelRename,openAppsLoader,createModelSuccessAnalysis, showCreateModalPopup, clearModelList, clearModelSummary} from "../../actions/appActions";
+import {handleModelDelete,handleModelRename,openAppsLoader,createModelSuccessAnalysis, showCreateModalPopup, clearModelList, clearModelSummary} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {getUserDetailsOrRestart,SUCCESS,INPROGRESS, FAILED, statusMessages,setDateFormatHelper} from  "../../helpers/helper"
 import {STATIC_URL} from "../../helpers/env.js";
@@ -21,9 +21,7 @@ export class ModelsCard extends React.Component {
     constructor(props) {
         super(props);
     }
-    getModelSummary(slug){
-        this.props.dispatch(updateModelSlug(slug))
-    }
+    
     handleModelDelete(slug){
         this.props.dispatch(handleModelDelete(slug,this.dialog));
     }
@@ -57,12 +55,11 @@ export class ModelsCard extends React.Component {
     render() {
         var modelList = this.props.data;
         var appsModelList = modelList.map((data, i) => {
-            var  modelEditLink = "/apps/"+this.props.match.params.AppId+"/analyst/models/data/" + data.dataset+"/createModel";
-                if(data.status==FAILED){
-                    var modelLink = this.props.match.url
-                }else{
-                    var modelLink = this.props.match.url + "/" + data.slug;
-                }
+            if(data.status==FAILED){
+                var modelLink = this.props.match.url
+            }else{
+                var modelLink = this.props.match.url + "/" + data.slug;
+            }
                 var percentageDetails = "";
                 if(data.status == INPROGRESS){
                     var setAppLoaderVal = data.completed_percentage;
@@ -112,7 +109,7 @@ export class ModelsCard extends React.Component {
                                 {
                                     isDropDown == true ? <div class="btn-toolbar pull-right">
                                     <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-                                        <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
+                                        <i className="ci glyphicon glyphicon-option-vertical"></i>
                                     </a>
                                     <ul className="dropdown-menu dropdown-menu-right drp_cst_width" aria-labelledby="dropdownMenuButton">
                                         <li className="xs-pl-20 xs-pr-20 xs-pt-10 xs-pb-10"><DetailOverlay details={data}/> </li>
@@ -136,7 +133,7 @@ export class ModelsCard extends React.Component {
                                                 </span>: ""} 
                                                 {(data.status == "SUCCESS" && data.mode ==="analyst" && data.shared != true)?
                                                 <span onClick={this.handleEditModel.bind(this,data.dataset,data.slug)} style={{marginTop:'2%'}}>
-                                                    <Link to={modelEditLink} id={data.slug} className="editButton btn-primary">
+                                                    <Link to={`/apps/"${this.props.match.params.AppId}/analyst/models/data/${data.dataset}/createModel`} id={data.slug} className="editButton btn-primary">
                                                     <i className="fa fa-edit"></i>&nbsp;&nbsp;{"Edit"}</Link>
                                                 </span>               
                                                 : ""} 

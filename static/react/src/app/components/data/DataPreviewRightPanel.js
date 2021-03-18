@@ -14,8 +14,7 @@ export class DataPreviewRightPanel extends React.Component {
 	render() {
 		let dataPrev = this.props.dataPreview.meta_data;
 		const sideChart = dataPrev.columnData[0].chartData;
-		const sideTable = dataPrev.columnData;
-		const sideTableTemaplte=sideTable.map((tableItem,tableIndex)=>{
+		const sideTableTemaplte=dataPrev.columnData.map((tableItem,tableIndex)=>{
 			return(  
 				<tr key={tableIndex}>
 					<td className="item">{tableItem.name}</td>

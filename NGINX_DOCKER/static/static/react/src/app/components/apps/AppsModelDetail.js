@@ -4,7 +4,7 @@ import store from "../../store";
 import {Button} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails,updateModelSummaryFlag, getAppsAlgoList, clearAppsAlgoList, clearModelSummary} from "../../actions/appActions";
+import {getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails,updateModelSummaryFlag, getAppsAlgoList, clearAppsAlgoList} from "../../actions/appActions";
 import {storeSignalMeta} from "../../actions/dataActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import {isEmpty} from "../../helpers/helper";
@@ -13,12 +13,12 @@ import {ExportAsPMML} from "./ExportAsPMML";
 import {AppsModelHyperDetail} from "./AppsModelHyperDetail"
 
 @connect((store) => {
-	return {login_response: store.login.login_response,
-		modelList:store.apps.modelList,modelSummary:store.apps.modelSummary,
+	return {
+		modelList:store.apps.modelList,
+		modelSummary:store.apps.modelSummary,
 		modelSlug:store.apps.modelSlug,
 		currentAppId:store.apps.currentAppId,
 		currentAppDetails:store.apps.currentAppDetails,
-		algoList: store.apps.algoList
 	};
 })
 
@@ -33,8 +33,7 @@ export class AppsModelDetail extends React.Component {
   componentWillMount() {
 		this.props.dispatch(storeSignalMeta(null,this.props.match.url));
 		if(this.props.currentAppDetails == null)
-		this.props.dispatch(getAppDetails(this.props.match.params.AppId));
-		//It will trigger when refresh happens on url
+			this.props.dispatch(getAppDetails(this.props.match.params.AppId));
 		if(isEmpty(this.props.modelSummary)){
 			this.props.dispatch(getAppsModelSummary(this.props.match.params.slug));
 			this.props.dispatch(updateModelSlug(this.props.match.params.slug));
@@ -52,8 +51,7 @@ export class AppsModelDetail extends React.Component {
 			let element = document.getElementsByClassName("noTable")[0].parentElement.parentElement.nextElementSibling.children[0].firstElementChild;
 			element.remove()
 		}
-		let currentModel= this.props.modelSlug;
-		if(Object.keys(this.props.modelList).length != 0 && this.props.modelList.data.filter(i=>i.slug === currentModel)[0].viewed === false){
+		if(Object.keys(this.props.modelList).length != 0 && this.props.modelList.data.filter(i=>i.slug === this.props.modelSlug)[0].viewed === false){
 			$(".notifyBtn").trigger('click');
 		}
 		window.scrollTo(0, 0);
@@ -63,8 +61,7 @@ export class AppsModelDetail extends React.Component {
 		}
 		this.props.dispatch(getAppsAlgoList(1));
 		
-		let algoDt = this.props.modelSummary.TrainAlgorithmMapping;
-		let selAlgoList = Object.values(algoDt)
+		let selAlgoList = Object.values(this.props.modelSummary.TrainAlgorithmMapping)
 		let noOfHeads = $(".sm-mb-20").length;
 			for(var i=0;i<noOfHeads;i++){
 				let algoNam = $(".sm-mb-20")[i].innerText.replace(/ /g,'').toLocaleUpperCase();
@@ -88,6 +85,8 @@ export class AppsModelDetail extends React.Component {
 				  algorithmName = "EN"
 				else if(algoNam === "ADABOOST")
 					algorithmName = "ADAB"
+				else if(algoNam === "LIGHTGBM")
+					algorithmName = "LGBM"
 				else if(regAlgoName ==="Gradient Boosted Tree RegressionSummary")
 		      algorithmName = "GB"
 				else if(regAlgoName==="Random Forest RegressionSummary")
@@ -116,18 +115,16 @@ export class AppsModelDetail extends React.Component {
 					}
 				}
 			}
-
-
 	}
 
   componentDidUpdate(){
-      $(".chart-data-icon").next("div").next("div").removeClass("col-md-7 col-md-offset-2").addClass("col-md-10")
+		$(".chart-data-icon").next("div").next("div").removeClass("col-md-7 col-md-offset-2").addClass("col-md-10")
   }
   handleExportAsPMMLModal(flag){
-      this.props.dispatch(handleExportAsPMMLModal(flag))
+		this.props.dispatch(handleExportAsPMMLModal(flag))
   }
   updateModelSummaryFlag(flag){
-      this.props.dispatch(updateModelSummaryFlag(flag))
+		this.props.dispatch(updateModelSummaryFlag(flag))
   }
 	gotoHyperparameterSummary(){
 		this.setState({showHyperparameterSummary:true})
@@ -136,8 +133,8 @@ export class AppsModelDetail extends React.Component {
 		if(document.querySelector(".sm-pb-10")!= null ){
 			let FE = document.querySelector(".sm-pb-10")
 			if(FE.innerText==="Feature Importance") {
-			FE.style.display = "none";
-			document.querySelector(".chart-area").style.display = "none";
+				FE.style.display = "none";
+				document.querySelector(".chart-area").style.display = "none";
 			}
 		}
 		if(this.state.showHyperparameterSummary)
@@ -204,10 +201,10 @@ export class AppsModelDetail extends React.Component {
 										<div className="btn-group summaryIcons">
 											<button type="button" className="btn btn-default" onClick={this.print.bind(this)} title="Print Document"><i className="fa fa-print"></i></button>
 											<button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
-												<i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
+												<i class="fa fa-columns"></i>
 											</button>
 											<Link className="btn btn-default continue btn-close" to={modelLink} onClick={this.updateModelSummaryFlag.bind(this,false)}>
-												<i class="zmdi zmdi-hc-lg zmdi-close"></i>
+												<i class="fa fa-times"></i>
 											</Link>
 										</div>
 									</div>
@@ -224,7 +221,7 @@ export class AppsModelDetail extends React.Component {
 										<div className="col-md-12 text-right xs-mt-30">
 											{!$.isEmptyObject(hyperParameterData)?
 												<span>
-													<Button bsStyle="primary" onClick={this.gotoHyperparameterSummary.bind(this,true)}><i className="zmdi zmdi-hc-lg zmdi-undo"></i> Back</Button>
+													<Button bsStyle="primary" onClick={this.gotoHyperparameterSummary.bind(this,true)}><i className="fa fa-undo"></i> Back</Button>
 													<span className="xs-pl-10"></span>
 												</span>:""
 											}

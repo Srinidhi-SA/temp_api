@@ -9,7 +9,6 @@ import { MultiSelect } from 'primereact/multiselect';
 @connect((store) => {
 	return {
 		appsCreateStockModal: store.apps.appsCreateStockModal,
-		appsStockSymbolsInputs: store.apps.appsStockSymbolsInputs,
 	};
 })
 
@@ -143,20 +142,7 @@ export class AppsCreateStockAnalysis extends React.Component {
 			{value:"FB" 		,label:	"Facebook"},
 			{value:"TWTR"   ,label:	"Twitte"}
 			]
-		let stockSymbolsList = this.props.appsStockSymbolsInputs;
-		const templateTextBoxes = stockSymbolsList.map((data, id) => {
-			return (
-				<div className="row">
-					<div className="form-group" id={data.id}>
-						<label for="fl1" className="col-sm-2 control-label"><b>{id + 1}.</b></label>
-						<div className="col-sm-7">
-							<input id={data.id} type="text" name={data.name} onChange={this.handleInputChange.bind(this)} value={data.value} className="form-control" />
-						</div>
-						<div className="col-sm-1 cursor" onClick={this.removeStockSymbolsComponents.bind(this, data)}><i className="fa fa-minus-square-o text-muted"></i></div>
-					</div>
-				</div>);
-			}
-		);
+		
 		return (
 			<div class="col-md-3 top20 list-boxes" onClick={this.updateCreateStockPopup.bind(this, true)}>
 				<div class="newCardStyle firstCard">
@@ -183,7 +169,6 @@ export class AppsCreateStockAnalysis extends React.Component {
 								<div className="form-group">
 									<label className=" control-label col-md-4 mandate">Select Company </label>
 									<div class="col-md-8">
-										{/* <Button bsStyle="default" onClick={this.addMoreStockSymbols.bind(this)}> <i className="fa fa-plus"></i> Add</Button> */}
 										<MultiSelect className="comapanyMultiselect" value={this.state.company} options={companyList.sort((a, b) => (a.label > b.label) ? 1 : -1)} onChange={e => this.setState({ company: e.value })}
                      style={{"width": "100%"}}  filter={true} placeholder="Choose Company" />
                   </div>

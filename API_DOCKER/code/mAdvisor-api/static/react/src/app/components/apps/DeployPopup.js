@@ -4,9 +4,6 @@ import { saveEncodingValuesAction } from "../../actions/featureEngineeringAction
 
 @connect(store => {
   return {
-    login_response: store.login.login_response,
-    dataPreview: store.datasets.dataPreview,
-    selectedItem: store.datasets.selectedItem,
     deployData: store.apps.deployData,
     deployItem: store.apps.deployItem
   };
@@ -37,24 +34,12 @@ export class DeployPopup extends React.Component {
     return event.target.value;
   }
 
-  handleEncodingRadioButtonOnchange(event) {
-    this.state.encodingRadioButton = event.target.value;
-    this.saveEncodingValues();
-  }
-  saveEncodingValues() {
-    this.props.dispatch(
-      saveEncodingValuesAction(this.state.encodingRadioButton)
-    );
-    this.setState({ state: this.state });
-  }
-
   render() {
     var depData = this.getDeployData();
     return (
       <div class="modal-body">
         <form>
           <div class="xs-m-20" />
-
           <div class="row form-group">
             <label for="dname" class="col-sm-4 control-label">
               Deployment name
@@ -168,9 +153,6 @@ export class DeployPopup extends React.Component {
                 <option value="monthly">Monthly</option>
                 <option value="weekly">Weekly</option>
                 <option value="daily">Daily</option>
-                {/* <option value="hourly">Hourly</option>
-                <option value="every 15 minutes">Every 15 minutes</option>
-                <option value="every 10 minutes">Every 10 minutes</option> */}
               </select>
             </div>
           </div>

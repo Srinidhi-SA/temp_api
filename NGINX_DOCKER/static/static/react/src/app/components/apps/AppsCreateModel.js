@@ -2,7 +2,6 @@ import React from "react";
 import {connect} from "react-redux";
 import {API} from "../../helpers/env";
 import {getUserDetailsOrRestart,statusMessages} from "../../helpers/helper";
-import {Redirect} from "react-router-dom";
 import {Modal,Button} from "react-bootstrap";
 import store from "../../store";
 import {closeModelPopup,openModelPopup,updateSelectedVariable,getRegressionAppAlgorithmData,createModel,getAllModelList,selectMetricAction,saveSelectedValuesForModel, clearDataPreview} from "../../actions/appActions";
@@ -16,7 +15,6 @@ import Link from "react-router-dom/Link";
 	return {
 		appsModelShowModal: store.apps.appsModelShowModal,
 		dataPreview: store.datasets.dataPreview,
-		dataPreviewFlag:store.datasets.dataPreviewFlag,
 		currentAppId:store.apps.currentAppId,
 		selectedDataSrcType:store.dataSource.selectedDataSrcType,
 		currentAppDetails:store.apps.currentAppDetails,
@@ -80,11 +78,11 @@ export class AppsCreateModel extends React.Component {
 
 	submitAutoMlVal(mode){
 		let letters = /^[0-9a-zA-Z\-_\s]+$/;
-		let allModlLst = Object.values(this.props.allModelList)		
 		var target=$("#createModelTarget option:selected").text();
 		var datasetSlug=model_Dataset.value;
 		var levelCount=$("#createModelLevelCount").val();
 		var modelName= $("#modelName").val();
+		
 		if ($("#model_Dataset").val() === "--Select dataset--") {
 			bootbox.alert("Please select dataset");
 			return false;
@@ -103,7 +101,7 @@ export class AppsCreateModel extends React.Component {
 		}else if (letters.test(modelName) == false){
 			bootbox.alert(statusMessages("warning", "Please enter model name in a correct format. It should not contain special characters .,@,#,$,%,!,&.", "small_mascot"));
 			return false;
-		}else if(!(allModlLst.filter(i=>(i.name).toLowerCase() == modelName.toLowerCase()) == "") ){
+		}else if(!(Object.values(this.props.allModelList).filter(i=>(i.name).toLowerCase() == modelName.toLowerCase()) == "") ){
 			bootbox.alert(statusMessages("warning", "Model by name \""+ modelName +"\" already exists. Please enter a new name.", "small_mascot"));
 			return false;
 		}
@@ -124,7 +122,7 @@ export class AppsCreateModel extends React.Component {
 
 	updateDataset(e){
 		this.selectedData = e.target.value;
-		if(!store.getState().apps.analystModeSelectedFlag){
+		if(window.location.pathname.includes("autoML")){
 			this.fetchDataAutoML(e.target.value);
 		}
 		this.props.dispatch(updateDatasetName(e.target.value));
@@ -159,13 +157,7 @@ export class AppsCreateModel extends React.Component {
 	render() {
 	 	const dataSets = store.getState().datasets.allDataSets.data;
 		let renderSelectBox = null;
-		let _link = "";
 		let hideCreate=false
-		if(store.getState().datasets.dataPreviewFlag && window.location.href.includes("analyst")&&(!this.props.editmodelFlag)){
-			//Added &&, To restrict route to dataPreview page once dataPreviewFlag set true in autoML mode
-			let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+"/analyst/models/data/"+store.getState().datasets.selectedDataSet;
-			return(<Redirect to={_link}/>);
-		}
 		if(dataSets){
 			renderSelectBox = (
 				<div>
@@ -188,10 +180,9 @@ export class AppsCreateModel extends React.Component {
 												if (a.name > b.name)
 													return 1;
 												return 0;
-											}).map((metaItem, metaIndex) => {
+											}).map(metaItem => {
 												if(metaItem.columnType == "measure" && !metaItem.dateSuggestionFlag && !metaItem.uidCol) {
-													return (
-														<option key={metaItem.slug} name={metaItem.slug} value={metaItem.columnType}>{metaItem.name}</option>)
+													return (<option key={metaItem.slug} name={metaItem.slug} value={metaItem.columnType}>{metaItem.name}</option>)
 												}
 											}):
 											this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray.sort((a, b) => {
@@ -200,7 +191,7 @@ export class AppsCreateModel extends React.Component {
 												if (a.name > b.name)
 													return 1;
 												return 0;
-											}).map((metaItem, metaIndex) => {
+											}).map(metaItem => {
 												if (metaItem.columnType != "measure" && metaItem.columnType != "datetime" && !metaItem.dateSuggestionFlag && !metaItem.uidCol) {
 													return (<option key={metaItem.slug} name={metaItem.slug} value={metaItem.columnType}>{metaItem.name}</option>)
 												}
@@ -213,7 +204,7 @@ export class AppsCreateModel extends React.Component {
 									<select className="form-control" id="createModelLevelCount">
 										<option>--Select--</option>
 										{this.state.countVal!=""?
-											this.state.countVal.sort().map((item, index) => {
+											this.state.countVal.sort().map(item => {
 												return (<option key={item} name={item} value={item}>{item}</option>)
 											})
 											:""
@@ -227,7 +218,7 @@ export class AppsCreateModel extends React.Component {
 		}else{
 			renderSelectBox = "No Datasets"
 			if(this.props.selectedDataSrcType=="fileUpload")
-			hideCreate=true
+				hideCreate=true
 		}
 		let cls = "newCardStyle firstCard"
 		let title = "";
@@ -235,7 +226,7 @@ export class AppsCreateModel extends React.Component {
 			cls += " disable-card";
 			title= ACCESSDENIED
 		}
-		var modeType = store.getState().apps.analystModeSelectedFlag?'Analyst' :'AutoML'
+		var modeType = window.location.pathname.includes("autoML")?'AutoML':'Analyst';
 		return (
 			<div class="col-md-3 xs-mb-15 list-boxes xs-mt-20" title={title}>
 				<div className={cls} onClick={this.openModelPopup.bind(this)}>

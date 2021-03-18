@@ -1,8 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
-import store from "../../store"
 import {getDeploymentList} from "../../actions/appActions";
-var dateFormat = require('dateformat');
 import {STATIC_URL} from "../../helpers/env.js"
 import {openDeployModalAction, closeDeployModalAction} from "../../actions/modelManagementActions"
 import {isEmpty,getUserDetailsOrRestart} from "../../helpers/helper";
@@ -18,29 +16,27 @@ import { Scrollbars } from "react-custom-scrollbars";
 
 @connect((store) => {
   return {
-    login_response: store.login.login_response,
-  algoList: store.apps.algoList,
-    currentAppId: store.apps.currentAppId,
-  algoAnalysis:store.signals.algoAnalysis,
-  dataPreview: store.datasets.dataPreview,
-  currentAppDetails:store.apps.currentAppDetails,
-  deploymentList:store.apps.deploymentList
+    algoAnalysis:store.signals.algoAnalysis,
   };
 })
 
 export class ModelSummary extends React.Component {
   constructor(props) {
   super(props);
+  this.state = {loader : true}
   }
   
   componentWillMount() {
   this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
   this.props.dispatch(getDeploymentList(this.props.match.params.slug));
-  setInterval(function() {
-    var evt = document.createEvent('UIEvents');
-    evt.initUIEvent('resize', true, false,window,0);
-    window.dispatchEvent(evt);
-  }, 500);
+  }
+
+  componentDidMount(){
+    setInterval(function() {
+      var evt = document.createEvent('UIEvents');
+      evt.initUIEvent('resize', true, false,window,0);
+      window.dispatchEvent(evt);
+    }, 500);
   }
 
   closeModelSummary(){
@@ -67,13 +63,7 @@ export class ModelSummary extends React.Component {
             if(story.chartInfo){
               chartInfo=story.chartInfo
             }
-            if(story.widthPercent &&  story.widthPercent != 100){
-              let width  = parseInt((story.widthPercent/100)*12)
-              let divClass="col-md-"+width;
-              let sideChart=false;
-              if(story.widthPercent < 50)sideChart=true;
-              return (<div key={randomNum} class={divClass} style={{display:"inline-block",paddingLeft:"30px"}}><C3ChartNew chartInfo={chartInfo} sideChart={sideChart} classId={randomNum}  widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
-            }else if(story.widthPercent == 100){
+            if(story.widthPercent == 100){
               let divClass="";
               let parentDivClass = "col-md-12";
               if(!cardWidth || cardWidth > 50)
@@ -81,27 +71,30 @@ export class ModelSummary extends React.Component {
               else
               divClass = "col-md-12";
               let sideChart=false;
-              return (<div key={randomNum} className={parentDivClass}><div class={divClass} style={{display:"inline-block",paddingLeft:"30px"}}><C3ChartNew chartInfo={chartInfo} sideChart={sideChart} classId={randomNum}  widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div></div>);
-            }else{
-              let parentDivClass = "col-md-12";
-              return (<div key={randomNum} className={parentDivClass}><div><C3ChartNew chartInfo={chartInfo} classId={randomNum} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format}  guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div></div>);
+              return (
+                <div key={randomNum} className={parentDivClass} style={{height:"350px"}} >
+                {this.state.loader && <div className="mmLoader">
+                  <img src={STATIC_URL+"assets/images/loaderChart.gif"} style={{margin:"auto"}}></img>
+                </div>}
+                <div className={divClass} style={{display:(this.state.loader?"none":"inline-block"),paddingLeft:"30px",position:"relative",height:"350px"}}>
+                  <C3ChartNew chartInfo={chartInfo} sideChart={sideChart} classId={randomNum}  widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/>
+                </div>
+              </div>);
             }
             }
             break;
       case "table":
             if(!story.tableWidth)story.tableWidth = 100;
             var colClass= this.calculateWidth(story.tableWidth)
-            let tableClass ="table table-bordered table-condensed table-striped table-fw-widget"
             colClass = colClass;
             return (<div className={colClass} key={randomNum}><CardTable  jsonData={story.data} type={story.dataType}/></div>);
             break;
       case "dataBox":
-            let bgStockBox = "bgStockBox"
             if(this.props.algoAnalysis.app_id == 2){
               return (<DataBox  key={i} jsonData={story.data} type={story.dataType}/>);
             }else{
               return( 
-                story.data.map((data,index)=>{
+                story.data.map((data)=>{
                 return (
                   <div className="col-md-5ths col-sm-6 col-xs-12 bgStockBox">
                     <h3 className="text-center">{data.value}<br/><small>{data.name}</small></h3>
@@ -120,6 +113,10 @@ export class ModelSummary extends React.Component {
     }
     });
   return htmlData;
+  }
+
+  markFlag(){
+    this.setState({loader:false})
   }
 
     render(){
@@ -285,7 +282,7 @@ export class ModelSummary extends React.Component {
               <div id="pDetail" class="tab-container">
                 <ul class="nav nav-tabs">
                   <li class="active"><a href="#overview" data-toggle="tab">Overview</a></li>
-                  <li><a href="#performance" data-toggle="tab">Performance</a></li>
+                  <li onClick={this.markFlag.bind(this)}><a href="#performance" data-toggle="tab">Performance</a></li>
                   <li><a href="#deployment" data-toggle="tab">Deployment</a></li>
                 </ul>
                 <div class="tab-content xs-pt-20">

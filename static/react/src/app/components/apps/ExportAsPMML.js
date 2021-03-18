@@ -15,7 +15,6 @@ import {API} from "../../helpers/env";
     };
 })
 
-//var selectedData = null;
 export class ExportAsPMML extends React.Component {
     constructor(props) {
         super(props);
@@ -58,7 +57,6 @@ export class ExportAsPMML extends React.Component {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button onClick={this.openCloseModal.bind(this,false)}>Close</Button>
-                        {/* <Button bsStyle="primary" onClick={this.openCloseModal.bind(this)}>Download</Button> */}
                         <a href={API+"/api/get_xml/"+store.getState().apps.modelSlug+"/"+store.getState().apps.selectedAlg+"/?token="+getUserDetailsOrRestart.get().userToken} id="exportAsPMML" className="btn btn-primary" download>Download</a>
                     </Modal.Footer>
                 </Modal>

@@ -104,6 +104,7 @@ export default function reducer(state = {
   pdfNumber:1,
   pdfDoc: false,
   pdfSlug: "",
+  hideS3Modal: false
 
 }, action) {
   switch (action.type) {
@@ -221,7 +222,10 @@ export default function reducer(state = {
         s3Loader: false,
         s3Uploaded: false,
         s3FileFetchErrorFlag : false,
-        s3FileFetchSuccessFlag : false
+        s3FileFetchSuccessFlag : false,
+        s3FileFetchErrorMsg : "",
+        s3FileUploadErrorFlag : false,
+        ocrS3BucketDetails : {}
       }
     }
     break;
@@ -252,15 +256,24 @@ export default function reducer(state = {
         ...state,
         s3Loader : false,
         s3FileUploadErrorFlag : true,
+        s3FileFetchErrorMsg : "Failed to upload files, please try again."
       }
     }
     break;
     case "SET_S3_UPLOADED": {
       return {
         ...state,
+        s3FileFetchSuccessFlag : false,
         s3Uploaded : action.flag,
         s3FileList: "",
         s3SelFileList:[]
+      }
+    }
+    break;
+    case "HIDE_S3_MODAL":{
+      return {
+        ...state,
+        hideS3Modal : action.flag
       }
     }
     break;
