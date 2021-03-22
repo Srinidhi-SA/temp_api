@@ -5,7 +5,6 @@ import store from "../../store"
 import { InputSwitch } from 'primereact/inputswitch';
 import { getDataSetPreview, getValueOfFromParam } from "../../actions/dataActions";
 import { Button } from "react-bootstrap";
-import { handelSort } from "../../actions/dataActions";
 import { getRemovedVariableNames } from "../../helpers/helper.js"
 import { isEmpty } from "../../helpers/helper";
 import {
@@ -229,8 +228,9 @@ export class DataCleansing extends React.Component {
   }
 
   getUpdatedDataType(colSlug) {
+    var colType = ""
     if(!this.props.editmodelFlag)
-      var colType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].columnType
+      colType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].columnType
     else
       colType = this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.filter(item=>item.slug == colSlug)[0].columnType
     var arr = ["Measure", "Dimension", "Datetime"]
@@ -262,14 +262,8 @@ export class DataCleansing extends React.Component {
     this.props.history.push(proccedUrl);
   }
 
-  handelSort(variableType, sortOrder) {
-    this.props.dispatch(handelSort(variableType, sortOrder))
-  }
-
   handleBack=()=>{
-    const appId = this.props.match.params.AppId;
-    const slug = this.props.match.params.slug;
-    this.props.history.replace(`/apps/${appId}/analyst/models/data/${slug}/createModel?from=data_cleansing`);
+    this.props.history.replace(`/apps/${this.props.match.params.AppId}/analyst/models/data/${this.props.match.params.slug}/createModel?from=data_cleansing`);
   }
 
   getMissingValueTreatmentOptions(dataType, colName, colSlug,outnum,missingnum) {
@@ -295,7 +289,6 @@ export class DataCleansing extends React.Component {
       var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true) && (i.ignoreSuggestionPreviewFlag === true))).map(j => j.name);
       var removedVariables = getRemovedVariableNames(this.props.datasets);
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item, index) => {
-        let varSel = this.props.selectedVariables
         let outnum = 1;
         let missingnum = 1;
         if (removedVariables.indexOf(item.name) != -1 || considerItems.indexOf(item.name) != -1)
@@ -305,7 +298,7 @@ export class DataCleansing extends React.Component {
             <tr className={('all ' + item.columnType)} key={index} id="mssg">
               <td class="filter-false sorter-false">
                 <div class="ma-checkbox inline">
-                  <input key={Math.random()} id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item.name} defaultChecked={varSel[item.slug]?true:false} data-index={index} data-colname={item.name} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
+                  <input key={Math.random()} id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item.name} defaultChecked={(this.props.selectedVariables[item.slug])?true:false} data-index={index} data-colname={item.name} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
                   <label for={item.slug}></label>
                 </div>
               </td>

@@ -273,9 +273,9 @@ function fetchPosts_analysis(token, errandId) {
 }
 
 function fetchPostsSuccess_analysis(signalAnalysis, errandId, dispatch) {
-  if(signalAnalysis.status == SUCCESS && (signalAnalysis.data.listOfCards.length === 0 && signalAnalysis.data.listOfNodes.length === 0)){
+  if(signalAnalysis.status == SUCCESS && (signalAnalysis.data.listOfCards === undefined && signalAnalysis.data.listOfNodes === undefined)){
     bootbox.dialog({
-            message:"Unable to fetch score summary, try creating again.",
+            message:"Unable to fetch signal summary, try creating again.",
             buttons: {
                 'confirm': {
                     label: 'Ok',
@@ -576,6 +576,9 @@ export function createcustomAnalysisDetails() {
 export function showPredictions(predictionSelected) {
   return {type: "SEL_PREDICTION", predictionSelected}
 }
+export function showDepthPredictions(predictionSelected,dropDownName) {
+  return {type: "SEL_DEPTH_PREDICTION", predictionSelected,dropDownName}
+}
 export function emptySignalAnalysis() {
   return {type: "SIGNAL_ANALYSIS_EMPTY"}
 }
@@ -779,6 +782,7 @@ export function handleDecisionTreeTable(evt) {
   var probability = "";
   var probabilityCond = true;
   var noDataFlag = true;
+  var selPred = ""
   //triggered when probability block is clicked to select and unselect
   if (evt) {
     selectProbabilityBlock(evt);
@@ -790,7 +794,10 @@ export function handleDecisionTreeTable(evt) {
     if (this.rowIndex != 0) {
       if (probability)
         probabilityCond = probability.indexOf(this.cells[4].innerText.toLowerCase()) != -1;
-      if (this.cells[2].innerText.toLowerCase().trim() == store.getState().signals.selectedPrediction.toLowerCase().trim() && probabilityCond) {
+        selPred = (this.parentElement.parentElement.className.includes("DepthOfTree"))?
+          store.getState().signals.selectedDepthPrediction[this.parentElement.parentElement.classList[3]]
+          :store.getState().signals.selectedPrediction;
+      if((this.cells[2].innerText.toLowerCase().trim() === selPred.toLowerCase().trim()) && probabilityCond) {
         $(this).removeClass("hidden");
         noDataFlag = false;
       } else {
@@ -806,9 +813,13 @@ export function handleDecisionTreeTable(evt) {
 }
 export function handleTopPredictions() {
   var noDataFlag = true;
+  var selPred = ""
   $(".topPredictions").find("tr").each(function() {
+    selPred = (this.parentElement.parentElement.className.includes("DepthOfTree"))?
+      store.getState().signals.selectedDepthPrediction[this.parentElement.parentElement.classList[3]]
+      : store.getState().signals.selectedPrediction
     if (this.rowIndex != 0) {
-      if (this.cells[2].innerText.toLowerCase().trim() == store.getState().signals.selectedPrediction.toLowerCase().trim()) {
+      if (this.cells[2].innerText.toLowerCase().trim() == selPred.toLowerCase().trim()) {
         $(this).removeClass("hidden");
         noDataFlag = false;
       } else {

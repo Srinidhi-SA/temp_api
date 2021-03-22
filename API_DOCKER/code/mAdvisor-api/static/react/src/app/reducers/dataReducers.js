@@ -81,6 +81,7 @@ export default function reducer(state = {
   dtRule: "",
   dtData: {},
   dtPath:[],
+  dtName:"",
   isSpecifyIntervalsEnabled:true,
   convertUsingBin: "false",
   modelEditconfig:"",
@@ -248,6 +249,7 @@ export default function reducer(state = {
             dtModelShow: true,
             dtRule: action.rule,
             dtPath: action.path,
+            dtName:action.name
           }
         }
         break;

@@ -1,16 +1,14 @@
 import React from "react";
 import {render} from "react-dom";
-import {BrowserRouter, Route, Switch, IndexRoute} from "react-router-dom";
+import {BrowserRouter, Route, Switch} from "react-router-dom";
 import {Provider} from "react-redux"
 import store from "./store"
 import {Main} from "./components/Main";
 import {Home} from "./components/Home";
 import {Login} from "./components/Login";
-import {Settings} from "./components/settings/Settings";
 import {Apps} from "./components/apps/Apps";
 import {Data} from "./components/data/Data";
 import {DataPreview} from "./components/data/DataPreview";
-import {Stories} from "./components/stories/Stories";
 import {Signals} from "./components/signals/Signals";
 import {Signal} from "./components/signals/Signal";
 import {SignalDocumentMode} from "./components/signals/SignalDocumentMode";
@@ -58,21 +56,18 @@ class App extends React.Component {
       return false
   }
   hasDataRoutePermission() {
-    //alert("working!!!")
     if (getUserDetailsOrRestart.get().view_data_permission == "true")
       return true
     else
       return false
   }
   hasTrainerRoutePermission() {
-    //check for apps exposure also
     if (getUserDetailsOrRestart.get().view_trainer_permission == "true"&&APPS_ALLOWED==true)
       return true
     else
       return false
   }
   hasScoreRoutePermission() {
-    //alert("working!!!")
     if (getUserDetailsOrRestart.get().view_score_permission == "true"&&APPS_ALLOWED==true)
       return true
     else
@@ -80,7 +75,7 @@ class App extends React.Component {
   }
   render() {
     sessionStorage.url = window.location.pathname;
-    //we need to do like this as BrowserRouter dont pass history and props if we call components directly
+    //we need to do this as BrowserRouter dont pass history and props if we call components directly
     //signal related routing permissions
     const signals = (props) => {
       if (this.hasSignalRoutePermission()) {
@@ -309,35 +304,6 @@ class App extends React.Component {
       }
     }
 
-
-
-    const modelmanagement = (props) => {
-      if (this.hasScoreRoutePermission()) {
-        switch (props.match.path) {
-          case "/apps/" + props.match.params.AppId + "/analyst/modelManagement/:slug":
-            {
-              return (<ModelSummary {...props}/>)
-            }
-            break;
-            case "/apps/" + props.match.params.AppId + "/analyst/modelManagement":
-            {
-              return (<ModelManagement {...props}/>)
-            }
-            break;
-            
-        }
-
-      } else if (this.hasTrainerRoutePermission()) {
-        let model_url = "/apps"
-        if (props.match.params.AppId)
-          model_url = "/apps/" + props.match.params.AppId + "/analyst/modelManagement"
-        return (<Redirect to={model_url}/>)
-      } else {
-        return (<Redirect to="/apps"/>)
-      }
-    }
-
-
     return (
       <BrowserRouter>
         <Switch>
@@ -360,8 +326,6 @@ class App extends React.Component {
             <Route exact path="/signals/:slug/:l1/:l2" render={signals}/>
             <Route path="/variableselection" component={VariableSelection}/>
             <Route path="/signaldocumentMode/:slug" render={signals}/>
-            <Route path="/settings" component={Settings}/>
-            <Route path="/stories" component={Stories}/>
             <Route exact path="/data" render={data}/>
             <Route exact path="/data/:slug" render={data}/>
             <Route exact path="/apps" component={AppsPanel}/>

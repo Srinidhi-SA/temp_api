@@ -78,11 +78,11 @@ export class AppsCreateModel extends React.Component {
 
 	submitAutoMlVal(mode){
 		let letters = /^[0-9a-zA-Z\-_\s]+$/;
-		let allModlLst = Object.values(this.props.allModelList)		
 		var target=$("#createModelTarget option:selected").text();
 		var datasetSlug=model_Dataset.value;
 		var levelCount=$("#createModelLevelCount").val();
 		var modelName= $("#modelName").val();
+		
 		if ($("#model_Dataset").val() === "--Select dataset--") {
 			bootbox.alert("Please select dataset");
 			return false;
@@ -101,7 +101,7 @@ export class AppsCreateModel extends React.Component {
 		}else if (letters.test(modelName) == false){
 			bootbox.alert(statusMessages("warning", "Please enter model name in a correct format. It should not contain special characters .,@,#,$,%,!,&.", "small_mascot"));
 			return false;
-		}else if(!(allModlLst.filter(i=>(i.name).toLowerCase() == modelName.toLowerCase()) == "") ){
+		}else if(!(Object.values(this.props.allModelList).filter(i=>(i.name).toLowerCase() == modelName.toLowerCase()) == "") ){
 			bootbox.alert(statusMessages("warning", "Model by name \""+ modelName +"\" already exists. Please enter a new name.", "small_mascot"));
 			return false;
 		}
@@ -180,10 +180,9 @@ export class AppsCreateModel extends React.Component {
 												if (a.name > b.name)
 													return 1;
 												return 0;
-											}).map((metaItem, metaIndex) => {
+											}).map(metaItem => {
 												if(metaItem.columnType == "measure" && !metaItem.dateSuggestionFlag && !metaItem.uidCol) {
-													return (
-														<option key={metaItem.slug} name={metaItem.slug} value={metaItem.columnType}>{metaItem.name}</option>)
+													return (<option key={metaItem.slug} name={metaItem.slug} value={metaItem.columnType}>{metaItem.name}</option>)
 												}
 											}):
 											this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray.sort((a, b) => {
@@ -192,7 +191,7 @@ export class AppsCreateModel extends React.Component {
 												if (a.name > b.name)
 													return 1;
 												return 0;
-											}).map((metaItem, metaIndex) => {
+											}).map(metaItem => {
 												if (metaItem.columnType != "measure" && metaItem.columnType != "datetime" && !metaItem.dateSuggestionFlag && !metaItem.uidCol) {
 													return (<option key={metaItem.slug} name={metaItem.slug} value={metaItem.columnType}>{metaItem.name}</option>)
 												}
@@ -205,7 +204,7 @@ export class AppsCreateModel extends React.Component {
 									<select className="form-control" id="createModelLevelCount">
 										<option>--Select--</option>
 										{this.state.countVal!=""?
-											this.state.countVal.sort().map((item, index) => {
+											this.state.countVal.sort().map(item => {
 												return (<option key={item} name={item} value={item}>{item}</option>)
 											})
 											:""
@@ -219,7 +218,7 @@ export class AppsCreateModel extends React.Component {
 		}else{
 			renderSelectBox = "No Datasets"
 			if(this.props.selectedDataSrcType=="fileUpload")
-			hideCreate=true
+				hideCreate=true
 		}
 		let cls = "newCardStyle firstCard"
 		let title = "";

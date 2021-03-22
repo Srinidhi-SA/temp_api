@@ -2,7 +2,6 @@ import React from "react";
 import {NORMALTABLE,CONFUSIONMATRIX,HEATMAPTABLE,CIRCULARCHARTTABLE,DECISIONTREETABLE,TEXTHEATMAPTABLE,POPUPDECISIONTREETABLE} from "../../helpers/helper";
 import {CircularChartTable} from "./CircularChartTable";
 import {ConfusionMatrix} from "./ConfusionMatrix";
-import {DecisionTreeTable} from "./decisionTreeTable";
 import {HeatMapTable} from "./heatmap";
 import {TextHeatMapTable} from "./TextHeatMapTable";
 import {NormalTable} from "./NormalTable";
@@ -24,9 +23,6 @@ export class CardTable extends React.Component {
 		}
 		if(element.tableType == CONFUSIONMATRIX){
 			tableEle = <ConfusionMatrix tableData={element}/>;
-		}
-		if(element.tableType == DECISIONTREETABLE){
-			tableEle = <DecisionTreeTable tableData={element}/>;
 		}
 		if(element.tableType == HEATMAPTABLE){
 			tableEle = <HeatMapTable classId={this.props.classId} tableData={element}/>;

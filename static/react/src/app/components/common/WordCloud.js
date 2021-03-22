@@ -1,8 +1,6 @@
 import React from "react";
 import D3WordCloud from 'react-d3-cloud';
 
-
-
 export class WordCloud extends React.Component {
   constructor(){
     super();

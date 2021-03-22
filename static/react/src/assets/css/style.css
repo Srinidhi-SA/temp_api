@@ -12740,32 +12740,35 @@ a.disabled {
   background: #ffffff;
 }
 
-.slick-next:before,
-.slick-prev:before {
-  font-size: 13px;
-}
-.slick-next,
-.slick-prev {
-  z-index: 10;
-  padding: 10px;
-  border-bottom: none;
-  width: 32px;
-  border-radius: 50px;
-  height: 32px;
+.slick-prev:before,
+.slick-next:before{
+  color: #3fb2a8 !important;
+  font-size: 13px !important;
+  font-family: 'FontAwesome' !important;
 }
 
+.slick-prev:before {
+  content: "\f053" !important;
+}
+.slick-next:before {
+  content: "\f054" !important;
+}
+
+.slick-prev,
 .slick-next {
-  right: -45px;
-  border: 1px solid #00bfb2;
+  border: 1px solid #00bfb2 !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50px;
 }
-.slick-prev {
-  left: -45px;
-  border: 1px solid #00bfb2;
+
+.slick-next{
+  right: -45px !important;
 }
-.slick-next:hover,
-.slick-prev:hover {
-  background: #ffffff;
+.slick-prev{
+  left: -45px !important;
 }
+
 .slider.slider-horizontal {
   width: 94%;
   margin-top: 9px;
@@ -13618,11 +13621,6 @@ th .ma-checkbox.inline, td .ma-checkbox.inline { margin-left: 5px; }
   .newCardTitle {
     width: 82%;
   }
-}
-
-.slick-next:focus,
-.slick-prev:focus {
-  background-color: #ffffff;
 }
 
 .newStoryCard h2 {
@@ -15966,6 +15964,13 @@ body .p-multiselect.regParamFocus:hover {
 .filterOptions li a{
   display:inline-block !important;
    width:101px !important
+}
+.mmLoader{
+  display:"flex";
+  height:"200px";
+  width:"90%";
+  position:"absolute";
+  margin:"50px"
 }
 .pe-2x {
   font-size: 2em;

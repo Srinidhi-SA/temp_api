@@ -63,42 +63,34 @@ export class VariableSelection extends React.Component {
         if($('#signalVariableList option:selected').val() == ""){
             bootbox.alert("Please select a variable to analyze...");
             return false;
-        }
-        else if($('#createSname').val()!="" && $('#createSname').val().trim() == ""){
+        }else if($('#createSname').val()!="" && $('#createSname').val().trim() == ""){
             bootbox.alert(statusMessages("warning","Please enter a valid signal name.","small_mascot"));
             $('#createSname').val("").focus();
             return false;
-        }
-        else if (letters.test(document.getElementById("createSname").value) == false){
-
+        }else if (letters.test(document.getElementById("createSname").value) == false){
             bootbox.alert(statusMessages("warning", "Please enter signal name in a correct format. It should not contain special characters @,#,$,%,!,&.", "small_mascot"));
             $('#createSname').val("").focus();
             return false;
-
+        }else if(Object.values(this.props.allSignalList).map(i=>i.name.toLowerCase()).includes($('#createSname').val().toLowerCase())){
+            bootbox.alert(statusMessages("warning", "Signal with same name alrady exists, Please try changing name!", "small_mascot"));
+            $('#createSname').val("").focus();
+            return false;
         }
-    else if(Object.values(this.props.allSignalList).map(i=>i.name.toLowerCase()).includes($('#createSname').val().toLowerCase())){
-        bootbox.alert(statusMessages("warning", "Signal with same name alrady exists, Please try changing name!", "small_mascot"));
-        $('#createSname').val("").focus();
-        return false;
-    }
     
         if(store.getState().datasets.dataSetTimeDimensions.length > 0){
             if(store.getState().datasets.selectedVariablesCount == 1 &&  $("#analysisList").find(".overview").next("div").find("input[type='checkbox']").prop("checked") == true){
-              bootbox.alert("Insufficient variables selected for your chosen analysis.Please select more.");
+                bootbox.alert("Insufficient variables selected for your chosen analysis.Please select more.");
                 return false;
             }
-        }
-        else{
+        }else{
             if(store.getState().datasets.selectedVariablesCount == 0 || (store.getState().datasets.selectedVariablesCount == 0 &&  $("#analysisList").find(".overview").next("div").find("input[type='checkbox']").prop("checked") == true)){
-              bootbox.alert("Insufficient variables selected for your chosen analysis.Please select more.");
+                bootbox.alert("Insufficient variables selected for your chosen analysis.Please select more.");
                 return false;
             }
         }
 
         if(!isAnalysisChecked){
-
             bootbox.alert("Please select atleast one analysis to Proceed..");
-
             return false;
         }
 
@@ -116,20 +108,16 @@ export class VariableSelection extends React.Component {
 
 
         config['variableSelection'] = store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
-
         if(this.props.getVarType.toLowerCase() == "measure"){
-
             postData['advanced_settings'] = this.props.dataSetAnalysisList.measures;
-
         }else if(this.props.getVarType.toLowerCase() == "dimension"){
             postData['advanced_settings'] = this.props.dataSetAnalysisList.dimensions;
             this.props.dataSetAnalysisList.dimensions.targetLevels.push(this.props.dimensionSubLevel);
-
         }
         postData["config"]=config;
         postData["dataset"]=this.props.dataPreview.slug;
         postData["name"]=$("#createSname").val().trim();
-       this.props.dispatch(createSignal(postData));
+        this.props.dispatch(createSignal(postData));
     }
 
     setPossibleList(event){
@@ -137,12 +125,8 @@ export class VariableSelection extends React.Component {
     }
 
     componentWillMount(){
-        if(this.props.fromVariableSelectionPage){
-
-      }
-      else if(store.getState().datasets.varibleSelectionBackFlag){
-      ""
-      }else{
+        if(this.props.fromVariableSelectionPage || store.getState().datasets.varibleSelectionBackFlag){
+        }else{
             if (this.props.dataPreview == null) {
                var setPath=this.props.history.location.pathname.includes("/data/")?"/data/":"/signals/"
                this.props.history.replace(setPath+this.props.match.params.slug)
@@ -170,7 +154,6 @@ export class VariableSelection extends React.Component {
     }
 
     componentWillUpdate(){
-
         if(!this.props.getVarType){
             $("#allAnalysis").prop("disabled",true);
             $("#advance-setting-link").hide();
@@ -195,15 +178,13 @@ export class VariableSelection extends React.Component {
                     $("#chk_analysis_prediction").prop("disabled",false);
                     this.props.dispatch(disableAdvancedAnalysisElements("association",false));
                     this.props.dispatch(disableAdvancedAnalysisElements("prediction",false));
-                }
-                else{
+                }else{
                     $("#chk_analysis_association").prop("disabled",true);
                     $("#chk_analysis_prediction").prop("disabled",true);
                     this.props.dispatch(disableAdvancedAnalysisElements("association",true));
                     this.props.dispatch(disableAdvancedAnalysisElements("prediction",true));
                 }
-            }
-            else if(that.props.getVarType == "measure"){
+            }else if(that.props.getVarType == "measure"){
                 if(dimensionArray.length >= 1){
                     $("#chk_analysis_performance").prop("disabled",false);
                     this.props.dispatch(disableAdvancedAnalysisElements("performance",false));
@@ -284,9 +265,7 @@ export class VariableSelection extends React.Component {
     render(){
         var that= this;
         if(!$.isEmptyObject(this.props.selectedSignalAnalysis) && !that.signalFlag){
-            let _link = "/signals/"+this.props.selectedSignal;
-            return(<Redirect to={_link}/>)
-            ;
+            return(<Redirect to={`/signals/${this.props.selectedSignal}`}/>);
         }
 
         let dataPrev = store.getState().datasets.dataPreview;
@@ -347,7 +326,7 @@ export class VariableSelection extends React.Component {
                                 <div className="col-md-12">
                                     <div className="panel panel-alt4 panel-alt4 cst-panel-shadow">
                                         <div className="panel-heading text-center">Type of Signals&nbsp;&nbsp; 
-                                        {this.props.getVarType?
+                                        {this.props.getVarType &&
                                         <span>
                                             <ReactTooltip place="bottom" className='customeTheme' effect="solid"/>
                                             <i class="btn btn-default fa fa-info btn-sig-info" data-html="true" data-tip={(this.props.getVarType == "measure") ?
@@ -363,9 +342,7 @@ export class VariableSelection extends React.Component {
                                                 "<br/><b>Prediction:</b> A graph that uses a branching method to illustrate every possible outcome of a decision."
                                                 }>
                                             </i>
-                                        </span>
-                                        :""}
-                                        
+                                        </span>}
                                         </div>
                                         <div className="panel-body text-center" id="analysisList" >
                                             <div className="ma-checkbox inline"><input id="allAnalysis" type="checkbox" className="allAnalysis" checked={store.getState().datasets.dataSetSelectAllAnalysis} onClick={this.handleAllAnlysis.bind(this)}  /><label htmlFor="allAnalysis">Select All</label></div>
@@ -395,5 +372,4 @@ export class VariableSelection extends React.Component {
         </div>
         )
     }
-
 }

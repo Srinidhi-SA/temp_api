@@ -5258,7 +5258,7 @@ node1 = {
                     x="DATE",
                     axes={},
                     widthPercent=100,
-                    title="Stock Performance Analysis"
+                    title="Stock Performance Trend"
                 ),
                 change_data_in_chart(
                     data=article_by_source,

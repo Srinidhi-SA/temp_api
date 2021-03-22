@@ -571,11 +571,11 @@ export class C3ChartNew extends React.Component{
         }
       }
       //For subchart positioning
-      if(this.config.bindto.getAttribute("class").includes("chart"+that.props.classId+"2")){
+      if(this.config.bindto!=null && this.config.bindto.getAttribute("class").includes("chart"+that.props.classId+"2")){
         let curChart = d3.select(this.config.bindto).select("svg")[0][0];
-          curChart.setAttribute("height",70);
-          let box  = curChart.getBBox();
-          curChart.childNodes[1].setAttribute("transform","translate("+box.x+","+0+")");
+        curChart.setAttribute("height",70);
+        let box  = curChart.getBBox();
+        curChart.childNodes[1].setAttribute("transform","translate("+box.x+","+0+")");
       }
     }
 
@@ -658,7 +658,10 @@ export class C3ChartNew extends React.Component{
       return (
         <div className="chart-area">
           <div className={this.classId} style={{margin:"10px 10px 0px 0px"}}></div>
-          <div className={this.classId+"2"} style={{margin:"10px 10px 20px 0px"}}></div>
+          { (this.props.data.subchart != undefined && this.props.data.subchart.show)?
+            <div className={this.classId+"2"} style={{margin:"10px 10px 20px 0px"}}></div>
+            :""
+          }
          <div className={chartDownloadCls} style={{display:"none"}}></div>
           {(!window.location.pathname.includes("/data/") && this.props.classId != "_side") &&
           <div className="chart-data-icon">

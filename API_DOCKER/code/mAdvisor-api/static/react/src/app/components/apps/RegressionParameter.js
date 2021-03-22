@@ -1,6 +1,5 @@
 import React from "react";
 import {connect} from "react-redux";
-import store from "../../store";
 import { decimalPlaces } from "../../helpers/helper";
 import ReactBootstrapSlider from 'react-bootstrap-slider';
 import { MultiSelect } from "primereact/multiselect";

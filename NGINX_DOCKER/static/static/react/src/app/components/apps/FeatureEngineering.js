@@ -44,9 +44,6 @@ export class FeatureEngineering extends React.Component {
       filterElement:""
     };
     this.state.topLevelRadioButton = "false";
-    this.pickValue = this.pickValue.bind(this);
-    this.clearBinsAndIntervals = this.clearBinsAndIntervals.bind(this);
-    this.updateLevelsData = this.updateLevelsData.bind(this);
   }
 
   componentWillMount() {
@@ -633,9 +630,7 @@ export class FeatureEngineering extends React.Component {
   }
 
   handleBack=()=>{
-    const appId = this.props.match.params.AppId;
-    const slug = this.props.match.params.slug;
-    this.props.history.replace(`/apps/${appId}/analyst/models/data/${slug}/createModel/dataCleansing?from=feature_Engineering`);
+    this.props.history.replace(`/apps/${this.props.match.params.AppId}/analyst/models/data/${this.props.match.params.slug}/createModel/dataCleansing?from=feature_Engineering`);
   }
   filterFeTable(e){
     var table = document.getElementById("fetable");
@@ -703,13 +698,13 @@ export class FeatureEngineering extends React.Component {
       })
     }
     if (this.props.selectedItem.columnType == "measure") {
-      binOrLevels = <Bins parentPickValue={this.pickValue} clearBinsAndIntervals={this.clearBinsAndIntervals} />
+      binOrLevels = <Bins parentPickValue={this.pickValue.bind(this)} clearBinsAndIntervals={this.clearBinsAndIntervals.bind(this)} />
       binOrLevelData = "binData";
     }else if (this.props.selectedItem.columnType == "dimension") {
-      binOrLevels = <Levels parentPickValue={this.pickValue} parentUpdateLevelsData={this.updateLevelsData} levelsData={this.getLevelsData()} />
+      binOrLevels = <Levels parentPickValue={this.pickValue.bind(this)} parentUpdateLevelsData={this.updateLevelsData.bind(this)} levelsData={this.getLevelsData()} />
       binOrLevelData = "levelData";
     }else {
-      binOrLevels = <Levels parentPickValue={this.pickValue} parentUpdateLevelsData={this.updateLevelsData} levelsData={this.getLevelsData()} />
+      binOrLevels = <Levels parentPickValue={this.pickValue.bind(this)} parentUpdateLevelsData={this.updateLevelsData.bind(this)} levelsData={this.getLevelsData()} />
       binOrLevelData = "levelData";
     }
 
@@ -741,7 +736,7 @@ export class FeatureEngineering extends React.Component {
               <h3 className="modal-title">Transform {this.props.selectedItem.columnType} column</h3>
             </Modal.Header>
             <Modal.Body>
-              <Transform parentPickValue={this.pickValue} />
+              <Transform parentPickValue={this.pickValue.bind(this)} />
             </Modal.Body>
             <Modal.Footer>
               <Button id="transformCancel"  onClick={this.closeTransformColumnModal.bind(this)}>Cancel</Button>
