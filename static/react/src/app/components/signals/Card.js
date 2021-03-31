@@ -23,7 +23,8 @@ var cardData = {};
         signal: store.signals.signalAnalysis,
         currentAppDetails: store.apps.currentAppDetails,
         toggleValues: store.signals.toggleValues,
-        chartLoaderFlag:store.apps.chartLoaderFlag
+        chartLoaderFlag:store.apps.chartLoaderFlag,
+        mmLoaderFlag:store.signals.mmLoaderFlag,
     };
 })
 
@@ -70,6 +71,7 @@ export class Card extends React.Component {
         return divClass;
     }
     renderCardData(cardData,toggleTable,cardWidth){
+        let that = this;
         var htmlData = cardData.map((story, i) => {
             let randomNum = Math.random().toString(36).substr(2,8);
             switch (story.dataType) {
@@ -100,10 +102,26 @@ export class Card extends React.Component {
                         else
                         divClass = "col-md-12";
                         let sideChart=false;
+
                         if(window.location.pathname.includes("apps-stock-advisor"))
                             divClass = "col-md-7 col-md-offset-2"
                         if(story.data.chart_c3.title.text === "Stock Performance Analysis")
                             return (<div key={randomNum} className={parentDivClass}><div class={divClass} ><HighChart chartInfo={chartInfo} sideChart={sideChart} classId={randomNum}  widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div></div>);
+                        else if(window.location.pathname.includes("\modelManagement")){
+                            return(
+                                <div key={randomNum} className={parentDivClass} style={{height:"350px"}}>
+                                    {that.props.mmLoaderFlag && 
+                                        <div style={{position:"absolute",display:"flex",alignItems:"center"}}>
+                                            <img src={STATIC_URL+"assets/images/loaderChart.gif"} style={{padding:"175px 200px"}}></img>
+                                        </div>
+                                    }
+                                    <div class={divClass} style={{display:(that.props.mmLoaderFlag?"none":"inline-block")}}>
+                                        <C3ChartNew chartInfo={chartInfo} sideChart={sideChart} classId={randomNum}  widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/>
+                                        <div className="clearfix"/>
+                                    </div>
+                                </div>
+                            );
+                        }
                         else
                             return (<div key={randomNum} className={parentDivClass}><div class={divClass} ><C3ChartNew chartInfo={chartInfo} sideChart={sideChart} classId={randomNum}  widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div></div>);
                     }else{
@@ -209,6 +227,8 @@ export class Card extends React.Component {
     render() {
         cardData = this.props.cardData;
 		let stockClassName = "";
+        if(window.location.pathname.includes("\modelManagement"))
+            stockClassName = "col-md-12"
         if(cardData[0].data!=undefined && cardData[0].data === "<h4><center>Algorithm Parameters </center></h4>")
             stockClassName = "algoParams"
 		if (window.location.pathname.indexOf("apps-stock-advisor")>-1)

@@ -24,7 +24,6 @@ export class Deployment extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
-    this.pickValue = this.pickValue.bind(this);
   }
 
   handleDeploymentDelete(slug) {
@@ -64,33 +63,27 @@ export class Deployment extends React.Component {
     if(slugData != undefined && this.state[this.props.deployItem] != undefined){
       var deployData = this.state[this.props.deployItem];
       if(deployData.name == undefined|| deployData.name == null || deployData.name == ""){
-        $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("Please enter deployment name");
+        document.getElementById("fileErrorMsg").innerText = "Please enter deployment name";
         $("input[name='name']").focus();
         return;
       }else if(deployData.datasetname == undefined|| deployData.datasetname == null || deployData.datasetname == ""){
-        $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("Please enter dataset name");
+        document.getElementById("fileErrorMsg").innerText = "Please enter dataset name";
         $("input[name='datasetname']").focus();
         return;
       }else if(deployData.file_name == undefined|| deployData.file_name == null || deployData.file_name == ""){
-        $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("Please enter filename");
+        document.getElementById("fileErrorMsg").innerText = "Please enter filename";
         $("input[name='file_name']").focus();
         return;
       }else if(deployData.access_key_id == undefined|| deployData.access_key_id == null || deployData.access_key_id == ""){
-        $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("Please enter access key password");
+        document.getElementById("fileErrorMsg").innerText = "Please enter access key password";
         $("input[name='access_key_id']").focus();
         return;
       }else if(deployData.secret_key == undefined|| deployData.secret_key == null || deployData.secret_key == ""){
-        $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("Please enter secret key password");
+        document.getElementById("fileErrorMsg").innerText = "Please enter secret key password";
         $("input[name='secret_key']").focus();
         return;
       }else if(deployData.timing_details == undefined|| deployData.timing_details == "none"){
-        $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("Please select frequency");
+        document.getElementById("fileErrorMsg").innerText = "Please select frequency";
         $("select[name='timing_details']").focus();
         return;
       }
@@ -99,14 +92,13 @@ export class Deployment extends React.Component {
       this.closeDeployModal();
       this.props.dispatch(createDeploy(this.props.deployItem));
     }else{
-      $("#fileErrorMsg").removeClass("visibilityHidden");
       $("input[name='name']").css("border-color","red");
 		  $("input[name='datasetname']").css("border-color","red");
       $("input[name='file_name']").css("border-color","red");
       $("input[name='access_key_id']").css("border-color","red");
       $("input[name='secret_key']").css("border-color","red");
       $("select[name='timing_details']").css("border-color","red");
-      $("#fileErrorMsg").html("Please enter Mandatory fields * ");
+      document.getElementById("fileErrorMsg").innerText = "Please enter Mandatory fields * ";
     }
   }
 
@@ -131,9 +123,10 @@ export class Deployment extends React.Component {
                   <h3 className="modal-title">Deploy Model</h3>
                 </Modal.Header>
                 <Modal.Body>
-                  <DeployPopup parentPickValue={this.pickValue}/>
+                  <DeployPopup parentPickValue={this.pickValue.bind(this)}/>
                 </Modal.Body> 
                 <Modal.Footer>
+                  <div className="text-danger" id="fileErrorMsg" style={{float:"left"}} />
                   <Button onClick={this.closeDeployModal.bind(this)}>Cancel</Button>
                   <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,"deployData")}>Deploy</Button>
                 </Modal.Footer>
@@ -198,21 +191,6 @@ export class Deployment extends React.Component {
         );
       }
 
-      if(deploymentList.data.length == 0){
-        deploymentTable = <h4 className="text-center">No Deployments Available</h4>
-        return(
-          <div id="deployment" class="tab-pane">
-          {deployPopup}
-          {viewPopup}
-          <button class="btn btn-warning btn-shade4 pull-right" onClick={this.openDeployModal.bind(this,this.props.algoAnalysis.slug)}>Add New Deployment</button><br/><br/>
-          <div class="clearfix"></div>
-          <div>
-            {deploymentTable}
-            </div>
-          <Dialog ref="dialog"/>
-        </div>
-        );
-      }else {
         deploymentTable = deploymentList.data.map((deploy,key )=> {
           return (
             <tr key={key} className={('all ' + deploy.name)}>
@@ -238,7 +216,6 @@ export class Deployment extends React.Component {
             </td>
           </tr>);
         }) 
-      }
       
       return (
         <div id="deployment" class="tab-pane">
@@ -246,6 +223,8 @@ export class Deployment extends React.Component {
           {viewPopup}
           <button class="btn btn-warning btn-shade4 pull-right" onClick={this.openDeployModal.bind(this,this.props.algoAnalysis.slug)}>Add New Deployment</button><br/><br/>
           <div class="clearfix"></div>
+          {(deploymentList.data.length == 0)?
+            <h4 className="text-center">No Deployments Available</h4>:
             <table class="tablesorter table table-striped table-hover table-bordered break-if-longText">
               <thead>
                 <tr className="myHead">
@@ -263,6 +242,7 @@ export class Deployment extends React.Component {
               {deploymentTable}
             </tbody>
           </table>
+          }
           <Dialog ref="dialog"/>
         </div>
       );

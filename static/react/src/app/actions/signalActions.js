@@ -896,3 +896,8 @@ export function clearSignalList(){
       type: "CLEAR_SIGNAL_LIST"
   }
 }
+export function setmmLoaderFlag(flag){
+  return {
+    type: "SET_MM_LOADER",flag
+  }
+}
