@@ -105,7 +105,7 @@ export class Card extends React.Component {
 
                         if(window.location.pathname.includes("apps-stock-advisor"))
                             divClass = "col-md-7 col-md-offset-2"
-                        if(story.data.chart_c3.title.text === "Stock Performance Analysis")
+                        if(story.data.chart_c3.title.text === "Stock Performance Analysis"|| story.data.chart_c3.title.text === "Stock Price Trend")
                             return (<div key={randomNum} className={parentDivClass}><div class={divClass} ><HighChart chartInfo={chartInfo} sideChart={sideChart} classId={randomNum}  widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div></div>);
                         else if(window.location.pathname.includes("\modelManagement")){
                             return(
