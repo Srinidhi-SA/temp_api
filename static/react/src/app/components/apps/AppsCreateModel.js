@@ -67,9 +67,14 @@ export class AppsCreateModel extends React.Component {
 		this.props.dispatch(closeModelPopup())
 	}
 
-  getDataSetPreview(){
+  getDataSetPreview(e){
+		if(document.getElementById("model_Dataset").value === "--Select dataset--"){
+			document.getElementById("modelErrorMsg").innerText = "Please select dataset";
+			e.preventDefault();
+			return false;
+		}
 		if(store.getState().dataSource.selectedDataSrcType == "fileUpload"){
-    	this.selectedData = $("#model_Dataset").val();
+    	this.selectedData = document.getElementById("model_Dataset").value;
     	this.props.dispatch(getDataSetPreview(this.selectedData));
 		}else{
 			this.props.dispatch(dataUpload())
@@ -77,6 +82,7 @@ export class AppsCreateModel extends React.Component {
 	}
 
 	submitAutoMlVal(mode){
+		document.getElementById("modelErrorMsg").innerText = "";
 		let letters = /^[0-9a-zA-Z\-_\s]+$/;
 		var target=$("#createModelTarget option:selected").text();
 		var datasetSlug=model_Dataset.value;
@@ -84,25 +90,25 @@ export class AppsCreateModel extends React.Component {
 		var modelName= $("#modelName").val();
 		
 		if ($("#model_Dataset").val() === "--Select dataset--") {
-			bootbox.alert("Please select dataset");
+			document.getElementById("modelErrorMsg").innerText = "Please select dataset";
 			return false;
-		}else if (modelName === "") {
-			bootbox.alert("Please enter model name");
+		}else if(modelName === "") {
+			document.getElementById("modelErrorMsg").innerText = "Please enter model name";
 			return false;
 		}else if ($("#createModelTarget").val() === "--Select--") {
-			bootbox.alert("Please select target variable");
+			document.getElementById("modelErrorMsg").innerText = "Please select target variable";
 			return false;
 		}else if (levelCount === "--Select--") {
-			bootbox.alert("Please select sub value");
+			document.getElementById("modelErrorMsg").innerText = "Please select sub value";
 			return false;
 		}else if (modelName != "" && modelName.trim() == "") {
-			bootbox.alert(statusMessages("warning", "Please enter a valid model name.", "small_mascot"));
+			document.getElementById("modelErrorMsg").innerText = "Please enter a valid model name";
 			return false;
 		}else if (letters.test(modelName) == false){
-			bootbox.alert(statusMessages("warning", "Please enter model name in a correct format. It should not contain special characters .,@,#,$,%,!,&.", "small_mascot"));
+			document.getElementById("modelErrorMsg").innerText = "Model name cannot contain special characters .,@,#, $,%,!,&";
 			return false;
 		}else if(!(Object.values(this.props.allModelList).filter(i=>(i.name).toLowerCase() == modelName.toLowerCase()) == "") ){
-			bootbox.alert(statusMessages("warning", "Model by name \""+ modelName +"\" already exists. Please enter a new name.", "small_mascot"));
+			document.getElementById("modelErrorMsg").innerText = "Model by name \""+ modelName +"\" already exists. Please enter a new name.";
 			return false;
 		}
 		this.props.dispatch(createModel(modelName,target,levelCount,datasetSlug,mode))
@@ -121,6 +127,7 @@ export class AppsCreateModel extends React.Component {
 	}
 
 	updateDataset(e){
+		document.getElementById("modelErrorMsg").innerText = "";
 		this.selectedData = e.target.value;
 		if(window.location.pathname.includes("autoML")){
 			this.fetchDataAutoML(e.target.value);
@@ -144,6 +151,7 @@ export class AppsCreateModel extends React.Component {
 	}
 	
   setPossibleList(event) {
+		document.getElementById("modelErrorMsg").innerText = "";
 		if(this.props.currentAppDetails.app_id === 13){
 			let target =  $("#createModelTarget option:selected").text();
 			let targetUniqueVal= this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => i.name=== target)[0].columnStats.filter(j=>j.displayName === "Unique Values")[0].value
@@ -152,6 +160,10 @@ export class AppsCreateModel extends React.Component {
 		}
 		this.levelCountsForAutoMl(event);
 		this.props.dispatch(updateSelectedVariable(event));
+	}
+
+	clearErrMsg(){
+		document.getElementById("modelErrorMsg").innerText = "";
 	}
 
 	render() {
@@ -168,7 +180,7 @@ export class AppsCreateModel extends React.Component {
 					{window.location.href.includes("autoML")&&
 						<div>
 							<label className="pb-2 pt-10">Model Name</label>
-							<input type="text" className="form-control" autoComplete="off" placeholder="model name" id="modelName"></input>
+							<input type="text" className="form-control" autoComplete="off" placeholder="model name" id="modelName" onInput={this.clearErrMsg.bind(this)}></input>
 							<label className="pb-2 pt-10">Select target variable:</label>
 							<select className="form-control" id="createModelTarget" onChange={this.setPossibleList.bind(this)}>
 								<option>--Select--</option>
@@ -201,7 +213,7 @@ export class AppsCreateModel extends React.Component {
 							{this.state.countVal !="" &&
 								<div>
 									<label className="pb-2 pt-10">Select subvalue:</label>
-									<select className="form-control" id="createModelLevelCount">
+									<select className="form-control" id="createModelLevelCount" onChange={this.clearErrMsg.bind(this)}>
 										<option>--Select--</option>
 										{this.state.countVal!=""?
 											this.state.countVal.sort().map(item => {
@@ -244,6 +256,7 @@ export class AppsCreateModel extends React.Component {
 							<DataSourceList type="model" renderDatasets={renderSelectBox}/>
 						</Modal.Body>
 						<Modal.Footer>
+	            <div className="text-danger" id="modelErrorMsg" style={{float:"left",textAlign:"left",width:"65%"}}></div>
 							<Button className="btn btn-primary md-close" onClick={this.closeModelPopup.bind(this)}>Close</Button>
 							{
 								window.location.href.includes("autoML")?

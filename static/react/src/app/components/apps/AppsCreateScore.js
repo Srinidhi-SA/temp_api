@@ -43,14 +43,25 @@ export class AppsCreateScore extends React.Component {
 	
 	getDataSetPreview(e){
 		this.selectedData = $("#score_Dataset").val();
+		if(this.selectedData===""){
+			document.getElementById("scoreErrorMsg").innerText = "Please select dataset";
+			e.preventDefault();
+			return false;
+		}
 		this.props.dispatch(checkCreateScoreToProceed(this.selectedData));
-		this.props.dispatch(updateSelectedAlg($("#algorithms").val()));
-		this.props.dispatch(updateSelectedAlgObj($("#algorithms").find(":selected").data("value")));
-		this.props.dispatch(getDataSetPreview(this.selectedData));
-		this.props.dispatch(hideCreateScorePopup());
+		if(!store.getState().apps.scoreToProceed){
+			document.getElementById("scoreErrorMsg").innerText = "Please select some other dataset."
+			e.preventDefault();
+		}else{
+			this.props.dispatch(updateSelectedAlg($("#algorithms").val()));
+			this.props.dispatch(updateSelectedAlgObj($("#algorithms").find(":selected").data("value")));
+			this.props.dispatch(getDataSetPreview(this.selectedData));
+			this.props.dispatch(hideCreateScorePopup());
+		}
 	}
 	 
 	updateDataset(e){
+		document.getElementById("scoreErrorMsg").innerText = ""
 		this.props.dispatch(updateDatasetName(e.target.value));
 	}
 
@@ -94,6 +105,7 @@ export class AppsCreateScore extends React.Component {
 							</div>
 						</Modal.Body>
 						<Modal.Footer>
+							<div className="text-danger" id="scoreErrorMsg" style={{float:"left",textAlign:"left",width:"65%"}}></div>
 							<Button className="btn btn-primary md-close" onClick={this.closeScorePopup.bind(this)}>Close</Button>
 							<Link className="btn btn-primary" id="modalCreateButton" onClick={this.getDataSetPreview.bind(this)} to={this.props.match.url+"/data/"+this.props.selectedDataSet}>Create</Link>
 						</Modal.Footer>
