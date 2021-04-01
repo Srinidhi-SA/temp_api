@@ -265,7 +265,6 @@ export class VariableSelection extends React.Component {
     render(){
         var that= this;
         if(!$.isEmptyObject(this.props.selectedSignalAnalysis) && !that.signalFlag){
-            $('body').pleaseWait('stop');
             return(<Redirect to={`/signals/${this.props.selectedSignal}`}/>);
         }
 
