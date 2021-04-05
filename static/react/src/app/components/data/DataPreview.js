@@ -165,13 +165,6 @@ export class DataPreview extends React.Component {
       if(this.buttons.create.url.indexOf("apps-robo") != -1){
         url = "/apps-robo/" + store.getState().apps.roboDatasetSlug + "/" + store.getState().signals.signalAnalysis.slug
         this.props.history.push(url);
-      }else if(store.getState().datasets.curUrl.indexOf("scores") != -1){
-        if (store.getState().apps.scoreToProceed == true) {
-          this.props.history.push(url);
-        }else{
-          this.props.dispatch(hideDataPreview());
-          popupAlertBox("One or few variables are missing from the scoring data. Score cannot be created",this.props,url.split("/data")[0])
-        }
       }else{
         this.props.history.push(url);
       }

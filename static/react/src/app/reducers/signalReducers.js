@@ -4,6 +4,7 @@ export default function reducer(state = {
   signalAnalysis:{},
   signalAnalysisViewed:"",
   algoAnalysis:{},
+  mmLoaderFlag:true,
   selectedAlgo:{},
   selectedSignal:{},
   newSignalShowModal:false,
@@ -98,7 +99,12 @@ export default function reducer(state = {
         }
       }
       break;
-
+      case "SET_MM_LOADER":{
+        return{
+          ...state,
+          mmLoaderFlag : action.flag
+        }
+      }
   
 
       case "ALGO_ANALYSIS_ERROR":

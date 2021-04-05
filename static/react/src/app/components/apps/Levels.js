@@ -16,7 +16,6 @@ export class Levels extends React.Component {
   
   constructor(props) {
     super(props);
-    this.pickValue = this.pickValue.bind(this);
     this.state = { levelsArray: this.props.levelsData }    
   }
 
@@ -96,11 +95,8 @@ export class Levels extends React.Component {
     return levelData;
   }
 
-  pickValue(event) {
-    this.props.parentPickValue("levelData", event);
-  }
-
   inputOnChangeHandler(idx, valueToChange, event) {
+    document.getElementById("fileErrorMsg").innerText = ""
     var newArray = this.state.levelsArray;
     newArray[idx][valueToChange] = event.target.value;
     this.setState({
@@ -109,6 +105,7 @@ export class Levels extends React.Component {
   }
 
   multiSelectOnChangeHandler(idx, event) {
+    document.getElementById("fileErrorMsg").innerText = ""
     var newArray = this.state.levelsArray;
     newArray[idx]["multiselectValue"] = event.target.value;
     this.setState({
@@ -145,11 +142,6 @@ export class Levels extends React.Component {
             ))}
             <button className="btn btn-primary b-inline addn" onClick={this.addNewLevel.bind(this)} ><i className="fa fa-plus"> Add</i></button>
           </div>
-          <div className="row form-group">
-            <div className="col-sm-12 text-center">
-              <div className="text-danger visibilityHidden xs-pt-15" id="fileErrorMsg"></div>
-            </div>
-          </div>
         </Tab.Pane>
       )
     }
@@ -184,11 +176,6 @@ export class Levels extends React.Component {
               </div>
             ))}
             <button className="btn btn-primary b-inline addn" onClick={this.addNewLevel.bind(this)} ><i className="fa fa-plus"> Add</i></button>
-          </div>
-          <div className="row form-group">
-            <div className="col-sm-12 text-center">
-              <div className="text-danger visibilityHidden xs-pt-15" id="fileErrorMsg"></div>
-            </div>
           </div>
         </Tab.Pane>
       )

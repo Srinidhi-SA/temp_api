@@ -391,7 +391,7 @@ export class C3ChartNew extends React.Component{
                 "text": chartData.axis.y.label.text
             },
             "tick": {
-                "format": (this.props.yformat!=undefined || this.props.yformat!=null)?d3.format(this.props.yformat):d3.format(".2f"),
+                "format": d3.format(".2f"),
                 "multiline": chartData.axis.y.tick.multiline,
                 "outer": false
             },
@@ -421,6 +421,7 @@ export class C3ChartNew extends React.Component{
           "names":chartData.data.names,
           "type": chartData.data.type,
           "x": chartData.data.x,
+          "xs":chartData.data.xs,
           // onclick: function(d){
           //   let data={
           //     date: this.internal.config.axis_x_categories[d.x],
