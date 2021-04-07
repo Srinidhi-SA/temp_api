@@ -68,10 +68,10 @@ export default function reducer(state = {
   duplicateAttributes: false,
   duplicateObservations: false,
   olUpperRange : {},
-  binsOrLevelsShowModal:false,
-  transferColumnShowModal:false,
+  showBinsLevelsTransformModal:false,
   selectedBinsOrLevelsTab:"Bins",
   selectedItem:{},
+  selectedButton:"",
   shareItem:{},
   shareItemSlug:"",
   shareItemType:"",
@@ -885,44 +885,15 @@ export default function reducer(state = {
       }
     break;
 
-    case "BINS_LEVELS_SHOW_MODAL":
-    {
-      return {
+    case "SHOW_BINS_LEVELS_TRANSFORM_MODAL":{
+      return{
         ...state,
-        binsOrLevelsShowModal: true,
-        selectedItem:action.selectedItem
+        showBinsLevelsTransformModal : action.flag,
+        selectedItem : action.item,
+        selectedButton : action.btn
       }
     }
     break;
-
-    case "BINS_LEVELS_HIDE_MODAL":
-    {
-      return {
-        ...state,
-        binsOrLevelsShowModal: false
-      }
-    }
-    break;
-
-    case "TRANSFORM_COLUMN_SHOW_MODAL":
-    {
-      return {
-        ...state,
-        transferColumnShowModal: true,
-        selectedItem:action.selectedItem
-      }
-    }
-    break;
-
-    case "TRANSFORM_COLUMN_HIDE_MODAL":
-    {
-      return {
-        ...state,
-        transferColumnShowModal: false
-      }
-    }
-    break;
-
     case "BINS_OR_LEVELS":
     {
       return {

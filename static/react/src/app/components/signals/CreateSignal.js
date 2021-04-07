@@ -20,6 +20,7 @@ import {openCreateSignalModal,closeCreateSignalModal} from "../../actions/create
 export class CreateSignal extends React.Component {
 	constructor(props) {
 		super(props);
+		this.props.dispatch(closeCreateSignalModal());
 		this.selectedData = {};
 		this.flag=false;
 	}

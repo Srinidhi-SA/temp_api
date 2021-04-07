@@ -1,7 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import { saveEncodingValuesAction } from "../../actions/featureEngineeringActions";
-
 @connect(store => {
   return {
     deployData: store.apps.deployData,
@@ -13,7 +11,6 @@ export class DeployPopup extends React.Component {
     super(props);
     this.pickValue = this.pickValue.bind(this);
     this.state = {};
-    this.state.encodingRadioButton;
   }
 
   getDeployData() {
@@ -171,11 +168,6 @@ export class DeployPopup extends React.Component {
                 onChange={this.onchangeInput.bind(this)}
                 disabled
               />
-            </div>
-          </div>
-          <div className="row form-group">
-            <div className="col-sm-12 text-center">
-              <div className="text-danger visibilityHidden" id="fileErrorMsg" />
             </div>
           </div>
         </form>
