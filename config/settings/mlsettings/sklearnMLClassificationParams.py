@@ -291,8 +291,8 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
         ],
         "paramType": "list",
         "uiElemType": "checkbox",
-        "display": False,
-        "hyperpatameterTuningCandidate": False,
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["bool"],
         "allowedDataType": ["bool"]
     },
@@ -372,7 +372,103 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
         "hyperpatameterTuningCandidate": False,
         "expectedDataType": ["int", None],
         "allowedDataType": ["int", None]
-    }
+    },
+    {
+            "uiElemType": "checkbox",
+            "display": True,
+            "paramType": "list",
+            "description": "The number of features to consider when looking for the best split",
+            "defaultValue": [
+              {
+                "selected": False,
+                "name": "auto",
+                "displayName": "auto"
+              },
+              {
+                "selected": False,
+                "name": "sqrt",
+                "displayName": "sqrt"
+              },
+              {
+                "selected": False,
+                "name": "log2",
+                "displayName": "log2"
+              }
+            ],
+            "displayName": "Max Features",
+            "hyperpatameterTuningCandidate": False,
+            "expectedDataType": [
+              "bool"
+            ],
+            "name": "max_features",
+            "className": "max_features_rf",
+            "allowedDataType": [
+              "bool"
+            ]
+          },
+    {
+            "uiElemType": "slider",
+            "paramType": "number",
+            "description": "The minimum weighted fraction of the sum total of weights(of all the input samples) required to be at a leaf node",
+            "defaultValue": 0.0,
+            "displayName": "Minimum Weight Fraction Leaf",
+            "hyperpatameterTuningCandidate": True,
+            "name": "min_weight_fraction_leaf",
+            "valueRange": [
+              0,
+              1
+            ],
+            "display": True,
+            "acceptedValue": None,
+            "expectedDataType": [
+              "float"
+            ],
+            "allowedDataType": [
+              "float"
+            ]
+          },
+    {
+            "uiElemType": "slider",
+            "paramType": "number",
+            "description": "Threshold for early stopping in tree growth",
+            "defaultValue": 0.0,
+            "displayName": "Minimum Impurity Split",
+            "hyperpatameterTuningCandidate": True,
+            "name": "min_impurity_split",
+            "valueRange": [
+              0,
+              1
+            ],
+            "display": True,
+            "acceptedValue": None,
+            "expectedDataType": [
+              "float"
+            ],
+            "allowedDataType": [
+              "float"
+            ]
+          },
+    {
+            "uiElemType": "slider",
+            "paramType": "number",
+            "description": "Determines what fraction of the original dataset is given to any individual tree",
+            "defaultValue": 1,
+            "displayName": "Maximum Samples",
+            "hyperpatameterTuningCandidate": True,
+            "name": "max_samples",
+            "valueRange": [
+              1,
+              100
+            ],
+            "display": True,
+            "acceptedValue": None,
+            "expectedDataType": [
+              "int"
+            ],
+            "allowedDataType": [
+              "int"
+            ]
+          }
 ]
 
 SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
