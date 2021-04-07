@@ -251,13 +251,13 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
         "allowedDataType": ["string"]
     },
     {
-        "name": "bootstrap",
-        "displayName": "Bootstrap Sampling",
-        "description": "It defines whether bootstrap samples are used when building trees",
+        "name": "oob_score",
+        "displayName": "use out-of-bag samples",
+        "description": "It defines whether to use out-of-bag samples to estimate the R^2 on unseen data",
         "defaultValue": [
             {
                 "name": "false",
-                "selected": False,
+                "selected": True,
                 "displayName": "False"
             },
             {
@@ -274,13 +274,13 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
         "allowedDataType": ["bool"]
     },
     {
-        "name": "oob_score",
-        "displayName": "use out-of-bag samples",
-        "description": "It defines whether to use out-of-bag samples to estimate the R^2 on unseen data",
+        "name": "bootstrap",
+        "displayName": "Bootstrap Sampling",
+        "description": "It defines whether bootstrap samples are used when building trees",
         "defaultValue": [
             {
                 "name": "false",
-                "selected": True,
+                "selected": False,
                 "displayName": "False"
             },
             {
