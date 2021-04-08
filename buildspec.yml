@@ -6,25 +6,27 @@ phases:
       - echo Logging in to Amazon ECR...
       - aws --version
       - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email) 
-      - REPOSITORY_URI=115502491259.dkr.ecr.us-west-1.amazonaws.com/madvisor_dev_nginx 
+      - REPOSITORY_URI_NGINX=210201387539.dkr.ecr.us-east-2.amazonaws.com/madvisor-dev-nginx 
+      - REPOSITORY_URI_API=210201387539.dkr.ecr.us-east-2.amazonaws.com/madvisor-dev-api
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+      - IMAGE_TAG_NGINX=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+      - IMAGE_TAG_API=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
   build:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
       - sh copyApiFolder.sh
       - cd NGINX_DOCKER
-      - docker build -t $REPOSITORY_URI:latest .
-      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:latest 
+      - docker build -t $REPOSITORY_URI_NGINX:latest .
+      - docker tag $REPOSITORY_URI_NGINX:latest $REPOSITORY_URI_NGINX:$IMAGE_TAG_NGINX 
       - cd ..  
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
       - echo Writing image definitions file...
-      - docker push $REPOSITORY_URI:latest
-      - printf '[{"name":"madvisor-nginx","imageUri":"%s"}]' $REPOSITORY_URI:latest > imagedefinitions.json
+      - docker push $REPOSITORY_URI_NGINX:$IMAGE_TAG_NGINX
+      - printf '[{"name":"madvisor-nginx","imageUri":"%s"}, {"name":"madvisor-api","imageUri":"%s"}]' $REPOSITORY_URI_NGINX:$IMAGE_TAG_NGINX $REPOSITORY_URI_API:$IMAGE_TAG_API > imagedefinitions.json
       - cat imagedefinitions.json 
 artifacts:
     files: imagedefinitions.json
