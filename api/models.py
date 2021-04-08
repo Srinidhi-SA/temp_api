@@ -425,6 +425,7 @@ class Dataset(models.Model):
         return "/home/marlabs" + self.get_hdfs_relative_path()
 
     def get_input_file(self):
+        print("Test Upload")
         print("File Upload")
         if self.datasource_type in ['file', 'fileUpload']:
             type = self.file_remote
